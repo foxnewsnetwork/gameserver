@@ -1,7 +1,9 @@
-
 /**
  * Module dependencies.
  */
+ 
+// http usage
+var http = require('http');
 
 // express web frame work
 var express = require('express')
@@ -41,7 +43,21 @@ console.log("Express server listening on port %d in %s mode", app.address().port
 
 app.get('/', function(req, res){
 	 // res.sendfile(__dirname + '/index.html');
-	 res.render("index.jade", { title : "beta faggot losers" });
+	// res.render("index.jade", { title : "beta faggot losers" });
+	var options = { 
+		host: "gamertiser.com",
+		port: 80,
+		path: "/api/v1/product.json?token=1234567890"
+	};
+	
+	var request = http.get( options, function(response){ 
+		console.log( "status: " + response.statusCode );
+		console.log( "headers: " + JSON.stringify(response.headers) );
+		response.on("data", function(chunk){ 
+			console.log( "body: " + chunk );
+		});
+		res.render("index.jade", { title: "faggot" } );
+	} );
 });
 
 /****************************
@@ -56,7 +72,8 @@ io.sockets.on('connection', function(socket){
 	// player login
 	socket.on( "player login up", function(playerinfo){ 
 		// TODO: handle and process playerinfo
-		var result;
+		var playerController = require( 'controller/players_controller.js' );
+		var result = playerController.SignIn( playerinfo );
 		socket.emit( "player login down", result );
 	} );
 	
@@ -67,6 +84,11 @@ io.sockets.on('connection', function(socket){
 	// open shop
 	socket.on( "open shop up", function(metadata){
 		// TODO: handle the api calls for this
+		// Step 1: declaring my constants
+		var gameToken = 'wxyz';
+		var shopLink = 'http://gamertiser.com/api/v1/product.json?token=';
+		
+		// Step 2: seeing we can't hit the outside world
 		var items;
 		socket.emit( "open shop down", items );
 	} );
@@ -122,3 +144,5 @@ io.sockets.on('connection', function(socket){
 	});
 
 });
+
+

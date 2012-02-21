@@ -6,3 +6,16 @@ socket.on('news', function (data) {
 	$("#buttfuck").append( data );
 	socket.emit('my other event', { my: 'data' });
 });
+
+socket.on( "open shop down", function(items){ 
+	$("#buttfuck").html( "<img alt='nigger' src='" + items["picture_path"] + "' />" );
+});
+
+$(document).ready(function(){
+	$("#shop").click(function(){
+		$("#buttfuck").html( "request submitted" );
+		socket.emit( "open shop up", "nothing");
+	});
+} );
+
+

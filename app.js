@@ -44,10 +44,15 @@ console.log("Express server listening on port %d in %s mode", app.address().port
 app.get('/', function(req, res){
 	 // res.sendfile(__dirname + '/index.html');
 	// res.render("index.jade", { title : "beta faggot losers" });
+	
+	res.render("index.jade", { title: "stuff", content: "nothing yet" } );
+});
+
+app.post("/", function(req, res){ 
 	var options = { 
 		host: "gamertiser.com",
 		port: 80,
-		path: "/api/v1/product.json?token=1234567890"
+		path: "/api/v1/product.json?token=cf242dcaf5d0a4a0b0e2949e804dcebf"
 	};
 	
 	var request = http.get( options, function(response){ 
@@ -55,10 +60,11 @@ app.get('/', function(req, res){
 		console.log( "headers: " + JSON.stringify(response.headers) );
 		response.on("data", function(chunk){ 
 			console.log( "body: " + chunk );
+			var myItems = JSON.parse(chunk);
+			res.render("index.jade", { title: "faggot", content: chunk, pic: myItems["picture_path"] } );
 		});
-		res.render("index.jade", { title: "faggot" } );
 	} );
-});
+} );
 
 /****************************
 * Socket IO Response Server *
@@ -72,8 +78,8 @@ io.sockets.on('connection', function(socket){
 	// player login
 	socket.on( "player login up", function(playerinfo){ 
 		// TODO: handle and process playerinfo
-		var playerController = require( 'controller/players_controller.js' );
-		var result = playerController.SignIn( playerinfo );
+		// var playerController = require( 'controller/players_controller.js' );
+		// var result = playerController.SignIn( playerinfo );
 		socket.emit( "player login down", result );
 	} );
 	
@@ -85,12 +91,28 @@ io.sockets.on('connection', function(socket){
 	socket.on( "open shop up", function(metadata){
 		// TODO: handle the api calls for this
 		// Step 1: declaring my constants
-		var gameToken = 'wxyz';
-		var shopLink = 'http://gamertiser.com/api/v1/product.json?token=';
+		var gameToken = 'cf242dcaf5d0a4a0b0e2949e804dcebf';
+		var shopSite = 'gamertiser.com';
+		var shopPath = '/api/v1/product.json?token=';
+		var shopPort = 80;
 		
 		// Step 2: seeing we can't hit the outside world
+		var options = { 
+			host: shopSite,
+			port: shopPort,
+			path: shopPath + gameToken
+		};
 		var items;
-		socket.emit( "open shop down", items );
+		var request = http.get( options, function(response){ 
+			console.log( "status: " + response.statusCode );
+			console.log( "headers: " + JSON.stringify(response.headers) );
+			response.on("data", function(chunk){ 
+				console.log( "body: " + chunk );
+				items = JSON.parse(chunk);
+				socket.emit( "open shop down", items );
+			});
+		} );
+		
 	} );
 	
 	// purchase item

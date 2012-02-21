@@ -5,6 +5,9 @@
 // http usage
 var http = require('http');
 
+// querystring for post formatting
+var querystring = require("querystring");
+
 // express web frame work
 var express = require('express')
   , routes = require('./routes');
@@ -76,7 +79,7 @@ io.sockets.on('connection', function(socket){
 	* Player Server Response        *
 	****************************/
 	// player login
-	socket.on( "player login up", function(playerinfo){ 
+	socket.on( "player login up", function(data){ 
 		// TODO: handle and process playerinfo
 		// var playerController = require( 'controller/players_controller.js' );
 		// var result = playerController.SignIn( playerinfo );
@@ -88,7 +91,7 @@ io.sockets.on('connection', function(socket){
 	* Shop Server Response           *
 	****************************/
 	// open shop
-	socket.on( "open shop up", function(metadata){
+	socket.on( "open shop up", function(data){
 		// TODO: handle the api calls for this
 		// Step 1: declaring my constants
 		var gameToken = 'cf242dcaf5d0a4a0b0e2949e804dcebf';
@@ -102,25 +105,55 @@ io.sockets.on('connection', function(socket){
 			port: shopPort,
 			path: shopPath + gameToken
 		};
-		var items;
+		var output;
 		var request = http.get( options, function(response){ 
 			console.log( "status: " + response.statusCode );
 			console.log( "headers: " + JSON.stringify(response.headers) );
 			response.on("data", function(chunk){ 
 				console.log( "body: " + chunk );
-				items = JSON.parse(chunk);
-				socket.emit( "open shop down", items );
+				output = { 'sessionId': data['sessionId'], 'items': JSON.parse(chunk) };
+				socket.emit( "open shop down", output );
 			});
-		} );
-		
-	} );
+		});	
+	});
 	
 	// purchase item
 	socket.on( "purchase item up", function(data){
 		// TODO: write this
-		var result;
-		socket.emit( "purchase item down", result )
-	} );
+		var gameToken = 'cf242dcaf5d0a4a0b0e2949e804dcebf';
+		var shopSite = 'gamertiser.com';
+		var shopPath = '/api/v1/products/' + data['productId'];
+		var shopPort = 80;
+
+		var postData = querystring.stringify({
+			'gameToken': gameToken ,
+			'playerToken': data['playerToken'] ,
+		});
+				
+		var options = { 
+			host: shopSite ,
+			port: shopPort ,
+			path: shopPath ,
+			method: "POST" ,
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				'Content-Length': postData.length
+			}
+		};
+		
+		var request = http.request( options, function(response){
+			console.log( "status: " + response.statusCode );
+			console.log( "headers: " + JSON.stringify(response.headers) );
+			response.on("data", function(chunk){ 
+				console.log( "body: " + chunk );
+				output = { 'sessionId': data['sessionId'], 'items': JSON.parse(chunk) };
+				socket.emit( "purchase item down", output );
+			});
+		});
+		
+		request.write( postData );
+		request.end();
+	});
 	
 	
 	/****************************

@@ -2,7 +2,11 @@
 * Game Client API Code  *
 ***********************/
 var socket = io.connect('http://localhost');
+var sessionId;
 
+socket.on( "connection", function(id){ 
+	sessionId = id;
+});
 
 /**********************
 * Constants & Config      *
@@ -28,6 +32,9 @@ var playerState = STATE_PREGAME;
 // -1 means we're either not in a game, or error has occured.
 var syncPercentDeviation = -1;
 
+// Hash map to hold shop-related functions
+var shopFunctionHandlers = {};
+
 // Hash map to hold event handling game-related functions
 var gameFunctionHandlers = {};
 
@@ -38,6 +45,14 @@ var chatFunctionHandlers = {};
 /**********************
 * Programmer Functions *
 **********************/
+// Add a function to handle shop events
+function AddShopFunction( eventname, func ){ 
+	if( shopFunctionHandlers[ eventname ] === undefined ) { 
+		shopFunctionHandlers[ eventname ] = [];
+	}
+	shopFunctionHandlers[ eventname ].push( func );
+}
+
 // Adds a function to handle game events
 function AddGameFunction( eventname, func ){ 
 	if( gameFunctionHandlers[ eventname ] === undefined ) { 
@@ -58,12 +73,17 @@ function AddChatFunction( eventname, func ){
 * User Functions               *
 **********************/
 // playerinfo is a json 
-function LoginPlayer( playerinfo ){ 
-	socket.emit( "player login up", playerinfo ); 
+function LoginPlayer( playerinfo ){
+	var data = { 'sessionId': sessionId, 'login': playerinfo }; 
+	socket.emit( "player login up", data ); 
 }
 
-socket.on( "player login down", function(token) { 
-	playerToken = token;
+socket.on( "player login down", function(data) { 
+	if(data['sessionId'] == sessionId) 
+		playerToken = data['token'];
+	else {
+		// inform player of mistake
+	}
 	// TODO: write code to handle the case when player tokens are false
 });
 
@@ -76,8 +96,14 @@ function GetShopItems( metadata ){
 	socket.emit( "open shop up", metadata );
 }
 
-socket.on( "open shop down", function( items ){ 
-	shopItems = items;
+socket.on( "open shop down", function( data ){ 
+	if( data['sessionId'] == sessionId ) {
+		shopItems = data['items'];
+		var handlers = shopFunctionHandlers[ 'open shop down' ];
+		for( var x in handlers ){
+			handlers[x]( shopItems );
+		}
+	}
 	// TODO: write code to handle bad items or whatever
 } );
 

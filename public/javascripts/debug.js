@@ -7,7 +7,7 @@ socket.on('news', function (data) {
 	socket.emit('my other event', { my: 'data' });
 });
 
-socket.on( "open shop down", function(items){ 
+AddShopFunction( "open shop down", function(items){ 
 	$("#buttfuck").html( "<img alt='nigger' src='" + items["picture_path"] + "' />" );
 });
 

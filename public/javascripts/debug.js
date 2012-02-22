@@ -15,6 +15,10 @@ AddChatFunction( "chat down", function(data){
 	$("#chat").append( "<p>" + "from: " + data["sessionId"] + " ==> " + data['message'] + "</p>" );
 });
 
+AddChatFunction( "join channel down", function(data){ 
+	$("#chat").append( "<p>" + "from: server ==> you've joined " + data + "</p>" );
+});
+
 $(document).ready(function(){
 	$("#shop").click(function(){
 		$("#buttfuck").html( "request submitted" );
@@ -23,6 +27,11 @@ $(document).ready(function(){
 	
 	$("#send-message").submit( function( ){ 
 		PlayerChat( $("#message").val() );
+		return false;
+	});
+	
+	$("#join-channel").submit(function(){ 
+		JoinChannel( $("#channel").val() );
 		return false;
 	});
 } );

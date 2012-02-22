@@ -23,6 +23,7 @@ How to get up to speed to be able to use this
 1. install nodejs
 2. install npm (node package manager)
 3. install mongodb
-4. sudo apt-get install express mongoose jade less expresso
-
+4. sudo npm install express mongoose jade less expresso hiredis redis socket.io
+5. install redis
+6. install tcl
  

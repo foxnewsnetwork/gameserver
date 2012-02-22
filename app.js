@@ -1,8 +1,7 @@
-/**
- * Module dependencies.
- */
- 
-// http usage
+/******************************
+ * Module dependencies.                 *
+ ******************************/
+// http usage for external requests
 var http = require('http');
 
 // querystring for post formatting
@@ -11,14 +10,23 @@ var querystring = require("querystring");
 // express web frame work
 var express = require('express')
   , routes = require('./routes');
-
 var app = module.exports = express.createServer();
 
-// socket.io 
+// socket.io for server-client communication
 var io = require('socket.io').listen(app);
 
-// Configuration
+// mongoose for mongodb storage
+// var mongoose = require("mongoose");
+// mongoose.connect('mongodb://localhost/my_ingidio_database');
 
+// redis for rooms and channels
+var redis = require("redis"),
+	client = redis.createClient();
+
+/*******************************
+* Express Server Setup                *
+********************************/
+// Configuration
 app.configure(function(){
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
@@ -38,16 +46,10 @@ app.configure('production', function(){
 
 // Routes
 
-// app.get('/', routes.index);
-// app.get('/faggot', routes.faggot);
-
 app.listen(3000);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 
 app.get('/', function(req, res){
-	 // res.sendfile(__dirname + '/index.html');
-	// res.render("index.jade", { title : "beta faggot losers" });
-	
 	res.render("index.jade", { title: "stuff", content: "nothing yet" } );
 });
 
@@ -58,7 +60,16 @@ var gameToken = 'cf242dcaf5d0a4a0b0e2949e804dcebf';
 var shopSite = 'gamertiser.com';
 var shopPath = '/api/v1/product.json?token=';
 var shopPort = 80;
+var maxPerRoom = 4; // 0 means no limit
+var maxPerChannel = 500; 
 
+
+/****************************
+* Redis Configuration                 *
+*****************************/
+client.on("error", function (err) {
+    console.log("Error " + err);
+});
 
 /****************************
 * Socket IO Response Server *
@@ -174,11 +185,69 @@ io.sockets.on('connection', function(socket){
 	/****************************
 	* Channel Server Response       *
 	****************************/
-	// join channel
-	socket.on( "join channel up", function( data ){ 
-		// TODO: write this
-		var result;
-		socket.emit( "join channel down", result );
+	// join channel. If no channel is specified, joins the first unfilled one
+	socket.on( "join channel up", function( channel ){ 
+		console.log( "input channel: " + channel );
+		// Step 0: We handle first time initialization
+		var aChan, fChan, topChan;
+		var faggot = client.get( "firstOpenChannel", function(err, obj){ 
+			console.log( "firstOpenChannel err: " + err );
+			console.log( "FirstOpenChannel obj: " + obj );
+			if(obj == undefined){ 
+				fChan = 0;
+				client.set( "firstOpenChannel", "channel@" + fChan, redis.print );
+				client.set( "channel@" + fChan, 0, redis.print );
+				client.incr( "topChannelId", function(err, obj){ 
+					topChan = obj + 1;
+				});  
+			}
+			else{ 
+				fChan = obj;
+			}
+		console.log( "faggot: " + faggot );
+		});
+		
+		// Step 1: Check if the channel is specified or not
+		if( channel === undefined ){ 
+			aChan = fChan;
+		}
+		else{ 
+			aChan = channel;
+		}
+		
+		// Step 2: we check if the channel the user wants to join is full or not
+		client.get( "channel@" + aChan, function(err, obj){ 		
+			// the case when the existing channel is full
+			if( obj > maxPerChannel ){ 
+				aChan = fChan;	
+			}
+		});
+		
+		// Step 2.5: we leave the channel we're currently in (if we're in one)
+		client.get( "player@" + socket.id, function(err, obj){ 
+			if( obj != undefined ){ 
+				client.decr( "channel@" + obj, function(err, obj2){
+					client.set( "firstOpenChannel", "channel@" + obj );
+				}); 
+			}
+		});
+		
+		// Step 3: we actually join the channel
+		client.incr( "channel@" + aChan, function(err, obj){ 
+			// if by this joining, we've filled the channel, we start a new one
+			if( obj >= maxPerChannel ){ 
+				client.set( "channel@" + topChan, 0, function(err, obj){ 
+					client.incr( "topChannelId", function(err, obj){ 
+						client.set( "firstOpenChannel", "channel@" + topChan );
+					});
+				});
+			}
+		} );
+		client.set( "player@" + socket.id, "channel@" + aChan );
+		
+		// Step 4: we join the channel with socket.io
+		socket.join( "channel@" + aChan );
+		socket.emit( "join channel down", "channel@" + aChan );
 	});
 	
 	// chat
@@ -186,11 +255,17 @@ io.sockets.on('connection', function(socket){
 		// data contains: { sessionId: #,  }
 		var middle = { 
 			'sessionId': data['sessionId'],
-			'message': data['message']
+			'message': data['message'],
+			'channelId': data['channelId']
 		};
 		console.log( "middle: ");
 		console.log( middle );
-		socket.broadcast.emit( "chat down", middle );
+		if( data['channelId'] == undefined ){
+			socket.broadcast.emit( "chat down", middle );
+		}
+		else{ 
+			socket.broadcast.to( data['channelId'] ).emit( "chat down", middle );
+		}
 		socket.emit( "chat down", middle );
 	});
 	

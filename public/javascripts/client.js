@@ -41,6 +41,11 @@ var gameFunctionHandlers = {};
 // Hash map for chat related event handling
 var chatFunctionHandlers = {};
 
+// Channel name the player is currently in (for references only)
+var currentChannel;
+
+// Current gameroom the player is in (for references only)
+var currentRoom;
 
 /**********************
 * Programmer Functions *
@@ -123,15 +128,20 @@ socket.on( "purchase item down", function(result){
 // channels are for the purpose of pre-game chat
 // player can be the player token or ip address.
 // if no channel is specified, the server decides where to put the player
-function JoinChannel( player, channel ){ 
-	socket.emit( "join channel up", { playerInfo: player, channelId: channel }, function( result ){ 
+function JoinChannel( channel ){ 
+	socket.emit( "join channel up", channel, function( result ){ 
 		// TODO: write a function to let the player know he has joined a new room
 		playerState = STATE_PREGAME;
 	});
 }
 
-socket.on( "join channel down", function( result ){
+socket.on( "join channel down", function( channelname ){
 	// TODO: let the player he has not left his previous channel
+	currentChannel = channelname;
+	var handlers = chatFunctionHandlers['join channel down'];
+	for( var x in handlers ){ 
+		handlers[x](channelname);
+	}
 } );
 
 /**********************
@@ -156,7 +166,7 @@ socket.on( "join game down", function( result ){
 **********************/
 // if no receiver is specified, the message is delivered to the channel or room the player is in
 function PlayerChat( message ){ 
-	socket.emit( "chat up", { 'sessionId': sessionId, 'message': message } );
+	socket.emit( "chat up", { 'sessionId': sessionId, 'message': message, 'channelId': currentChannel } );
 }
 
 socket.on( "chat down", function( event ){ 

@@ -93,7 +93,8 @@ socket.on( "player login down", function(data) {
 **********************/
 // metadata is not required
 function GetShopItems( metadata ){ 
-	socket.emit( "open shop up", metadata );
+	var data = { 'sessionId': sessionId, 'metadata': metadata }
+	socket.emit( "open shop up", data );
 }
 
 socket.on( "open shop down", function( data ){ 
@@ -154,17 +155,16 @@ socket.on( "join game down", function( result ){
 * Chat functions              *
 **********************/
 // if no receiver is specified, the message is delivered to the channel or room the player is in
-function PlayerChat( sender, message, receiver ){ 
-	socket.emit( "chat up", { senderId: sender, text: message, receiverId: receiver }, function( result ){ 
-		// TODO: write me!
-	} );
+function PlayerChat( message ){ 
+	socket.emit( "chat up", { 'sessionId': sessionId, 'message': message } );
 }
 
 socket.on( "chat down", function( event ){ 
 	// TODO: Write a function 
-	var handlers = chatFunctionHandlers[event['name']];
+	// alert(chatFunctionHandlers);
+	var handlers = chatFunctionHandlers['chat down'];
 	for( var x in handlers ){ 
-		handlers[x](event['data']);
+		handlers[x](event);
 	}
 })
 

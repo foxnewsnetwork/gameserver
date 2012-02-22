@@ -11,10 +11,19 @@ AddShopFunction( "open shop down", function(items){
 	$("#buttfuck").html( "<img alt='nigger' src='" + items["picture_path"] + "' />" );
 });
 
+AddChatFunction( "chat down", function(data){ 
+	$("#chat").append( "<p>" + "from: " + data["sessionId"] + " ==> " + data['message'] + "</p>" );
+});
+
 $(document).ready(function(){
 	$("#shop").click(function(){
 		$("#buttfuck").html( "request submitted" );
-		socket.emit( "open shop up", "nothing");
+		GetShopItems();
+	});
+	
+	$("#send-message").submit( function( ){ 
+		PlayerChat( $("#message").val() );
+		return false;
 	});
 } );
 

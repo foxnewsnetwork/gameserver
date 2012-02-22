@@ -51,39 +51,60 @@ app.get('/', function(req, res){
 	res.render("index.jade", { title: "stuff", content: "nothing yet" } );
 });
 
-app.post("/", function(req, res){ 
-	var options = { 
-		host: "gamertiser.com",
-		port: 80,
-		path: "/api/v1/product.json?token=cf242dcaf5d0a4a0b0e2949e804dcebf"
-	};
-	
-	var request = http.get( options, function(response){ 
-		console.log( "status: " + response.statusCode );
-		console.log( "headers: " + JSON.stringify(response.headers) );
-		response.on("data", function(chunk){ 
-			console.log( "body: " + chunk );
-			var myItems = JSON.parse(chunk);
-			res.render("index.jade", { title: "faggot", content: chunk, pic: myItems["picture_path"] } );
-		});
-	} );
-} );
+/****************************
+* Useful Constants                     *
+*****************************/
+var gameToken = 'cf242dcaf5d0a4a0b0e2949e804dcebf';
+var shopSite = 'gamertiser.com';
+var shopPath = '/api/v1/product.json?token=';
+var shopPort = 80;
+
 
 /****************************
 * Socket IO Response Server *
 ****************************/
 // Initialize the socket connection
 io.sockets.on('connection', function(socket){
-
+	console.log('we are connected');
+	socket.emit( 'connection', socket.id );
+	
 	/****************************
 	* Player Server Response        *
 	****************************/
 	// player login
 	socket.on( "player login up", function(data){ 
+		var playerPath = "/api/v1/players";
+		var postData = querystring.stringify({
+			'gameToken': gameToken,
+			'username': data['username'],
+			'email': data['email'],
+			'password': data['password'] // mike@mxhi
+		});
+		
 		// TODO: handle and process playerinfo
-		// var playerController = require( 'controller/players_controller.js' );
-		// var result = playerController.SignIn( playerinfo );
-		socket.emit( "player login down", result );
+		var options = { 
+			host: shopSite,
+			port: shopPort,
+			path: playerPath,
+			method: "POST",
+			header: { 
+				'Content-Type': 'application/x-www-form-urlencoded',
+				'Content-Length': postData.length
+			}
+		};
+		
+		var request = http.request( options, function(response){
+			console.log( "status: " + response.statusCode );
+			console.log( "headers: " + JSON.stringify(response.headers) );
+			response.on("data", function(chunk){ 
+				console.log( "body: " + chunk );
+				output = { 'sessionId': data['sessionId'], 'playerToken': JSON.parse(chunk)['playerToken'] };
+				socket.emit( "player login down", output );
+			});	
+		});
+		
+		request.write( postData );
+		request.end();
 	} );
 	
 	
@@ -94,10 +115,7 @@ io.sockets.on('connection', function(socket){
 	socket.on( "open shop up", function(data){
 		// TODO: handle the api calls for this
 		// Step 1: declaring my constants
-		var gameToken = 'cf242dcaf5d0a4a0b0e2949e804dcebf';
-		var shopSite = 'gamertiser.com';
-		var shopPath = '/api/v1/product.json?token=';
-		var shopPort = 80;
+		
 		
 		// Step 2: seeing we can't hit the outside world
 		var options = { 
@@ -120,10 +138,7 @@ io.sockets.on('connection', function(socket){
 	// purchase item
 	socket.on( "purchase item up", function(data){
 		// TODO: write this
-		var gameToken = 'cf242dcaf5d0a4a0b0e2949e804dcebf';
-		var shopSite = 'gamertiser.com';
 		var shopPath = '/api/v1/products/' + data['productId'];
-		var shopPort = 80;
 
 		var postData = querystring.stringify({
 			'gameToken': gameToken ,
@@ -168,9 +183,15 @@ io.sockets.on('connection', function(socket){
 	
 	// chat
 	socket.on( "chat up", function(data){ 
-		// TODO: write this
-		var event;
-		socket.emit( "chat down", event );
+		// data contains: { sessionId: #,  }
+		var middle = { 
+			'sessionId': data['sessionId'],
+			'message': data['message']
+		};
+		console.log( "middle: ");
+		console.log( middle );
+		socket.broadcast.emit( "chat down", middle );
+		socket.emit( "chat down", middle );
 	});
 	
 	

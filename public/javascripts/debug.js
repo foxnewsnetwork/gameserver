@@ -31,6 +31,13 @@ $(document).ready(function(){
 		game.initialize();
 		game.newgame();
 		$("#mahjong-display").html( game.tohtml() );
+	} );
+	$("#mahjong-draw").click( function(){ 
+		var player = game.getactiveplayer();
+		var board = game.board;
+		
+		player.drawtile( board );
+		$("#mahjong-display").html( game.tohtml() );
 	} );	
 	
 	$("#mahjong-players").click( function(){ 

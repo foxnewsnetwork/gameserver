@@ -1,13 +1,16 @@
 script(type = 'text/javascript', src="javascripts/jquery/jquery.js" )
 script(type = 'text/javascript', src='socket.io/socket.io.js' )
 script(type = "text/javascript", src="javascripts/client.js" )
+script(type = "text/javascript", src="javascripts/mahjong-temp.js" )
 script(type = 'text/javascript', src="javascripts/debug.js" )
 
 h1= title
 p Welcome to #{title}
 #mahjong-display
+button#mahjong-game New Game
 button#mahjong-generate Generate Tiles
 button#mahjong-shuffle Shuffle Tiles
+button#mahjong-players Get Players
 
 #buttfuck
 	p Debug section

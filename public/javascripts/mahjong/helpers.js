@@ -16,7 +16,8 @@ function TileFlush( t1, t2, t3){
 		return false;
 	if( t3 == undefined || t3.suit == 3 )
 		return false;
-		
-	return t1.sval() + 1 == t2.sval() && t2.sval() + 1 == t3.sval()
+	
+	var result = 	t1.sval() + 1 == t2.sval() && t2.sval() + 1 == t3.sval();
+	return result;
 }
 

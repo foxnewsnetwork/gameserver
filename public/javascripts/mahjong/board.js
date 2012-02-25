@@ -29,9 +29,13 @@ var MahjongBoard = function(){
 	}
 	
 	this.tohtml = function(){ 
-		var shtml = "<h1>Board</h1>";
+		var shtml = "<h1>Board</h1><h3>Fresh Tiles: </h3>";
 		for( var x in this.freshTiles ){ 
 			shtml += this.freshTiles[x].tohtml();
+		}
+		shtml += "<h3>Discarded Tiles</h3>";
+		for( var y in this.discardTiles ){ 
+			shtml += this.discardTiles[y].tohtml();
 		}
 		return shtml;
 	}

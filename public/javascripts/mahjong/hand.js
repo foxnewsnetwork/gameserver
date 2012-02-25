@@ -9,10 +9,11 @@ var MahjongHand = function(){
 	}
 	
 	this.discardtile = function(tiles, tile){ 
-		var mytile = this.hidden.splice(tile, 1);
-		tiles.push(mytile);
+		var faggot = this.hidden[tile];
+		this.hidden.splice(tile, 1);
+		tiles.push(faggot);
 		this.sorthand();
-		return mytile;
+		return faggot;
 	}
 	
 	this.sorthand = function(){ 

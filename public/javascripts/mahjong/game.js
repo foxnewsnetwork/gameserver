@@ -32,6 +32,7 @@ var MahjongGame = function(){
 		}
 		this.phase = PHASE_INGAME;
 		this.activePlayer = PLAYER_EAST;
+		this.players[this.activePlayer].activate();
 	}
 	
 	this.gameloop = function(){
@@ -54,8 +55,14 @@ var MahjongGame = function(){
 	// Returns a list of possible actions the given player may perform
 	// player should be a number between 0 and 3
 	this.GetPossibleActions = function(player){ 
-		var actions = this.players[player].actions;
-		var history = this.players[player].history;
+		if( player == undefined ){ 
+			var actions = this.players[this.activePlayer].actions;
+			var history = this.players[this.activePlayer].history;
+		}
+		else{
+			var actions = this.players[player].actions;
+			var history = this.players[player].history;
+		}
 		
 		return actions;
 	}
@@ -66,8 +73,10 @@ var MahjongGame = function(){
 	}
 	
 	// Call this to end your turn. The game begins your turn for you
-	this.EndTurn = function( player ){ 
+	this.EndTurn = function( ){ 
+		this.players[this.activePlayer].deactivate();
 		this.activePlayer = ( this.activePlayer + 1 ) % PLAYER_COUNT;
+		this.players[this.activePlayer].activate();
 	}
 	
 	// Draws a tile at the beginning of your turn
@@ -83,10 +92,10 @@ var MahjongGame = function(){
 	this.DiscardTile = function(tile){ 
 		var faggot = this.players[this.interactivePlayer];
 		var tossedtile = faggot.discardtile( this.board, tile );
-		
 		// check closed kan and pon for other players
-		for( var fag, k = 0; k < PLAYER_COUNT; k++){ 
-			if( k = this.interactivePlayer )
+		var fag;
+		for( var k = 0; k < PLAYER_COUNT; k++){ 
+			if( k == this.interactivePlayer )
 				continue;
 			fag = this.players[k];
 			fag.checkKan( tossedtile );

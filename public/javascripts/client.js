@@ -144,21 +144,44 @@ socket.on( "join channel down", function( channelname ){
 	}
 } );
 
+socket.on( "channel stat down", function( data ){ 
+	var handlers = chatFunctionHandlers['channel stat down'];
+	for(var x in handlers ){ 
+		handlers[x](data);
+	}
+} );
+
 /**********************
 * Gameroom functions     *
 **********************/
 // Game rooms (just rooms) are where games happen and exist in the during-game
 // player can be the token or the ip address.
 // if no roomid is specified, the server puts the player into the a game randomly
-function JoinGame( player, room ){ 
-	socket.emit( "join game up", { playerInfo: player, roomId: room }, function( result ){ 
+function JoinGame( room ){ 
+	socket.emit( "join room up", room, function( result ){ 
 		// TODO: write me!
 		playerState = STATE_INGAME;		
 	} );
 }
 
-socket.on( "join game down", function( result ){
+function RequestRoomStats(){
+	socket.emit( "room stat up", { 'sessionId': sessionId, 'roomId': currentRoom } );
+}
+
+socket.on( "join room down", function( roomname ){
 	// TODO: let the player know he has joined a game
+	currentRoom = roomname;
+	var handlers = gameFunctionHandlers['join game down'];
+	for( var x in handlers ){ 
+		handlers[x](data);
+	}
+} );
+
+socket.on( "room stat down", function( data ){ 
+	var handlers = gameFunctionHandlers['room stat down'];
+	for(var x in handlers ){ 
+		handlers[x](data);
+	}
 } );
 
 /**********************
@@ -169,6 +192,8 @@ function PlayerChat( message ){
 	socket.emit( "chat up", { 'sessionId': sessionId, 'message': message, 'channelId': currentChannel } );
 }
 
+
+
 socket.on( "chat down", function( event ){ 
 	// TODO: Write a function 
 	// alert(chatFunctionHandlers);
@@ -176,14 +201,22 @@ socket.on( "chat down", function( event ){
 	for( var x in handlers ){ 
 		handlers[x](event);
 	}
-})
+});
+
 
 /**********************
 * Game functions            *
 **********************/
 // if no receiver is specified, the message is delivered to every player in the game room
-function UpdateServer( sender, event, receiver ){ 
-	socket.emit( "game event up", { senderId: sender, data: event, receiverId: receiver }, function( result ){ 
+function FireEvent( name, event, receiver ){ 
+	var middle =  { 
+		'senderId': sessionId, 
+		'name': name, 
+		'event': event, 
+		'receiverId': receiver 
+	};
+	
+	socket.emit( "game event up", middle, function( result ){ 
 		// TODO: write me!
 		socket.emit( "sync up", syncPercentDeviation);
 	} );
@@ -193,11 +226,12 @@ socket.on("sync down", function( value ){
 	syncPercentDeviation = value;
 });
 
-socket.on("game event down", function(event){
+socket.on("game event down", function(data){
 	// TODO: handle the null case when there are no event handlers
-	var handlers = gameFunctionHandlers[event['name']]
+	var handlers = gameFunctionHandlers[data['name']]
 	for( var x in handlers ){ 
-			handlers[x](event['data']);
+			handlers[x](data['event']);
 	}		
 } );
+
 

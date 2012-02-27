@@ -79,6 +79,9 @@ io.sockets.on('connection', function(socket){
 	console.log('we are connected');
 	socket.emit( 'connection', socket.id );
 	
+	socket.on("disconnect", function(){ 
+		LeaveChannel();
+	});
 	/****************************
 	* Player Server Response        *
 	****************************/
@@ -185,14 +188,53 @@ io.sockets.on('connection', function(socket){
 	/****************************
 	* Channel Server Response       *
 	****************************/
+	// function to make an user leave a channel
+	function LeaveChannel( sessionId ){ 
+		var sId;
+		if( sessionId == undefined ){ 
+			sId = socket.id;
+		}
+		else{ 
+			sId = sessionId;
+		}
+		client.get( "player@" + sId, function(err, obj){ 
+			socket.leave( obj );
+			client.decr( obj, function(err2, obj2){
+				client.set( "firstOpenChannel", obj );
+			}); 
+		});
+		client.del( "player@" + sId, redis.print );
+	}
+	
+	// channel stats
+	function ChannelStats(channelId){ 
+		var cId;
+		if( channelId == undefined ){ 
+			client.get("player@" + socket.id, function(err, obj){ 
+				cId = obj;
+			});
+		}
+		else{ 
+			cId = channelId;
+		}
+		
+		client.get( cId, function(err, obj){ 
+			var statData = { 
+				'channelId': cId,
+				'population': obj
+			};
+			console.log( "var statData: " + JSON.stringify( statData ) );
+			socket.broadcast.to( cId ).emit( "channel stat down", statData );
+			socket.emit( "channel stat down", statData );	
+		} );
+	}
+	
 	// join channel. If no channel is specified, joins the first unfilled one
 	socket.on( "join channel up", function( channel ){ 
 		console.log( "input channel: " + channel );
 		// Step 0: We handle first time initialization
 		var aChan, fChan, topChan;
 		var faggot = client.get( "firstOpenChannel", function(err, obj){ 
-			console.log( "firstOpenChannel err: " + err );
-			console.log( "FirstOpenChannel obj: " + obj );
 			if(obj == undefined){ 
 				fChan = 0;
 				client.set( "firstOpenChannel", "channel@" + fChan, redis.print );
@@ -224,30 +266,27 @@ io.sockets.on('connection', function(socket){
 		});
 		
 		// Step 2.5: we leave the channel we're currently in (if we're in one)
-		client.get( "player@" + socket.id, function(err, obj){ 
-			if( obj != undefined ){ 
-				client.decr( "channel@" + obj, function(err, obj2){
-					client.set( "firstOpenChannel", "channel@" + obj );
-				}); 
-			}
-		});
+		LeaveChannel( );
 		
 		// Step 3: we actually join the channel
 		client.incr( "channel@" + aChan, function(err, obj){ 
+			console.log("People in Channel: " + obj );
 			// if by this joining, we've filled the channel, we start a new one
 			if( obj >= maxPerChannel ){ 
-				client.set( "channel@" + topChan, 0, function(err, obj){ 
-					client.incr( "topChannelId", function(err, obj){ 
+				client.set( "channel@" + topChan, 0, function(err2, obj2){ 
+					client.incr( "topChannelId", function(err3, obj3){ 
 						client.set( "firstOpenChannel", "channel@" + topChan );
 					});
 				});
 			}
 		} );
 		client.set( "player@" + socket.id, "channel@" + aChan );
-		
 		// Step 4: we join the channel with socket.io
 		socket.join( "channel@" + aChan );
 		socket.emit( "join channel down", "channel@" + aChan );
+				
+		// Step 5: we update channel stats
+		ChannelStats( "channel@" + aChan );
 	});
 	
 	// chat
@@ -265,26 +304,98 @@ io.sockets.on('connection', function(socket){
 		}
 		else{ 
 			socket.broadcast.to( data['channelId'] ).emit( "chat down", middle );
+			ChannelStats( data['channelId'] );
 		}
 		socket.emit( "chat down", middle );
 	});
 	
-	
+		
+		
 	/****************************
 	* Game Server Response          *
 	****************************/
 	// join game
-	socket.on( "join game up", function( data ){
-		// TODO: write this
-		var result;
-		socket.emit( "join game down", result );
+	socket.on( "join room up", function( room ){
+		console.log( "input room: " + room );
+		// Step 0: We handle first time initialization
+		var aRoom, fRoom, topRoom;
+		var faggot = client.get( "firstOpenRoom", function(err, obj){ 
+			console.log( "firstOpenRoom err: " + err );
+			console.log( "FirstOpenRoom obj: " + obj );
+			if(obj == undefined){ 
+				fRoom = 0;
+				client.set( "firstOpenRoom", "room@" + fRoom, redis.print );
+				client.set( "Room@" + fRoom, 0, redis.print );
+				client.incr( "topRoomId", function(err, obj){ 
+					topRoom = obj + 1;
+				});  
+			}
+			else{ 
+				fRoom = obj;
+			}
+		console.log( "faggot: " + faggot );
+		});
+		
+		// Step 1: Check if the room is specified or not
+		if( room === undefined ){ 
+			aRoom = fRoom;
+		}
+		else{ 
+			aRoom = room;
+		}
+		
+		// Step 2: we check if the room the user wants to join is full or not
+		client.get( "channel@" + aRoom, function(err, obj){ 		
+			// the case when the existing room is full
+			if( obj > maxPerRoom ){ 
+				aRoom = fRoom;	
+			}
+		});
+		
+		// Step 2.5: we leave the room we're currently in (if we're in one)
+		client.get( "player@" + socket.id, function(err, obj){ 
+			if( obj != undefined ){ 
+				client.decr( "room@" + obj, function(err, obj2){
+					client.set( "firstOpenRoom", "room@" + obj );
+				}); 
+			}
+		});
+		
+		// Step 3: we actually join the channel
+		client.incr( "room@" + aRoom, function(err, obj){ 
+			// if by this joining, we've filled the channel, we start a new one
+			if( obj >= maxPerRoom ){ 
+				client.set( "room@" + topRoom, 0, function(err, obj){ 
+					client.incr( "topRoomId", function(err, obj){ 
+						client.set( "firstOpenRoom", "room@" + topRoom );
+					});
+				});
+			}
+		} );
+		client.set( "player@" + socket.id, "room@" + aRoom );
+		
+		// Step 4: we join the channel with socket.io
+		socket.join( "room@" + aRoom );
+		socket.emit( "join room down", "room@" + aRoom );
 	} );
 	
 	// game event
 	socket.on( "game event up", function(data){ 
-		// TODO: write this
-		var event;
-		socket.emit( "game event down", event );
+		var middle = { 
+			'sessionId': data['sessionId'],
+			'name': data['name'],
+			'event': data['event'],
+			'roomId': data['roomId']
+		};
+		console.log( "middle: ");
+		console.log( middle );
+		if( data['roomId'] == undefined ){
+			socket.broadcast.emit( "game event down", middle );
+		}
+		else{ 
+			socket.broadcast.to( data['roomId'] ).emit( "game event down", middle );
+		}
+		socket.emit( "game event down", middle );
 	});
 	
 	// sync
@@ -293,6 +404,30 @@ io.sockets.on('connection', function(socket){
 		var syncValue;
 		socket.emit( "sync down", syncValue );	
 	});
+	
+	// room stats
+	socket.on( "room stat up", function(roomId){ 
+		var rId;
+		if( roomId == undefined ){ 
+			client.get("player@" + socket.id, function(err, obj){ 
+				rId = obj;
+			});
+		}
+		var statData = { 
+			'roomId': rId,
+			'population': 0
+		};
+		if( rId == undefined ){ 
+			socket.emit( "room stat down", statData );
+			return;
+		}
+		client.get( "room@" + rId, function(err, obj){ 
+			if( obj != undefined ){ 
+				statData['population'] = obj;
+			}
+		} );
+		socket.emit( "room stat down", statData );
+	} );
 
 });
 

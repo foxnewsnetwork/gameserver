@@ -1,27 +1,32 @@
 script(type = 'text/javascript', src="javascripts/jquery/jquery.js" )
 script(type = 'text/javascript', src='socket.io/socket.io.js' )
 script(type = "text/javascript", src="javascripts/client.js" )
-script(type = "text/javascript", src="javascripts/mahjong-temp.js" )
-script(type = 'text/javascript', src="javascripts/debug.js" )
+script(type = "text/javascript", src="javascripts/mahjong/board.js" )
+script(type = "text/javascript", src="javascripts/mahjong/constants.js" )
+script(type = "text/javascript", src="javascripts/mahjong/game.js" )
+script(type = "text/javascript", src="javascripts/mahjong/hand.js" )
+script(type = "text/javascript", src="javascripts/mahjong/helpers.js" )
+script(type = "text/javascript", src="javascripts/mahjong/player.js" )
+script(type = "text/javascript", src="javascripts/mahjong/tiles.js" )
+script(type = 'text/javascript', src="javascripts/v3debug.js" )
 
 h1= title
 p Welcome to #{title}
-#mahjong-display
-button#mahjong-game New Game
-button#mahjong-draw Draw Tile
-button#mahjong-generate Generate Tiles
-button#mahjong-shuffle Shuffle Tiles
-button#mahjong-players Get Players
-
-#buttfuck
-	p Debug section
-	p #{content}
-button#shop Shop
+#debug-info
+#channel-stats
 #chat
 	p chat section
-form#send-message(action="/")
+form#chat-message
 	input#message
-	button Send
-form#join-channel
+	button Chat
+form#channel-join
 	input#channel
 	button Join
+button#mahjong-game Join Game
+button#mahjong-draw Draw Tile
+form#mahjong-discard
+	input#discard-tile
+	button Discard
+#room-stats
+#mahjong-display
+

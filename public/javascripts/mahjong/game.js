@@ -32,7 +32,12 @@ var MahjongGame = function(){
 		}
 		this.phase = PHASE_INGAME;
 		this.activePlayer = PLAYER_EAST;
-		this.players[this.activePlayer].activate();
+		for( var x in this.players ){ 
+			if( x == this.activePlayer )
+				this.players[this.activePlayer].activate();
+			else
+				this.players[x].deactivate();
+		}
 	}
 	
 	this.gameloop = function(){
@@ -56,8 +61,8 @@ var MahjongGame = function(){
 	// player should be a number between 0 and 3
 	this.GetPossibleActions = function(player){ 
 		if( player == undefined ){ 
-			var actions = this.players[this.activePlayer].actions;
-			var history = this.players[this.activePlayer].history;
+			var actions = this.players[this.interactivePlayer].actions;
+			var history = this.players[this.interactivePlayer].history;
 		}
 		else{
 			var actions = this.players[player].actions;

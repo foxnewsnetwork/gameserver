@@ -221,14 +221,13 @@ socket.on( "chat down", function( event ){
 * Game functions            *
 **********************/
 // if no receiver is specified, the message is delivered to every player in the game room
-function FireEvent( name, event, receiver ){ 
+function FireEvent( name, event, room ){ 
 	var middle =  { 
-		'senderId': sessionId, 
+		'sessionId': sessionId, 
 		'name': name, 
 		'event': event, 
-		'receiverId': receiver 
+		'roomId': currentRoom
 	};
-	
 	socket.emit( "game event up", middle, function( result ){ 
 		// TODO: write me!
 		socket.emit( "sync up", syncPercentDeviation);

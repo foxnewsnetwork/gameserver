@@ -61,7 +61,6 @@ AddGameFunction( "room stat down", function( data ){
 		$("#room-stats").append( "<p>" + playerVec[z] + "</p>" );
 	}
 	if( playerVec.length == 4 && startFlag != true){
-		alert("starting");
 		StartGame( data['roomId'] );
 	}
 } );
@@ -72,8 +71,10 @@ AddGameFunction( "start game down", function(data){
 	game.initialize();
 	game.newgame();
 	for( var k in playerVec ){
-		if(playerVec[k] == sessionId)
+		if(playerVec[k] == sessionId){
 			game.SetInteractivePlayer( k );
+			$("#debug-info").append( "playerNumber: " + k );
+		}
 	}
 	actions = game.GetPossibleActions();
 	manageUI(actions);
@@ -92,14 +93,14 @@ AddGameFunction( "game event down", function(data){
 			break;
 		}
 	}
-	
-	game.setInteractivePlayer( playerNumber );
+	alert( JSON.stringify( data ) );
+	game.SetInteractivePlayer( playerNumber );
 	switch( eventname ){ 
 		case 'draw':
 			game.DrawTile();			
 			break;
 		case 'discard':
-			game.DiscardTile( eventdata['tile'] );
+			game.DiscardTile( eventdata );
 			break;
 		case 'end':
 			game.EndTurn();
@@ -112,6 +113,7 @@ AddGameFunction( "game event down", function(data){
 			break;
 	}
 	actions = game.GetPossibleActions();
+	
 	manageUI(actions);
 	$("#mahjong-display").html( game.tohtml() );	
 } );
@@ -152,7 +154,7 @@ $(document).ready(function(){
 	
 	// Mahjong Section
 	$("#mahjong-draw").click(function(){
-		FireEvent('draw'); 
+		FireEvent('draw', 'draw'); 
 	});
 	
 	$("#mahjong-discard").submit( function(){
@@ -161,6 +163,6 @@ $(document).ready(function(){
 	} );
 	
 	$("#mahjong-end").click(function(){
-		FireEvent("end");
+		FireEvent("end", 'end');
 	});
 });

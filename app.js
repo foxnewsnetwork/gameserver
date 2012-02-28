@@ -458,10 +458,10 @@ io.sockets.on('connection', function(socket){
 			'event': data['event'],
 			'roomId': data['roomId']
 		};
-		console.log( "middle: ");
-		console.log( middle );
+		console.log( "middle: " + JSON.stringify( middle ) );
 		if( data['roomId'] == undefined ){
-			socket.broadcast.emit( "game event down", middle );
+			var theRoom = myrooms.GetRoom( data['sessionId'] );
+			socket.broadcast.to( "room#" + theRoom ).emit( "game event down", middle );
 		}
 		else{ 
 			socket.broadcast.to( "room#" + data['roomId'] ).emit( "game event down", middle );
@@ -480,8 +480,10 @@ io.sockets.on('connection', function(socket){
 	socket.on( "start game up", function(data){ 
 		var room = data['roomId'];
 		var result = myrooms.StartGame( room );
-		socket.broadcast.to( "room#" + room).emit( "start game down", result );
-		socket.emit( "start game down", result );
+		if( result ){
+			socket.broadcast.to( "room#" + room).emit( "start game down", result );
+			socket.emit( "start game down", result );
+		}
 	} );	
 });
 

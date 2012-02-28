@@ -135,12 +135,20 @@ function JoinChannel( channel ){
 	});
 }
 
-socket.on( "join channel down", function( channelname ){
+socket.on( "join channel down", function( channeldata ){
 	// TODO: let the player he has not left his previous channel
-	currentChannel = channelname;
+	currentChannel = channeldata['channelId'];
 	var handlers = chatFunctionHandlers['join channel down'];
 	for( var x in handlers ){ 
-		handlers[x](channelname);
+		handlers[x](channeldata);
+	}
+} );
+
+socket.on( "left channel down", function( data ){
+	currentChannel = undefined;
+	var handlers = chatFunctionHandlers['left channel down'];
+	for( var x in handlers ){ 
+		handlers[x](data);
 	}
 } );
 
@@ -157,21 +165,26 @@ socket.on( "channel stat down", function( data ){
 // Game rooms (just rooms) are where games happen and exist in the during-game
 // player can be the token or the ip address.
 // if no roomid is specified, the server puts the player into the a game randomly
-function JoinGame( room ){ 
+function JoinRoom( room ){ 
 	socket.emit( "join room up", room, function( result ){ 
 		// TODO: write me!
 		playerState = STATE_INGAME;		
 	} );
 }
 
-function RequestRoomStats(){
-	socket.emit( "room stat up", { 'sessionId': sessionId, 'roomId': currentRoom } );
-}
-
-socket.on( "join room down", function( roomname ){
+socket.on( "join room down", function( roomdata ){
 	// TODO: let the player know he has joined a game
-	currentRoom = roomname;
-	var handlers = gameFunctionHandlers['join game down'];
+	currentRoom = roomdata['roomId'];
+	var handlers = gameFunctionHandlers['join room down'];
+	for( var x in handlers ){ 
+		handlers[x](roomdata);
+	}
+} );
+
+socket.on( "left room down", function( data ){
+	// TODO: let the player know he has joined a game
+	currentRoom = undefined;
+	var handlers = gameFunctionHandlers['left room down'];
 	for( var x in handlers ){ 
 		handlers[x](data);
 	}
@@ -221,6 +234,20 @@ function FireEvent( name, event, receiver ){
 		socket.emit( "sync up", syncPercentDeviation);
 	} );
 }
+
+function StartGame( room ){ 
+	var middle = {
+		'roomId': room
+	};
+	socket.emit( 'start game up', middle );
+}
+
+socket.on( "start game down", function( data ){ 
+	var handlers = gameFunctionHandlers['start game down'];
+	for( var x in handlers ){ 
+		handlers[x](data);
+	}	
+} );
 
 socket.on("sync down", function( value ){ 
 	syncPercentDeviation = value;

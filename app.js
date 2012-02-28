@@ -70,6 +70,104 @@ var maxPerChannel = 500;
 client.on("error", function (err) {
     console.log("Error " + err);
 });
+// We flush before each use
+client.flushdb();
+
+/****************************
+* Room Models                               *
+*****************************/
+var gamerooms = function(){ 
+	this.rooms = {};
+	this.players = {};
+	this.roomCount = 0;
+	this.FirstOpenRoom;
+	this.NextRoomId;
+	this.startFlags = {};
+	
+	this.StartGame = function(room){ 
+		if( this.startFlags[room] )
+			return false;
+		else{
+			this.startFlags[room] = true;
+			return true;
+		}
+	}
+	
+	this.EndGame = function(room){ 
+		if( !this.startFlags[room] ){ 
+			return false;
+		}
+		else{ 
+			this.startFlags[room] = false;
+			return true;
+		}
+	}
+	
+	this.RoomStats = function( room ){ 
+		var statData = { 
+			'roomId': room,
+			'population': this.rooms[room].length,
+			'people': this.rooms[room],
+			'started': this.startFlags[room]
+		};
+		return statData;
+	}
+	
+	this.GetRoom = function(player){ 
+		var room = this.players[player]['roomId'];
+		return room;
+	}
+	
+	this.JoinRoom = function(player, room){ 
+		var aRoom;
+		if( this.players[player] != undefined ){ 
+			this.LeaveRoom( player );
+		}
+		
+		if(room == undefined || this.rooms[room].length < maxPerRoom)
+			aRoom = this.FirstOpenRoom;
+		else
+			aRoom = room;
+		
+		if( this.rooms[aRoom] == undefined ){
+			this.rooms[aRoom] = [];	
+			this.startFlags[aRoom] = false;
+		}
+		this.rooms[aRoom].push( player );
+		this.players[player] = { 'roomId': aRoom, 'number': this.rooms[aRoom].length-1 };
+		console.log( "NIGGERS HERE: " + JSON.stringify( this.rooms ) );
+		
+		if(this.rooms[aRoom].length == maxPerRoom){ 
+			this.CreateNewRoom();
+		}	
+	}
+	
+	this.Initialize = function(){ 
+		this.rooms[1] = [];
+		this.FirstOpenRoom = 1;
+		this.NextRoomId = 2;
+	}
+	
+	this.CreateNewRoom = function(){ 
+		this.FirstOpenRoom = this.NextRoomId;
+		this.rooms[this.FirstOpenRoom] = [];
+		this.startFlags[this.FirstOpenRoom] = false;
+		this.NextRoomId += 1;
+	}
+	
+	this.LeaveRoom = function(player){ 
+		if( this.players[player] == undefined )
+			return false;
+		var room = this.players[player]['roomId'];
+		var number = this.players[player]['number'];
+		this.rooms[room].splice( number, 1 );
+		this.players[player] = undefined;
+		return room;
+	}
+}
+
+var myrooms = new gamerooms();
+myrooms.Initialize();
 
 /****************************
 * Socket IO Response Server *
@@ -78,9 +176,10 @@ client.on("error", function (err) {
 io.sockets.on('connection', function(socket){
 	console.log('we are connected');
 	socket.emit( 'connection', socket.id );
-	
+		
 	socket.on("disconnect", function(){ 
 		LeaveChannel();
+		myrooms.LeaveRoom( socket.id );
 	});
 	/****************************
 	* Player Server Response        *
@@ -198,11 +297,14 @@ io.sockets.on('connection', function(socket){
 			sId = sessionId;
 		}
 		client.get( "player@" + sId, function(err, obj){ 
-			socket.leave( obj );
+			// Inform the other people that a person has left
 			client.decr( obj, function(err2, obj2){
 				client.set( "firstOpenChannel", obj );
-			}); 
-		});
+				socket.broadcast.to( obj ).emit( "left channel down", { 'channelId': obj, 'sessionId': sId } );
+				socket.broadcast.to( obj ).emit( "channel stat down", { 'channelId': obj, 'population': obj2 } );
+				socket.leave( obj );	
+			} );
+		} );
 		client.del( "player@" + sId, redis.print );
 	}
 	
@@ -281,12 +383,15 @@ io.sockets.on('connection', function(socket){
 			}
 		} );
 		client.set( "player@" + socket.id, "channel@" + aChan );
+		
 		// Step 4: we join the channel with socket.io
-		socket.join( "channel@" + aChan );
-		socket.emit( "join channel down", "channel@" + aChan );
+		var cInfo = "channel@" + aChan;
+		socket.join( cInfo );
+		socket.broadcast.to( cInfo ).emit( "join channel down", { 'channelId': cInfo, 'sessionId': socket.id } ); 
+		socket.emit( "join channel down", { 'channelId': cInfo, 'sessionId': socket.id } );
 				
 		// Step 5: we update channel stats
-		ChannelStats( "channel@" + aChan );
+		ChannelStats( cInfo );
 	});
 	
 	// chat
@@ -314,69 +419,35 @@ io.sockets.on('connection', function(socket){
 	/****************************
 	* Game Server Response          *
 	****************************/
-	// join game
+	// join room
 	socket.on( "join room up", function( room ){
-		console.log( "input room: " + room );
-		// Step 0: We handle first time initialization
-		var aRoom, fRoom, topRoom;
-		var faggot = client.get( "firstOpenRoom", function(err, obj){ 
-			console.log( "firstOpenRoom err: " + err );
-			console.log( "FirstOpenRoom obj: " + obj );
-			if(obj == undefined){ 
-				fRoom = 0;
-				client.set( "firstOpenRoom", "room@" + fRoom, redis.print );
-				client.set( "Room@" + fRoom, 0, redis.print );
-				client.incr( "topRoomId", function(err, obj){ 
-					topRoom = obj + 1;
-				});  
-			}
-			else{ 
-				fRoom = obj;
-			}
-		console.log( "faggot: " + faggot );
-		});
-		
-		// Step 1: Check if the room is specified or not
-		if( room === undefined ){ 
-			aRoom = fRoom;
-		}
-		else{ 
-			aRoom = room;
+		// Step 0: Leave the current room (if we're in one)
+		var oldRoom = myrooms.LeaveRoom( socket.id );
+		if( oldRoom ){
+			var departureData = { 'sessionId': socket.id };
+			socket.broadcast.to( "room#" + oldRoom ).emit( "left room down", departureData );
+			socket.emit( "left room down", departureData );
 		}
 		
-		// Step 2: we check if the room the user wants to join is full or not
-		client.get( "channel@" + aRoom, function(err, obj){ 		
-			// the case when the existing room is full
-			if( obj > maxPerRoom ){ 
-				aRoom = fRoom;	
-			}
-		});
+		// Step 1: Join the room in the model
+		myrooms.JoinRoom( socket.id, room );
 		
-		// Step 2.5: we leave the room we're currently in (if we're in one)
-		client.get( "player@" + socket.id, function(err, obj){ 
-			if( obj != undefined ){ 
-				client.decr( "room@" + obj, function(err, obj2){
-					client.set( "firstOpenRoom", "room@" + obj );
-				}); 
-			}
-		});
+		// Step 2: Join the room over socket
+		var theRoom = myrooms.GetRoom( socket.id );
+		socket.join( "room#" + theRoom );
 		
-		// Step 3: we actually join the channel
-		client.incr( "room@" + aRoom, function(err, obj){ 
-			// if by this joining, we've filled the channel, we start a new one
-			if( obj >= maxPerRoom ){ 
-				client.set( "room@" + topRoom, 0, function(err, obj){ 
-					client.incr( "topRoomId", function(err, obj){ 
-						client.set( "firstOpenRoom", "room@" + topRoom );
-					});
-				});
-			}
-		} );
-		client.set( "player@" + socket.id, "room@" + aRoom );
+		// Step 3: Announce to the world
+		var outPut = { 
+			'sessionId': socket.id,
+			'roomId': theRoom
+		};
+		socket.broadcast.to( "room#" + theRoom ).emit( "join room down", outPut );
+		socket.emit( "join room down", outPut );
 		
-		// Step 4: we join the channel with socket.io
-		socket.join( "room@" + aRoom );
-		socket.emit( "join room down", "room@" + aRoom );
+		// Step 4: Inform with channel stats also
+		var statData = myrooms.RoomStats(theRoom);
+		socket.broadcast.to( "room#" + theRoom ).emit( "room stat down", statData );
+		socket.emit( "room stat down", statData );
 	} );
 	
 	// game event
@@ -393,7 +464,7 @@ io.sockets.on('connection', function(socket){
 			socket.broadcast.emit( "game event down", middle );
 		}
 		else{ 
-			socket.broadcast.to( data['roomId'] ).emit( "game event down", middle );
+			socket.broadcast.to( "room#" + data['roomId'] ).emit( "game event down", middle );
 		}
 		socket.emit( "game event down", middle );
 	});
@@ -405,30 +476,13 @@ io.sockets.on('connection', function(socket){
 		socket.emit( "sync down", syncValue );	
 	});
 	
-	// room stats
-	socket.on( "room stat up", function(roomId){ 
-		var rId;
-		if( roomId == undefined ){ 
-			client.get("player@" + socket.id, function(err, obj){ 
-				rId = obj;
-			});
-		}
-		var statData = { 
-			'roomId': rId,
-			'population': 0
-		};
-		if( rId == undefined ){ 
-			socket.emit( "room stat down", statData );
-			return;
-		}
-		client.get( "room@" + rId, function(err, obj){ 
-			if( obj != undefined ){ 
-				statData['population'] = obj;
-			}
-		} );
-		socket.emit( "room stat down", statData );
-	} );
-
+	// Starting a game
+	socket.on( "start game up", function(data){ 
+		var room = data['roomId'];
+		var result = myrooms.StartGame( room );
+		socket.broadcast.to( "room#" + room).emit( "start game down", result );
+		socket.emit( "start game down", result );
+	} );	
 });
 
 

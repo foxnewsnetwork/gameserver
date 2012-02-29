@@ -53,6 +53,9 @@ app.get('/', function(req, res){
 	res.render("index.jade", { title: "stuff", content: "nothing yet" } );
 });
 
+app.get("/faggot", function(req, res){
+	res.render("numbers.jade", { title: "Henry is a faggot" } );
+} );
 /****************************
 * Useful Constants                     *
 *****************************/

@@ -221,7 +221,7 @@ socket.on( "chat down", function( event ){
 * Game functions            *
 **********************/
 // if no receiver is specified, the message is delivered to every player in the game room
-function FireEvent( name, event, room ){ 
+function FireEvent( name, event ){ 
 	var middle =  { 
 		'sessionId': sessionId, 
 		'name': name, 
@@ -256,7 +256,7 @@ socket.on("game event down", function(data){
 	// TODO: handle the null case when there are no event handlers
 	var handlers = gameFunctionHandlers[data['name']]
 	for( var x in handlers ){ 
-			handlers[x](data['event']);
+			handlers[x](data['sessionId'], data['event']);
 	}		
 } );
 

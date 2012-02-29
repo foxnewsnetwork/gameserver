@@ -27,3 +27,23 @@ How to get up to speed to be able to use this
 5. install redis
 6. install tcl
  
+Alireza Notes
+==
+1. Letter of incorporation
+2. Cap table
+3. team bio
+4. latest presentation
+5. executive summary
+6. lawyer info
+7. stock purchase agreement
+8. simpler payment
+9. crowdsource products
+10. alii .tv
+
+Netscape notes
+==
+1. Find someone who is already using my software choice for what I'm doing
+2. Check activity for platform
+3. Get diseases that everyone gets
+
+

@@ -20,8 +20,9 @@ var io = require('socket.io').listen(app);
 // mongoose.connect('mongodb://localhost/my_ingidio_database');
 
 // redis for rooms and channels
-var redis = require("redis"),
+/*var redis = require("redis"),
 	client = redis.createClient();
+*/
 
 /*******************************
 * Express Server Setup                *
@@ -70,11 +71,90 @@ var maxPerChannel = 500;
 /****************************
 * Redis Configuration                 *
 *****************************/
+/*
 client.on("error", function (err) {
     console.log("Error " + err);
 });
 // We flush before each use
 client.flushdb();
+*/
+
+/****************************
+* Channel Models                           *
+*****************************/
+var chatchannels = function(){ 
+	this.channels = {};
+	this.players = {};
+	this.channelCount = 0;
+	this.FirstOpenChannel;
+	this.NextChannelId;
+	
+	this.ChannelStats = function( channel ){ 
+		var statData = { 
+			'channelId': channel,
+			'population': this.channels[channel].length,
+			'people': this.channels[channel],
+		};
+		return statData;
+	}
+	
+	this.GetChannel = function(player){ 
+		var channel = this.players[player]['channelId'];
+		return channel;
+	}
+	
+	this.JoinChannel = function(player, channel){ 
+		var aChan;
+		if( this.players[player] != undefined ){ 
+			this.LeaveChannel( player );
+		}
+		
+		if(channel == undefined){
+			aChan = this.FirstOpenChannel;
+		}
+		else{
+			aChan = channel;
+		}
+		
+		if( this.channels[aChan] == undefined )
+			this.channels[aChan] = [];	
+		if( this.channels[aChan].length > maxPerChannel )
+			aChan = this.FirstOpenChannel;
+		
+		this.channels[aChan].push( player );
+		this.players[player] = { 'channelId': aChan, 'number': this.channels[aChan].length-1 };
+		
+		if(this.channels[aChan].length == maxPerChannel){ 
+			this.CreateNewChannel();
+		}	
+	}
+	
+	this.Initialize = function(){ 
+		this.channels[1] = [];
+		this.FirstOpenChannel = 1;
+		this.NextChannelId = 2;
+	}
+	
+	this.CreateNewChannel = function(){ 
+		this.FirstOpenChannel = this.NextChannelId;
+		this.channels[this.FirstOpenChannel] = [];
+		this.NextChannelId += 1;
+	}
+	
+	this.LeaveChannel = function(player){ 
+		if( this.players[player] == undefined )
+			return false;
+		var channel = this.players[player]['channelId'];
+		var number = this.players[player]['number'];
+		this.channels[channel].splice( number, 1 );
+		this.players[player] = undefined;
+		return channel;
+	}
+}
+
+var mychannels = new chatchannels();
+mychannels.Initialize();
+
 
 /****************************
 * Room Models                               *
@@ -181,7 +261,7 @@ io.sockets.on('connection', function(socket){
 	socket.emit( 'connection', socket.id );
 		
 	socket.on("disconnect", function(){ 
-		LeaveChannel();
+		mychannels.LeaveChannel( socket.id );
 		myrooms.LeaveRoom( socket.id );
 	});
 	/****************************
@@ -289,113 +369,37 @@ io.sockets.on('connection', function(socket){
 	
 	/****************************
 	* Channel Server Response       *
-	****************************/
-	// function to make an user leave a channel
-	function LeaveChannel( sessionId ){ 
-		var sId;
-		if( sessionId == undefined ){ 
-			sId = socket.id;
-		}
-		else{ 
-			sId = sessionId;
-		}
-		client.get( "player@" + sId, function(err, obj){ 
-			// Inform the other people that a person has left
-			client.decr( obj, function(err2, obj2){
-				client.set( "firstOpenChannel", obj );
-				socket.broadcast.to( obj ).emit( "left channel down", { 'channelId': obj, 'sessionId': sId } );
-				socket.broadcast.to( obj ).emit( "channel stat down", { 'channelId': obj, 'population': obj2 } );
-				socket.leave( obj );	
-			} );
-		} );
-		client.del( "player@" + sId, redis.print );
-	}
-	
-	// channel stats
-	function ChannelStats(channelId){ 
-		var cId;
-		if( channelId == undefined ){ 
-			client.get("player@" + socket.id, function(err, obj){ 
-				cId = obj;
-			});
-		}
-		else{ 
-			cId = channelId;
+	****************************/	
+	// join channel
+	socket.on( "join channel up", function( channel ){
+		// Step 0: Leave the current channel (if we're in one)
+		var oldChan = mychannels.LeaveChannel( socket.id );
+		if( oldChan ){
+			var departureData = { 'sessionId': socket.id };
+			socket.broadcast.to( "chan@" + oldChan ).emit( "left room down", departureData );
+			socket.emit( "left channel down", departureData );
 		}
 		
-		client.get( cId, function(err, obj){ 
-			var statData = { 
-				'channelId': cId,
-				'population': obj
-			};
-			console.log( "var statData: " + JSON.stringify( statData ) );
-			socket.broadcast.to( cId ).emit( "channel stat down", statData );
-			socket.emit( "channel stat down", statData );	
-		} );
-	}
-	
-	// join channel. If no channel is specified, joins the first unfilled one
-	socket.on( "join channel up", function( channel ){ 
-		console.log( "input channel: " + channel );
-		// Step 0: We handle first time initialization
-		var aChan, fChan, topChan;
-		var faggot = client.get( "firstOpenChannel", function(err, obj){ 
-			if(obj == undefined){ 
-				fChan = 0;
-				client.set( "firstOpenChannel", "channel@" + fChan, redis.print );
-				client.set( "channel@" + fChan, 0, redis.print );
-				client.incr( "topChannelId", function(err, obj){ 
-					topChan = obj + 1;
-				});  
-			}
-			else{ 
-				fChan = obj;
-			}
-		console.log( "faggot: " + faggot );
-		});
+		// Step 1: Join the channel in the model
+		mychannels.JoinChannel( socket.id, channel );
 		
-		// Step 1: Check if the channel is specified or not
-		if( channel === undefined ){ 
-			aChan = fChan;
-		}
-		else{ 
-			aChan = channel;
-		}
+		// Step 2: Join the channel over socket
+		var theChan = mychannels.GetChannel( socket.id );
+		socket.join( "chan@" + theChan );
 		
-		// Step 2: we check if the channel the user wants to join is full or not
-		client.get( "channel@" + aChan, function(err, obj){ 		
-			// the case when the existing channel is full
-			if( obj > maxPerChannel ){ 
-				aChan = fChan;	
-			}
-		});
+		// Step 3: Announce to the world
+		var outPut = { 
+			'sessionId': socket.id,
+			'channelId': theChan
+		};
+		socket.broadcast.to( "chan@" + theChan ).emit( "join channel down", outPut );
+		socket.emit( "join channel down", outPut );
 		
-		// Step 2.5: we leave the channel we're currently in (if we're in one)
-		LeaveChannel( );
-		
-		// Step 3: we actually join the channel
-		client.incr( "channel@" + aChan, function(err, obj){ 
-			console.log("People in Channel: " + obj );
-			// if by this joining, we've filled the channel, we start a new one
-			if( obj >= maxPerChannel ){ 
-				client.set( "channel@" + topChan, 0, function(err2, obj2){ 
-					client.incr( "topChannelId", function(err3, obj3){ 
-						client.set( "firstOpenChannel", "channel@" + topChan );
-					});
-				});
-			}
-		} );
-		client.set( "player@" + socket.id, "channel@" + aChan );
-		
-		// Step 4: we join the channel with socket.io
-		var cInfo = "channel@" + aChan;
-		socket.join( cInfo );
-		socket.broadcast.to( cInfo ).emit( "join channel down", { 'channelId': cInfo, 'sessionId': socket.id } ); 
-		socket.emit( "join channel down", { 'channelId': cInfo, 'sessionId': socket.id } );
-				
-		// Step 5: we update channel stats
-		ChannelStats( cInfo );
-	});
+		// Step 4: Inform with channel stats also
+		var statData = mychannels.ChannelStats(theChan);
+		socket.broadcast.to( "chan@" + theChan ).emit( "channel stat down", statData );
+		socket.emit( "channel stat down", statData );
+	} );
 	
 	// chat
 	socket.on( "chat up", function(data){ 
@@ -405,19 +409,15 @@ io.sockets.on('connection', function(socket){
 			'message': data['message'],
 			'channelId': data['channelId']
 		};
-		console.log( "middle: ");
-		console.log( middle );
 		if( data['channelId'] == undefined ){
 			socket.broadcast.emit( "chat down", middle );
 		}
 		else{ 
-			socket.broadcast.to( data['channelId'] ).emit( "chat down", middle );
-			ChannelStats( data['channelId'] );
+			socket.broadcast.to( "chan@" + data['channelId'] ).emit( "chat down", middle );
 		}
 		socket.emit( "chat down", middle );
 	});
 	
-		
 		
 	/****************************
 	* Game Server Response          *

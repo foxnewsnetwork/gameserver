@@ -20,16 +20,15 @@ function LoadButtons(){
 	function tempFun( num ){ 
 		return function() { FireEvent( "clicked", num ); }
 	};
-	var kvec = unsort( [0,1,2,3,4] );
-	var jvec = unsort( [0,1,2,3,4] );
-	var k, j;
+	var kvec = [];
+	for( var x = 0; x < 25; x++ )
+		kvec.push(x);
+	kvec = unsort(kvec);
 	$("#content").append( "<ul class='stuff'>" );
-	for(var a in kvec ) {
-		k = kvec[a];
+	for(var k = 0; k < 5; k++ ) {
 		$("#content").append( "<li class='nig'>" );
-		for( var b in jvec ) {
-			j = jvec[b];
-			var number = 5*k + j;
+		for( var j = 0; j < 5; j++ ) {
+			var number = kvec[ 5*k + j ];
 			$("#content").append( "<button id='button" + (number) + "'>" + (number) + "</button>" );
 			$("#button" + (number) ).click( tempFun(number) );
 		}

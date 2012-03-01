@@ -54,8 +54,12 @@ app.get('/', function(req, res){
 	res.render("index.jade", { title: "stuff", content: "nothing yet" } );
 });
 
+app.get( "/mahjong", function(req, res){ 
+	res.render("mahjong.jade", { title: "Trevor is a faggot" } );
+} );
+
 app.get("/faggot", function(req, res){
-	res.render("numbers.jade", { title: "Henry is a faggot" } );
+	res.render("faggot.jade", { title: "Henry is a faggot" } );
 } );
 /****************************
 * Useful Constants                     *
@@ -69,14 +73,10 @@ var maxPerChannel = 500;
 
 
 /****************************
-* Redis Configuration                 *
+* MongoDB Configuration           *
 *****************************/
 /*
-client.on("error", function (err) {
-    console.log("Error " + err);
-});
-// We flush before each use
-client.flushdb();
+TODO: Implement me!
 */
 
 /****************************
@@ -207,7 +207,7 @@ var gamerooms = function(){
 			this.LeaveRoom( player );
 		}
 		
-		if(room == undefined || this.rooms[room].length < maxPerRoom)
+		if(room == undefined )
 			aRoom = this.FirstOpenRoom;
 		else
 			aRoom = room;
@@ -216,9 +216,11 @@ var gamerooms = function(){
 			this.rooms[aRoom] = [];	
 			this.startFlags[aRoom] = false;
 		}
+		if(this.rooms[aRoom].length == maxPerRoom)
+			aRoom = this.FirstOpenRoom;
+			
 		this.rooms[aRoom].push( player );
 		this.players[player] = { 'roomId': aRoom, 'number': this.rooms[aRoom].length-1 };
-		console.log( "NIGGERS HERE: " + JSON.stringify( this.rooms ) );
 		
 		if(this.rooms[aRoom].length == maxPerRoom){ 
 			this.CreateNewRoom();
@@ -245,6 +247,8 @@ var gamerooms = function(){
 		var number = this.players[player]['number'];
 		this.rooms[room].splice( number, 1 );
 		this.players[player] = undefined;
+		if( this.startFlags[room] == false )
+			this.FirstOpenRoom = room;
 		return room;
 	}
 }
@@ -261,8 +265,46 @@ io.sockets.on('connection', function(socket){
 	socket.emit( 'connection', socket.id );
 		
 	socket.on("disconnect", function(){ 
-		mychannels.LeaveChannel( socket.id );
-		myrooms.LeaveRoom( socket.id );
+		var oldChan = mychannels.LeaveChannel( socket.id );
+		var oldRoom = myrooms.LeaveRoom( socket.id );
+		
+		var data, statData;
+		// When we're still in a room
+		if( oldRoom ){ 
+			data = { 
+				'sessionId': socket.id,
+				'roomId': oldRoom
+			};
+			// Let people know we've left
+			socket.broadcast.to( "room#" + oldRoom ).emit( "left room down", data );
+			socket.emit( "left room down", data );
+			
+			// Refresh the room stats
+			statData = myrooms.RoomStats(oldRoom);
+			socket.broadcast.to( "room#" + oldRoom ).emit( "room stat down", statData );
+			socket.emit( "room stat down", statData );
+			
+			// Leave the socket
+			socket.leave( "room#" + oldRoom );
+		}
+		// When we're in a channel
+		if( oldChan ){ 
+			data = { 
+				'sessionId': socket.id,
+				'channelId': oldChan
+			};
+			// Let people know we've left
+			socket.broadcast.to( "chan@" + oldChan ).emit( "left channel down", data );
+			socket.emit( "left channel down", data );
+			
+			// Refresh the channel stats
+			statData = mychannels.ChannelStats(oldChan);
+			socket.broadcast.to( "chan@" + oldChan ).emit( "channel stat down", statData );
+			socket.emit( "channel stat down", statData );
+			
+			// Leave the socket
+			socket.leave( "chan@" + oldChan );
+		}
 	});
 	/****************************
 	* Player Server Response        *
@@ -451,6 +493,16 @@ io.sockets.on('connection', function(socket){
 		var statData = myrooms.RoomStats(theRoom);
 		socket.broadcast.to( "room#" + theRoom ).emit( "room stat down", statData );
 		socket.emit( "room stat down", statData );
+	} );
+	
+	// leaving room
+	socket.on( "leave room up", function( data ){ 
+		var oldRoom = myrooms.LeaveRoom( socket.id );
+		if( oldRoom ){
+			var departureData = { 'sessionId': socket.id };
+			socket.broadcast.to( "room#" + oldRoom ).emit( "left room down", departureData );
+			socket.emit( "left room down", departureData );
+		}
 	} );
 	
 	// game event

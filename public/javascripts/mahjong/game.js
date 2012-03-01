@@ -40,9 +40,27 @@ var MahjongGame = function(){
 		}
 	}
 	
-	this.gameloop = function(){
-		// TODO: write me!
+	this.tojson = function(){
+		var data = {
+			'board': this.board.tojson(),
+			'players': [],
+			'activePlayer': this.activePlayer,
+			'interactivePlayer': this.interactivePlayer
+		}
+		for( var x in this.players ){ 
+			data['players'].push( this.players[x].tojson() );
+		}
+		return data;
 	} 
+	
+	this.fromjson = function( data ){ 
+		this.initialize();
+		this.board.fromjson(data['board']);
+		for( var x in this.players )
+			this.players[x].fromjson( data['players'][x] );
+		this.activePlayer = data['activePlayer'];
+		this.interactivePlayer = data['interactivePlayer']; 
+	}
 	
 	this.tohtml = function(){ 
 		var output = "<h1>Game State: </h1>";
@@ -78,14 +96,15 @@ var MahjongGame = function(){
 	}
 	
 	// Call this to end your turn. The game begins your turn for you
-	this.EndTurn = function( ){ 
+	this.EndTurn = function(player){ 
 		this.players[this.activePlayer].deactivate();
 		this.activePlayer = ( this.activePlayer + 1 ) % PLAYER_COUNT;
 		this.players[this.activePlayer].activate();
 	}
 	
 	// Draws a tile at the beginning of your turn
-	this.DrawTile = function(){ 
+	this.DrawTile = function(player){ 
+		this.SetInteractivePlayer(player);
 		this.players[this.interactivePlayer].drawtile( this.board );
 		
 		// check ron for the player
@@ -94,7 +113,8 @@ var MahjongGame = function(){
 	}
 	
 	// Discard a tile if you've drawn 
-	this.DiscardTile = function(tile){ 
+	this.DiscardTile = function(player,tile){ 
+		this.SetInteractivePlayer(player);
 		var faggot = this.players[this.interactivePlayer];
 		var tossedtile = faggot.discardtile( this.board, tile );
 		// check closed kan and pon for other players

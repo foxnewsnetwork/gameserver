@@ -7,10 +7,10 @@ var MahjongBoard = function(){
 		this.discardTiles = [];
 		for( var j = 0; j < 4; j++) {
 			for( var k = 0; k < 9; k++ ) {
-				this.freshTiles.push( new MahJongTiles(j, k, 0) );
-				this.freshTiles.push( new MahJongTiles(j, k, 1) );
-				this.freshTiles.push( new MahJongTiles(j, k, 2) );
-				this.freshTiles.push( new MahJongTiles(j, k, 3) );
+				this.freshTiles.push( new MahjongTiles(j, k, 0) );
+				this.freshTiles.push( new MahjongTiles(j, k, 1) );
+				this.freshTiles.push( new MahjongTiles(j, k, 2) );
+				this.freshTiles.push( new MahjongTiles(j, k, 3) );
 			}
 		}
 		
@@ -25,6 +25,33 @@ var MahjongBoard = function(){
 			var tempTile = this.freshTiles[k];
 			this.freshTiles[k] = this.freshTiles[j];
 			this.freshTiles[j] = tempTile; 
+		}
+	}
+
+	this.tojson = function(){ 
+		var data = { 
+			'freshTiles': [],
+			'discardTiles': []		
+		}
+		for( var x in this.freshTiles ){ 
+			data['freshTiles'].push( this.freshTiles[x].tojson() );
+		}
+		for( var k in this.discardTiles ){ 
+			data['discardTiles'].push( this.discardTiles[x].tojson() );
+		} 
+		return data;
+	}	
+	
+	this.fromjson = function(data){ 
+		this.freshTiles = [];
+		this.discardTiles = [];
+		for( var x in data['freshTiles'] ){
+			this.freshTiles.push( new MahjongTiles() );
+			this.freshTiles[x].fromjson(data['freshTiles'][x])
+		}
+		for( var x in data['discardTiles'] ){
+			this.discardTiles.push( new MahjongTiles() );
+			this.discardTiles[x].fromjson( data['discardTiles'] );
 		}
 	}
 	

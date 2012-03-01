@@ -172,6 +172,15 @@ function JoinRoom( room ){
 	} );
 }
 
+function LeaveRoom( room ){ 
+	var aRoom;
+	if( room == undefined )
+		aRoom = currentRoom;
+	else
+		aRoom = room;
+	socket.emit( "left room up", { 'sessionId': sessionId, 'roomId': aRoom } );
+}
+
 socket.on( "join room down", function( roomdata ){
 	// TODO: let the player know he has joined a game
 	currentRoom = roomdata['roomId'];
@@ -235,9 +244,11 @@ function FireEvent( name, event ){
 }
 
 function StartGame( room ){ 
-	var middle = {
-		'roomId': room
-	};
+	var middle;
+	if( room == undefined )
+		middle = { 'roomId': currentRoom };
+	else
+		middle = { 'roomId': room };
 	socket.emit( 'start game up', middle );
 }
 

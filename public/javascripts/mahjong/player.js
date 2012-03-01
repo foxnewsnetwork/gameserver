@@ -130,6 +130,20 @@ var MahjongPlayer = function(){
 		this.hand.sorthand();
 	}
 	
+	this.tojson = function(){ 
+		var data = { 
+			'hand': this.hand.tojson(),
+			'actions': this.actions
+		};
+		return data;
+	}
+	
+	this.fromjson = function(data){ 
+		this.hand = new MahjongHand();
+		this.hand.fromjson(data['hand']);
+		this.actions = data['actions'];
+	}
+	
 	this.tohtml = function(){ 
 		var result = "<h1>Player: </h1>";
 		result += this.hand.tohtml();

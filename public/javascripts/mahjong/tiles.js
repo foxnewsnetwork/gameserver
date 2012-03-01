@@ -1,9 +1,24 @@
-var MahJongTiles = function(s,v,n){
+var MahjongTiles = function(s,v,n){
 	this.suit = s;
 	this.value = v;
 	this.note = n;
 	this.sval = function(){ 
 		return this.note + this.value * 10 + this.suit * 100;
+	}
+	
+	this.tojson = function(){ 
+		var data = { 
+			'suit': this.suit,
+			'value': this.value,
+			'note': this.note
+		};
+		return data;
+	}
+	
+	this.fromjson = function(data){ 
+		this.suit = data['suit'];
+		this.value = data['value'];
+		this.note = data['note'];
 	}
 	/*
 	suit @ 0 => circles

@@ -118,6 +118,32 @@ var MahjongHand = function(){
 		// TODO: get this function to return the point value of the hand when true
 	}
 	
+	this.tojson = function(){ 
+		var data = { 
+			'hidden': [],
+			'exposed': []
+		};		
+		for( var x in this.hidden )
+			data['hidden'].push( this.hidden[x].tojson() );
+		for( var x in this.exposed )
+			data['exposed'].push( this.exposed[x].tojson() );
+		return data;
+	}
+	
+	this.fromjson = function(data){ 
+		this.hidden = [];
+		this.exposed = [];
+		
+		for( var x in data['hidden'] ){
+			this.hidden.push(  new MahjongTiles() );
+			this.hidden[x].fromjson( data['hidden'][x] );
+		}
+		for( var x in data['exposed'] ){
+			this.exposed.push( new MahjongTiles() );
+			this.exposed[x].fromjson( data['exposed'][x] );
+		}
+	}
+	
 	this.tohtml = function(){ 
 		var result = "<h4>Hidden Hand: </h4>";
 		for( var x in this.hidden ){ 

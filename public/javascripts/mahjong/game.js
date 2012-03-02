@@ -32,11 +32,11 @@ var MahjongGame = function(){
 		}
 		this.phase = PHASE_INGAME;
 		this.activePlayer = PLAYER_EAST;
-		for( var x in this.players ){ 
-			if( x == this.activePlayer )
+		for( var xxx in this.players ){ 
+			if( xxx == this.activePlayer )
 				this.players[this.activePlayer].activate();
 			else
-				this.players[x].deactivate();
+				this.players[xxx].deactivate();
 		}
 	}
 	

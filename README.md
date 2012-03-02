@@ -46,4 +46,18 @@ Netscape notes
 2. Check activity for platform
 3. Get diseases that everyone gets
 
-
+Voyager Notes
+==
+1. Demographics v. Geographic
+2. Narrow v. Wide (how to travel the graph)
+	|                       |
+	|		xB			|			xxB
+	|						|
+	|						|
+D |________|__________
+	|						|
+	|						|	     0x 
+	|						|
+	|						|
+	|________|__________
+               Geo

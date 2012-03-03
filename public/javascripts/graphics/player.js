@@ -1,34 +1,46 @@
-var MahjongPlayerDC = function(){
-	this.tileDCs;
+
+var MahjongGraphicsPlayer = function(){ 
+	this.ptileset = CreateSet();
+	this.pgroup;
 	
-	this.initialize = function(){ 
-		this.tileDCs = [];
-		for( var x = 0; x < 18; x++ ){ 
-			var faggot = new MahjongTileDC();
-			this.tileDCs.push( faggot );
-		}
-	}
-	
-	// The user's hand is always drawn on the bottom
-	this.draw = function( player ){ 
-		// step 1: draw the exposed hand
-		var y = 0;
+	this.initialize = function(element){ 
+		// create the group
+		this.pgroup = $.playground().addGroup( element + "-player", { 
+			'width': PLAYER_WIDTH,
+			'height': PLAYER_HEIGHT,
+			'posx': X_PLAYER,
+			'posy': Y_PLAYER
+		} );
 		
-		// step 2: draw hidden hand
-		var hidden = player.hidden;
-		var tiledata;
-		for( var x = 0; x < hidden.length; x++ ){
-			tiledata = { 
-				'suit': hidden[x].suit,
-				'value': hidden[x].value,
-				'note': hidden[x].note
-			}
-			this.tileDCs[ y + x ].SetAs(tiledata);
-			this.tileDCs[ y + x ].draw( 
-				GAME_WIDTH / 4 + x * TILE_WIDTH,
-				GAME_HEIGHT - 175,
-				Z_TILES
-			);
+		// lay down the placeholders for the hidden hand
+		var posx, posy;
+		for( var k = 0; k < 14; k++ ){ 
+			posy = Y_PLAYER;
+			posx = X_PLAYER + k * TILE_WIDTH
+			this.pgroup.addSprite( "phidden-" + k, { 
+				'width': TILE_WIDTH ,
+				'height': TILE_HEIGHT ,
+				'posx': posx ,
+				'posy': posy
+			} );
+		}
+		
+		// todo: write the code to show the exposed hand
+		return this;
+	}
+	
+	this.draw = function( playerstate ){ 
+		var hand = playerstate['hand'];
+		
+		// step 1: we disable useless stuff
+		for( var k = 0; k < this.ptileset.length; k++){ 
+			$("#phidden-" + k).setAnimation();
+		}
+		
+		// step 2: actually attach the sprites
+		for( var j = 0; k < hand['hidden'].length; k++){ 
+			$("#phidden-" + k).setAnimation( this.pgroup[k] );
 		}
 	}
-} 
+}
+

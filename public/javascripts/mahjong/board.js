@@ -5,12 +5,16 @@ var MahjongBoard = function(){
 	this.newboard = function(){ 
 		this.freshTiles = [];
 		this.discardTiles = [];
-		for( var j = 0; j < 4; j++) {
+		for( var j = 0; j < 5; j++) {
 			for( var k = 0; k < 9; k++ ) {
-				this.freshTiles.push( new MahjongTiles(j, k, 0) );
-				this.freshTiles.push( new MahjongTiles(j, k, 1) );
-				this.freshTiles.push( new MahjongTiles(j, k, 2) );
-				this.freshTiles.push( new MahjongTiles(j, k, 3) );
+				if( j == 4 && k == 8 )
+					continue;
+				if( j == 3 && k > 6 )
+					continue;
+				this.freshTiles.push( new MahjongTiles(j, k) );
+				this.freshTiles.push( new MahjongTiles(j, k) );
+				this.freshTiles.push( new MahjongTiles(j, k) );
+				this.freshTiles.push( new MahjongTiles(j, k) );
 			}
 		}
 		

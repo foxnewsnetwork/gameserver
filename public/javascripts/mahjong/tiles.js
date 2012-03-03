@@ -1,16 +1,15 @@
-var MahjongTiles = function(s,v,n){
+var MahjongTiles = function(s,v){
 	this.suit = s;
 	this.value = v;
-	this.note = n;
+
 	this.sval = function(){ 
-		return this.note + this.value * 10 + this.suit * 100;
+		return this.suit * 10 + this.value
 	}
 	
 	this.tojson = function(){ 
 		var data = { 
 			'suit': this.suit,
-			'value': this.value,
-			'note': this.note
+			'value': this.value
 		};
 		return data;
 	}
@@ -18,7 +17,6 @@ var MahjongTiles = function(s,v,n){
 	this.fromjson = function(data){ 
 		this.suit = data['suit'];
 		this.value = data['value'];
-		this.note = data['note'];
 	}
 	/*
 	suit @ 0 => circles
@@ -32,16 +30,18 @@ var MahjongTiles = function(s,v,n){
 		4 => middle
 		5 => fa
 		6 => blank
-		7 => flower
-			0 => plum
-			1 => orchid
-			2 => chrysanthermum
-			3 => bamboo
-		8 => season
-			0 => spring
-			1 => summer
-			2 => autumn
-			3 => winter
+		7 => dragon wild 1
+		8 => dragon wild 2
+	suit @ 4 => flowers & seasons
+		0 => plum
+		1 => orchid
+		2 => chrysanthermum
+		3 => bamboo
+		4 => spring
+		5 => summer
+		6 => autumn
+		7 => winter
+		8 => flower wild 1
 	*/
 	this.tohtml = function(){ 
 		var result = "";
@@ -55,7 +55,7 @@ var MahjongTiles = function(s,v,n){
 			case 2 :
 				result += " | Characters " + this.value + " | ";
 				break;
-			default :
+			case 3:
 				switch( this.value ){ 
 					case 0:
 						result += " | North | ";
@@ -79,37 +79,40 @@ var MahjongTiles = function(s,v,n){
 						result += " | Blank | ";
 						break;
 					case 7:
-						switch( this.note ){ 
-							case 0:
-								result += " | Plum | ";
-								break;
-							case 1:
-								result += " | Orchid | ";
-								break;
-							case 2:
-								result += " | Chrysanthermum | ";
-								break;
-							case 3:
-								result += " | Bamboo | ";
-								break;
-						}
-						break;
+						result += " | dragon wild 1 | ";
 					case 8:
-						switch( this.note ){ 
-							case 0:
-								result += " | Spring | ";
-								break;
-							case 1:
-								result += " | Summer | ";
-								break;
-							case 2:
-								result += " | Autumn | ";
-								break;
-							case 3:
-								result += " | Winter | ";
-								break;
-						}
+						result += " | dragon wild 2 | ";
 						break;
+				}
+				break;
+			case 4:		
+				switch( this.value ){ 
+						case 0:
+							result += " | Plum | ";
+							break;
+						case 1:
+							result += " | Orchid | ";
+							break;
+						case 2:
+							result += " | Chrysanthermum | ";
+							break;
+						case 3:
+							result += " | Bamboo | ";
+							break;
+						case 4:
+							result += " | Spring | ";
+							break;
+						case 5:
+							result += " | Summer | ";
+							break;
+						case 6:
+							result += " | Autumn | ";
+							break;
+						case 7:
+							result += " | Winter | ";
+							break;
+						case 8:
+							result += " | flower wild | ";
 				}
 				break;
 		}

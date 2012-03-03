@@ -1,41 +1,43 @@
 
-var MahjongBoardDC = function(){ 
-	this.tileDCs = [];
+var MahjongGraphicsBoard = function(){ 
+	this.btileset = CreateSet();
+	this.bgroup;
 	
-	this.initialize = function(){ 
-		this.tileDCs = [];
-		// We only ever show 36 of the most recently discard tiles
-		for( var k = 0; k < 4; k++){ 
-			for( var j = 0; j < 9; j++ ){
-				var faggot = new MahjongTileDC();
-				this.tileDCs.push( faggot );
-				this.tileDCs[9*k + j].SetAs( { 
-					'suit': k, 
-					'value': j, 
-					'note': (j % 4) 
-				} );
+	this.initialize = function(element){ 
+		this.bgroup = $.playground().addGroup( element + "-board", { 
+			'width': BOARD_WIDTH,
+			'height': BOARD_HEIGHT,
+			'posx': X_BOARD,
+			'posy': Y_BOARD
+		} );
+		// Laying down the sprite locations placeholders
+		var xpos, ypos;
+		for( var k = 0; k < 5; k++ ){ 
+			for( var j = 0; j < 9; j++){
+				xpos = X_BOARD + (2 + ( j > 4 ) )* k * TILE_WIDTH;
+				ypos =  Y_BOARD + (j % 5) * TILE_HEIGHT;
+				this.bgroup.addSprite( "btile-" + (k*9 + j), {
+					'width': TILE_WIDTH ,
+					'height': TILE_HEIGHT ,
+					'posx': xpos,
+					'poxy': ypos
+				} ) ;
 			}
 		}
-		
+		return this;
 	}
 	
-	this.draw = function( board ){ 
-		if( board == undefined || discardboard == undefined )
-			return;
-		var discardboard = board.discard;
-		var tile, x_pos, y_pos;
-		for( var x = 0; x < discardboard.length; x++ ){ 
-			tile = discardboard[x];
-			if( tile == undefined )
-				break;
-			x_pos = X_DISCARD + 2 * tile.suit * TILE_WIDTH;
-			y_pos = Y_DISCARD + ( tile.value % 5 )* TILE_HEIGHT;
-			if( tile.value >  5 )
-				x_pos += TILE_WIDTH;
-			this.tileDCs[ 9*tile.suit + tile.value ].enable();
-			this.tileDCs[ 9*tile.suit + tile.value ].draw( x_pos, y_pos, Z_TILES );
-		}		
+	// remember, json files
+	this.draw = function( boardstate ){ 
+		var discard = boardstate['discardtiles'];
+		// First we null all the animations
+		for( var j = 0; j < this.btileset.length; j++){ 
+			$( "#btile-" + k ).setAnimation();
+		}
+		// Then we do the new animations
+		for( var k = 0; k < discard.length; k++ ){ 
+			$( "#btile-" + k ).setAnimation( this.btileset[k] );
+		}
 	}
-
 }
 

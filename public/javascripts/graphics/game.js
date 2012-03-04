@@ -1,6 +1,7 @@
 /*****************************
 * Drawing with gameQuery          *
 ******************************/
+
 var MahjongGraphics = function(){ 
 	this.background = new MahjongGraphicsBackground();
 	this.ui = new MahjongGraphicsUI();
@@ -9,20 +10,22 @@ var MahjongGraphics = function(){
 	
 	this.initialize = function( element ){ 
 		// Initializing the gameQuery playground
-		$("# "+ element).playground( { 
+		$("#" + element).playground( { 
 			'height': GAME_HEIGHT,
 			'width': GAME_WIDTH
 		} );
+		MahjongStaticInitialization();
 		this.background.initialize( element );
 		this.board.initialize( element );
-		this.player.initialize( element );	
+		//this.player.initialize( element );	
 		// this.ui.initialize( element );
 	}
 	
 	// gamestate is a json file
 	this.draw = function(gamestate){
 		this.board.draw(gamestate['board']);
-		this.player.draw(gamestate['players'][playerNumber]);
+		//this.player.draw(gamestate['players'][playerNumber]);
+		$.playground().startGame( function(){} );
 	}
 }
 

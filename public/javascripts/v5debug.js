@@ -43,7 +43,8 @@ $(function(){
 $(document).ready(function(){
 	var graphics = new MahjongGraphics();
 	graphics.initialize("playground");
-	
+	$("#endturn").mouseover( function(){ tooltip.show( "faggot" ); } );
+	$("#endturn").mouseleave( function(){ tooltip.hide(  ); } );
 	graphics.draw(game.tojson());	
 /*	
 	

@@ -16,10 +16,12 @@ function CreateSet(){
 var MahjongSet;
 var staticTileId;
 var staticTileGroup;
+
 function MahjongStaticInitialization(){
+
 	MahjongSet = CreateSet();
 	staticTileId = 0;
-	staticTileGroup = $.playground().addGroup( "tiles", { width: GAME_WIDTH, height: GAME_HEIGHT } );
+	staticTileGroup = $.playground().addGroup( "tiles", { width: GAME_WIDTH, height: GAME_HEIGHT } ).end();
 };
 var MahjongTileSprite = function(){ 
 	this.sprite;
@@ -30,18 +32,125 @@ var MahjongTileSprite = function(){
 	this.suit;
 	this.value;
 	
+	this.SetCallback = function( name, callback ){ 
+		if( this.sprite == undefined ){ 
+			alert( "You've tried to set a callback for a completely uninitiated tile, you dumbass" );
+			return;
+		}
+		/*
+		var methods = [];
+		for (var m in this.sprite) {
+			if (typeof this.sprite[m] == "function") {
+				methods.push(m);
+			}
+		}
+		alert(methods.join(","));
+		*/
+		var eventinfo = { 
+			'xpos': this.x,
+			'ypos': this.y,
+			'suit': this.suit,
+			'value': this.value,
+			'tileId': this.tileId
+		};
+		switch( name ){ 
+			case 'click':
+				this.sprite.click( function(){ 
+					callback(eventinfo);
+				} );
+				break;
+			case 'mouseover':
+				this.sprite.mouseover( function(){ 
+					callback(eventinfo);
+				} );
+				break;
+			case 'mouseout':
+				this.sprite.mouseout( function(){
+					callback(eventinfo);
+				} );
+				break;
+		}
+	}
+	
 	this.MoveTo = function( deltax, deltay ){ 
 		this.SetAt( this.x + deltax, this.y + deltay );
 	}	
 	
 	this.tohtml = function(){ 
-		var output = "<p>" 
-			+ " sprite detail: " + this.sprite 
-			+ " tileId " + this.tileId 
-			+ " suit&value:  " + this.suit + " " + this.value 
-			+ " x&y: " + this.x + " " + this.y
-			+ "</p>";
-		return output;
+				var result = "";
+		switch( this.suit ){ 
+			case 0 :
+				result += " | Circle " + this.value + " | ";
+				break;
+			case 1 :
+				result += " | Sticks " + this.value + " | ";
+				break;
+			case 2 :
+				result += " | Characters " + this.value + " | ";
+				break;
+			case 3:
+				switch( this.value ){ 
+					case 0:
+						result += " | North | ";
+						break;
+					case 1:
+						result += " | South | ";
+						break;
+					case 2:
+						result += " | West | ";
+						break;
+					case 3: 
+						result += " | East | ";
+						break;
+					case 4: 
+						result += " | Zhong | ";
+						break;
+					case 5: 
+						result += " | Fa | ";
+						break;
+					case 6: 
+						result += " | Blank | ";
+						break;
+					case 7:
+						result += " | dragon wild 1 | ";
+					case 8:
+						result += " | dragon wild 2 | ";
+						break;
+				}
+				break;
+			case 4:		
+				switch( this.value ){ 
+						case 0:
+							result += " | Plum | ";
+							break;
+						case 1:
+							result += " | Orchid | ";
+							break;
+						case 2:
+							result += " | Chrysanthermum | ";
+							break;
+						case 3:
+							result += " | Bamboo | ";
+							break;
+						case 4:
+							result += " | Spring | ";
+							break;
+						case 5:
+							result += " | Summer | ";
+							break;
+						case 6:
+							result += " | Autumn | ";
+							break;
+						case 7:
+							result += " | Winter | ";
+							break;
+						case 8:
+							result += " | flower wild | ";
+				}
+				break;
+		}
+		return result;
+
 	}
 		
 	this.SetAt = function(xpos, ypos){ 
@@ -110,3 +219,82 @@ var MahjongTileSprite = function(){
 		this.tileId = undefined;
 	}
 }
+
+
+var tiletohtml = function(suit, value){ 
+			var result = "";
+	switch( suit ){ 
+		case 0 :
+			result += " | Circle " + (1 + value ) + " | ";
+			break;
+		case 1 :
+			result += " | Sticks " + (1 + value ) + " | ";
+			break;
+		case 2 :
+			result += " | Characters " + (1 + value ) + " | ";
+			break;
+		case 3:
+			switch( value ){ 
+				case 0:
+					result += " | North | ";
+					break;
+				case 1:
+					result += " | South | ";
+					break;
+				case 2:
+					result += " | West | ";
+					break;
+				case 3: 
+					result += " | East | ";
+					break;
+				case 4: 
+					result += " | Zhong | ";
+					break;
+				case 5: 
+					result += " | Fa | ";
+					break;
+				case 6: 
+					result += " | Blank | ";
+					break;
+				case 7:
+					result += " | dragon wild 1 | ";
+				case 8:
+					result += " | dragon wild 2 | ";
+					break;
+			}
+			break;
+		case 4:		
+			switch( value ){ 
+					case 0:
+						result += " | Plum | ";
+						break;
+					case 1:
+						result += " | Orchid | ";
+						break;
+					case 2:
+						result += " | Chrysanthermum | ";
+						break;
+					case 3:
+						result += " | Bamboo | ";
+						break;
+					case 4:
+						result += " | Spring | ";
+						break;
+					case 5:
+						result += " | Summer | ";
+						break;
+					case 6:
+						result += " | Autumn | ";
+						break;
+					case 7:
+						result += " | Winter | ";
+						break;
+					case 8:
+						result += " | flower wild | ";
+			}
+			break;
+	}
+	return result;
+
+}
+

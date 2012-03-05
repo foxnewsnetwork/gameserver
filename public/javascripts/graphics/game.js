@@ -17,14 +17,14 @@ var MahjongGraphics = function(){
 		MahjongStaticInitialization();
 		this.background.initialize( element );
 		this.board.initialize( element );
-		//this.player.initialize( element );	
+		this.player.initialize( element );	
 		// this.ui.initialize( element );
 	}
 	
 	// gamestate is a json file
 	this.draw = function(gamestate){
 		this.board.draw(gamestate['board']);
-		//this.player.draw(gamestate['players'][playerNumber]);
+		this.player.draw(gamestate['players'][playerNumber]);
 		$.playground().startGame( function(){} );
 	}
 }

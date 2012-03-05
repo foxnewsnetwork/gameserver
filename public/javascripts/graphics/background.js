@@ -23,9 +23,13 @@ var MahjongGraphicsBackground = function(){
 			'height': MENUBAR_HEIGHT,
 			'posx': X_MENUBAR,
 			'posy': 0
-		} ); 
-		$("#bgtable").css( "z-index", -1 );		
-		$("#bgmenubar").css( "z-index", -1 );
+		} ).end(); 
+		$("#bgtable").css( "z-index", 0 );		
+		$("#bgmenubar").css( "z-index", 0 );
+		/*
+		$("#bgmenubar").mouseover( function(){ tooltip.show( "You're a faggot" ); } );
+		$("#bgmenubar").mouseout( function(){ tooltip.hide(); } );
+		*/
 		return this;
 	}
 }

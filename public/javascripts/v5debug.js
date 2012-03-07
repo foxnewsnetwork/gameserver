@@ -46,8 +46,6 @@ $(document).ready(function(){
 	$("#endturn").mouseover( function(){ tooltip.show( "faggot" ); } );
 	$("#endturn").mouseleave( function(){ tooltip.hide(  ); } );
 	graphics.draw(game.tojson());	
-/*	
-	
-*/
+
 });
 

@@ -61,3 +61,15 @@ D |________|__________
 	|						|
 	|________|__________
                Geo
+               
+Alireza Meeting notes
+==
+1. Road map (advisor open positions and people we need to hire)
+2. executive summary
+3. 3 min pitch deck
+4. Logo
+5. My pictures
+6. Testimonial
+7. ONe liner about the company
+8. Form for expo + attachments
+9. SPA

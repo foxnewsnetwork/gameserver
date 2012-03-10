@@ -61,6 +61,10 @@ app.get( "/mahjong", function(req, res){
 app.get("/faggot", function(req, res){
 	res.render("faggot.jade", { title: "Henry is a faggot" } );
 } );
+
+app.get("/shop", function(req, res){ 
+	res.render( "shopdebug.jade", { title: "Shop Test" } );
+} );
 /****************************
 * Useful Constants                     *
 *****************************/

@@ -1,0 +1,59 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;"/>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-language" content="en" />
+<script type="text/javascript" src="javascripts/jquery/jquery.js"> </script>
+<script type="text/javascript" src="javascripts/gameQuery/gameQuery.js" > </script>
+<script type="text/javascript">
+	(function(){ 
+		var indigiShop = document.createElement("script");
+		indigiShop.type = "text/javascript";
+		indigiShop.async = true;
+		indigiShop.src = "javascripts/shop-debug.js";
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(indigiShop, s); 
+	})();
+	
+	
+	/*
+	$(document).ready(function(){ 
+		$("body").append( "<div id='indigioshop'></div>" );
+		$("#indigioshop").html("<h1>Step 1 Success!</h1>"); 
+		$("#indigioshop").css( "left", 200 );
+		$("#indigioshop").css( "top", 200 );
+		var mall = $("#indigioshop");
+		mall.playground( { 'width': 360, 'height': 240 } );
+		var ani1 = new $.gameQuery.Animation( {
+			imageURL: "images/tiles/0.png"
+		} );
+		var spritespecs1 = { 
+			'width': 75,
+			'height': 75,
+			'posx': 0,
+			'posy': 0,
+		};
+		var spritespecs2 = { 
+			'width': 75,
+			'height': 75,
+			'posx': 85,
+			'posy': 0,
+		};
+		
+		$.playground().addGroup( "storefront", { height: 360, width: 240 } )
+			.addSprite( 'item1' , spritespecs1 )
+			.addSprite( 'item2', spritespecs2 )
+			.end();
+			
+		$("#item1").setAnimation( ani1 );
+		$("#item2").setAnimation( ani1 );
+		$("#item1").append( "<p>12</p>" );
+		$.playground().startGame();
+	});
+	*/
+</script>
+
+<title>Shop Tests</title>
+</head>
+<body>
+</body>
+</html>

@@ -1,4 +1,88 @@
 /***********************
+* External-Use Library  *
+***********************/
+
+var ExternalIndigioLibrary_tooltip = function(){
+ var id = 'tt';
+ var top = 3;
+ var left = 3;
+ var maxw = 300;
+ var speed = 10;
+ var timer = 20;
+ var endalpha = 95;
+ var alpha = 0;
+ var tt,t,c,b,h;
+ var ie = document.all ? true : false;
+ return{
+  show:function(v,w){
+   if(tt == null){
+    tt = document.createElement('div');
+    tt.setAttribute('id',id);
+    tt.style.zindex = 999;
+    t = document.createElement('div');
+    t.style.zindex = 999;
+    t.setAttribute('id',id + 'top');
+    c = document.createElement('div');
+    c.style.zindex = 999;
+    c.setAttribute('id',id + 'cont');
+    b = document.createElement('div');
+    b.style.zindex = 999;
+    b.setAttribute('id',id + 'bot');
+    tt.appendChild(t);
+    tt.appendChild(c);
+    tt.appendChild(b);
+    document.body.appendChild(tt);
+    tt.style.opacity = 0;
+    tt.style.filter = 'alpha(opacity=0)';
+    document.onmousemove = this.pos;
+   }
+   tt.style.display = 'block';
+   c.innerHTML = v;
+   tt.style.width = w ? w + 'px' : 'auto';
+   if(!w && ie){
+    t.style.display = 'none';
+    b.style.display = 'none';
+    tt.style.width = tt.offsetWidth;
+    t.style.display = 'block';
+    b.style.display = 'block';
+   }
+  if(tt.offsetWidth > maxw){tt.style.width = maxw + 'px'}
+  h = parseInt(tt.offsetHeight) + top;
+  clearInterval(tt.timer);
+  tt.timer = setInterval(function(){tooltip.fade(1)},timer);
+  },
+  pos:function(e){
+   var u = ie ? event.clientY + document.documentElement.scrollTop : e.pageY;
+   var l = ie ? event.clientX + document.documentElement.scrollLeft : e.pageX;
+   tt.style.top = (u - h) + 'px';
+   tt.style.left = (l + left) + 'px';
+  },
+  fade:function(d){
+   var a = alpha;
+   if((a != endalpha && d == 1) || (a != 0 && d == -1)){
+    var i = speed;
+   if(endalpha - a < speed && d == 1){
+    i = endalpha - a;
+   }else if(alpha < speed && d == -1){
+     i = a;
+   }
+   alpha = a + (i * d);
+   tt.style.opacity = alpha * .01;
+   tt.style.filter = 'alpha(opacity=' + alpha + ')';
+  }else{
+    clearInterval(tt.timer);
+     if(d == -1){tt.style.display = 'none'}
+  }
+ },
+ hide:function(){
+  clearInterval(tt.timer);
+   tt.timer = setInterval(function(){tooltip.fade(-1)},timer);
+  }
+ };
+}();
+
+
+/***********************
 * Game Client API Code  *
 ***********************/
 var socket = io.connect('http://localhost');
@@ -13,7 +97,7 @@ socket.on( "connection", function(id){
 **********************/
 var STATE_PREGAME = 0;
 var STATE_INGAME = 1;
-
+var SHOP_ID = "indigio_game_embedded_shop";
 
 /**********************
 * API Variables               *
@@ -92,10 +176,119 @@ socket.on( "player login down", function(data) {
 	// TODO: write code to handle the case when player tokens are false
 });
 
+/**********************
+* Shop Class                     *
+**********************/
+var IndigioShop = function(){
+	this.container;
+	this.items;
+	this.exit;
+	this.tabs;
+	this.initializationFlag = false;
+	
+	this.initialize = function( gamedata ){ 
+		if( this.initializationFlag )
+			return;
+		var shopwidth = gamedata['shopwidth'];
+		var shopheight = gamedata['shopheight'];
+		var divid = gamedata['divid'];
+	
+		if( shopwidth == undefined )
+			shopwidth = 480;
+		if( shopheight == undefined )
+			shopheight = 360;
+		if( divid == undefined ){ 
+			// TODO: set the div id
+		}	
+	
+		// Creating the shop div
+		var shopid = SHOP_ID;
+		$("#" + divid).create( "<div id='" + shopid + "'></div>" );
+		this.container = $( "#" + shopid );
+		this.container.("<button id='close_" + shopid + "'></button>"); 
+	
+		// Setting its styles
+		this.container.css( "width", shopwidth + "px" );
+		this.container.css( "height", shopheight + "px" );
+		this.container.css( "left", "10px" );
+		this.container.css( "top", "10px" );
+		this.container.css( "z-index", 998 );
+	
+		// registering a callback to close the shop 
+		$("#close_" + shopid).click( function(){ 
+			this.container.hide();
+		} );
+		this.exit = $( "#close_" + shopid );
+		
+		// Setting the flag
+		this.initializationFlag = true;
+	}
+	
+	this.SetupShop = function( items ){ 
+		this.items = [];
+		
+		var itemCount = items.length > 10 ? 10 : items.length;
+		
+		// A tab holds 8 items. Eventually, we want more tabs, for now, we have only 1
+		this.container.html("<div id='indigio_shop_tab1'></div>");
+		this.tabs = $("#indigio_shop_tab1");
+		for( var k = 0; k < itemCount; k++ ){
+			var xpos, ypos;
+			xpos = 75 * ( k % 5 ) +  5;
+			ypos = 75 * ( k >= 5 ) + 5;
+			this.tabs.append( "<div id=indigio_shop_item'" + k + "'></div>" );
+			this.items.push = $( "#indigio_shop_item" + k );
+			this.items[k].css( 'width', '75px' );
+			this.items[k].css( 'height', '75px' );
+			this.items[k].css( 'left', xpos + "px" );
+			this.items[k].css( 'top', ypos + "px" );
+			this.items[k].css( 'background-image', "url( " + items[k]['tileset'] + " )" );
+			// Registering reactionary events
+			this.items[k].mouseover( function(){ 
+				ExternalIndigioLibrary_tooltip.show( "<p>" + items[k]['description'] + "</p><p>Price: " + items[k]['price'] + "</p>" );
+			} );
+			this.items[k].mouseleave( function(){ 
+				ExternalIndigioLibrary_tooltip.hide();
+			} );
+			this.items[k].click( GetBuyCallback( items[k] ) );
+		}
+			
+	}
+}
+
+function GetBuyCallback( item ){ 
+	if( playerToken != 0 ){
+		return function(){ 
+			BuyItem( playerToken, item );
+		};
+	}
+	else{ 
+		// Handle login
+	}
+}
 
 /**********************
 * Shop Functions              *
 **********************/
+// Macro call to summon the shop for the truly lazy
+/*
+ gamedata = { 
+	shopwidth:
+	shopheight:
+	divid:
+	metadata:
+}
+*/
+var ShopSimpleMode = false;
+var myShop = new IndigioShop();
+function CallShop( gamedata ){ 
+	ShopSimpleMode = true;
+	myShop.initialize( gamedata );
+	
+	// let the server know what we need
+	GetShopItems( gamedata['metadata'] );
+}
+
 // metadata is not required
 function GetShopItems( metadata ){ 
 	var data = { 'sessionId': sessionId, 'metadata': metadata }
@@ -120,6 +313,13 @@ function BuyItem( player, item ){
 
 socket.on( "purchase item down", function(result){
 	// TODO: write a function to display some sort of message for success or failure
+} );
+
+AddShopFunction( "open shop down", function(shopItems){ 
+	if( ShopSimpleMode != true ){ 
+		return;
+	}
+	myShop.SetupShop( shopItems );
 } );
 
 /**********************

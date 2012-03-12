@@ -1,14 +1,18 @@
 #tt {
  position:absolute;
  display:block;
- background:url(images/tt_left.gif) top left no-repeat;
+ z-index: 999;
+ -moz-border-radius: 10px;
+ border-radius: 10px;
  }
  #tttop {
  display:block;
  height:5px;
  margin-left:5px;
- background:url(images/tt_top.gif) top right no-repeat;
+ z-index: 999;
  overflow:hidden;
+ -moz-border-radius: 10px;
+ border-radius: 10px;
  }
  #ttcont {
  display:block;
@@ -16,11 +20,16 @@
  margin-left:5px;
  background:#666;
  color:#fff;
+ z-index: 999;
+ -moz-border-radius: 10px;
+ border-radius: 10px;
  }
 #ttbot {
 display:block;
 height:5px;
 margin-left:5px;
-background:url(images/tt_bottom.gif) top right no-repeat;
+z-index: 999;
 overflow:hidden;
+-moz-border-radius: 10px;
+ border-radius: 10px;
 }

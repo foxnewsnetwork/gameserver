@@ -371,7 +371,7 @@ io.sockets.on('connection', function(socket){
 			console.log( "headers: " + JSON.stringify(response.headers) );
 			response.on("data", function(chunk){ 
 				console.log( "body: " + chunk );
-				output = { 'sessionId': data['sessionId'], 'items': JSON.parse(chunk) };
+				output = { 'sessionId': data['sessionId'], 'items': [JSON.parse(chunk)] };
 				socket.emit( "open shop down", output );
 			});
 		});	

@@ -380,11 +380,15 @@ io.sockets.on('connection', function(socket){
 	// purchase item
 	socket.on( "purchase item up", function(data){
 		// TODO: write this
+		console.log( data );
+		socket.emit( "purchase item down", "Success!" );
+		return;
+		
 		var shopPath = '/api/v1/products/' + data['productId'];
 
 		var postData = querystring.stringify({
 			'gameToken': gameToken ,
-			'playerToken': data['playerToken'] ,
+			'playerData': data['playerData'] ,
 		});
 				
 		var options = { 
@@ -404,7 +408,9 @@ io.sockets.on('connection', function(socket){
 			response.on("data", function(chunk){ 
 				console.log( "body: " + chunk );
 				output = { 'sessionId': data['sessionId'], 'items': JSON.parse(chunk) };
+				// TODO: MAKE IT SO THAT I ACTUALL DO SOMETHING!
 				socket.emit( "purchase item down", output );
+				
 			});
 		});
 		

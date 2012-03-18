@@ -2,7 +2,9 @@ var MahjongGame = function(){
 	this.players = [];
 	this.board = new MahjongBoard();
 	this.phase;
-	
+	this.begun;
+	this.begun = false;
+
 	// active player is the player whose turn it currently is
 	this.activePlayer;
 	
@@ -26,7 +28,7 @@ var MahjongGame = function(){
 	this.newgame = function(){ 
 		this.board.newboard();
 		this.board.shuffle();
-
+		this.begun = true;
 		for( var k = 0; k < this.players.length; k++ ){ 
 			this.players[k].drawtiles( this.board, RULES_STARTING_TILE_COUNT );
 		}
@@ -130,5 +132,8 @@ var MahjongGame = function(){
 		// check chi for the previous player
 		var previous = this.players[(this.interactivePlayer + PLAYER_COUNT - 1 ) % PLAYER_COUNT];
 		previous.checkChi( tossedtile );
+	}
+	this.playerJoined = function(){
+		
 	}
 }

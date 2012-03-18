@@ -47,13 +47,13 @@ var MahjongTiles = function(s,v){
 		var result = "";
 		switch( this.suit ){ 
 			case 0 :
-				result += " | Circle " + this.value + " | ";
+				result += " | Circle " + ( 1 + this.value) + " | ";
 				break;
 			case 1 :
-				result += " | Sticks " + this.value + " | ";
+				result += " | Sticks " + ( 1 + this.value) + " | ";
 				break;
 			case 2 :
-				result += " | Characters " + this.value + " | ";
+				result += " | Characters " + (1 + this.value) + " | ";
 				break;
 			case 3:
 				switch( this.value ){ 

@@ -1,9 +1,7 @@
 var playerNumber = 3;	
-
-var game = new MahjongGame();
+var graphics;
 game.initialize();
-game.newgame();
-
+var count = 0;
 
 /*
 var faggot = function(){ 
@@ -16,36 +14,39 @@ var faggot = function(){
 	}
 }
 */
-
-$(function(){ 
+$(function(){
 /*
 	
 /*
 	var me = new faggot();
 	me.dostuff();
 */
-/*
 	$("#playground").playground( { width: GAME_WIDTH,  height: GAME_HEIGHT } );
-	MahjongStaticInitialization();
-	var mytile = new MahjongTileSprite();
-	mytile.SetAs( 2,4 );
-	mytile.SetAt(0, 0);
-	mytile.SetAs( 1,2 );
-	mytile.MoveTo(100, 100);
-	$.playground().startGame(function(){ });
+	
+	$.playground().startGame(function(){
+	
+	});
 	$.playground().registerCallback( function(){
-		mytile.MoveTo( (Math.random() - 0.5) * 5, (Math.random() - 0.5 )* 5 );
-	} , 60);
-*/	
+		//$("#testarea").html(count);
+		if(game.begun){
+			graphics.draw(game.tojson());
+
+			}
+			else {
+				//draw a blank table. No idea how thats hooked up now
+	
+			}
+		} ,1/60);
+	
 } );
-
-
 $(document).ready(function(){
-	var graphics = new MahjongGraphics();
-	graphics.initialize("playground");
-	$("#endturn").mouseover( function(){ tooltip.show( "faggot" ); } );
-	$("#endturn").mouseleave( function(){ tooltip.hide(  ); } );
-	graphics.draw(game.tojson());	
 
-});
+	graphics = new MahjongGraphics();
+	graphics.initialize("playground");
+		$("#endturn").mouseover( function(){ tooltip.show( "End your turn" ); } );
+		$("#endturn").mouseleave( function(){ tooltip.hide(  ); } );
+		//graphics.draw(game.tojson());	
+
+	});
+
 

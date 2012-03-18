@@ -36,24 +36,24 @@ var MahjongGraphicsBoard = function(){
 				atile.SetAt(xpos, ypos);
 				atile.SetAs(mytile['suit'], mytile['value']);
 				
-				atile.SetCallback( 'mouseover', function(event){ 
+				/*atile.SetCallback( 'mouseover', function(event){ 
 					tooltip.show( tiletohtml(event['suit'], event['value'] ) );
 				} );
 				atile.SetCallback( 'mouseout', function(event){
 					tooltip.hide();
-				} );
+				} );*/
 				// atile.SetCallback( "click", function(event){ alert("you're a fag"); } );
 				this.btileset.push( atile );
 			}
 			else{ 
 				var atile = this.btileset[x];
 				atile.SetAs(mytile['suit'], mytile['value']);
-				atile.SetCallback( 'mouseover', function(event){ 
+				/*atile.SetCallback( 'mouseover', function(event){ 
 					tooltip.show( tiletohtml(event['suit'], event['value'] ) );
 				} );
 				atile.SetCallback( 'mouseout', function(event){
 					tooltip.hide();
-				} );
+				} );*/
 				// atile.SetCallback( "click", function(event){ alert("you're a fag"); } );
 				//$("#debug").append( " xpos: " + xpos + " mathfloor " + Math.floor(x/6) );
 			}

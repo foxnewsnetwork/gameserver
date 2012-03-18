@@ -4,18 +4,34 @@ var MahjongHand = function(){
 	
 	
 	this.drawtile = function( tiles ){ 
-		this.hidden.push( tiles.pop() );
+		tileToAdd = tiles.pop();
+		$("#testarea").append(tileToAdd.tohtml());
+	
+		this.hidden.push( tileToAdd );
 		this.sorthand();
 	}
 	
 	this.discardtile = function(tiles, tile){ 
-		var faggot = this.hidden[tile];
-		this.hidden.splice(tile, 1);
+		var length = this.hidden.length;
+		var tileLoc = 0;
+		for(var i = 0; i < length; i++)
+		{
+
+		if(this.hidden[i].tohtml() == tile)
+				{
+					tileLoc = i;
+				}
+		}	
+		var faggot = this.hidden[tileLoc];
+		$('#testarea').append(faggot.tohtml());
+		this.hidden.splice(tileLoc, 1);
 		tiles.push(faggot);
 		this.sorthand();
 		return faggot;
 	}
-	
+	function findTileLocation(tile){
+		return 0;
+	}
 	this.sorthand = function(){ 
 		this.hidden.sort( function(a,b){ 
 			return a.sval() - b.sval();

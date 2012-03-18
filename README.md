@@ -73,3 +73,9 @@ Alireza Meeting notes
 7. ONe liner about the company
 8. Form for expo + attachments
 9. SPA
+
+Nathan Gold Notes
+=
+1. SSame weak op
+2. too much info
+3. weak ed (colombo clause)

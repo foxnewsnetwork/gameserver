@@ -205,8 +205,10 @@ socket.on( "player login down", function(data) {
 * Shop Class                     *
 **********************/
 
+
 var IndigioShop = function(){
 	this.container;
+	this.flash;
 	this.mall;
 	this.items;
 	this.itemtiles;
@@ -253,7 +255,9 @@ var IndigioShop = function(){
 		this.vacantAnimation = new $.gameQuery.Animation({
 			imageURL: "images/shopicons/vacant.png"
 		});
-		
+		this.approveAnimation = new $.gameQuery.Animation({
+			imageURL: "images/shopicons/approve.png"
+		});
 		this.exitAnimation = new $.gameQuery.Animation({ 
 			imageURL: "images/shopicons/Close.png",
 			width: EXIT_WIDTH,
@@ -273,6 +277,24 @@ var IndigioShop = function(){
 			width: shopwidth, 
 			height: shopheight 
 		} );
+		
+		// Setting up flash messages
+		this.container.addGroup( shopid + "-flashcontainer", { 
+			width : shopwidth,
+			height : shopheight
+		} ).addSprite( shopid + "-flash", { 
+			'width': shopwidth,
+			'height': shopheight / 4 ,
+			'posx': 0,
+			'poxy': shopheight / 2 - 25
+		} );
+		this.flash = $( "#" + shopid + "-flash" );
+		this.flash.css( "z-index", 555 );
+		this.flash.css( "background-color", "rgb( 150, 160, 80 )" );
+		this.flash.hide();
+		
+		
+		// setting up the mall
 		this.mall = $.playground().addGroup( shopid + "-mall", { 
 			width : shopwidth,
 			height : shopheight
@@ -280,11 +302,126 @@ var IndigioShop = function(){
 		this.mall.addSprite( shopid + "-exit", {
 			'width' : EXIT_WIDTH , 
 			'height' : EXIT_HEIGHT ,
-			'posx' : shopwidth - EXIT_WIDTH + 5 ,
-			'posy' : shopheight - EXIT_HEIGHT + 5 ,
+			'posx' : shopwidth - EXIT_WIDTH - 5 ,
+			'posy' : shopheight - EXIT_HEIGHT - 5 
 		} );
 		this.exit = $( "#" + shopid + "-exit" );
 		this.exit.setAnimation( this.exitAnimation );
+		
+		// Setting up the login and confirmation tabs
+		this.tabs = {};
+		this.tabs['confirmation'] = this.container.addGroup( shopid + "-tabs-confirmation", { 
+			width: shopwidth,
+			height: shopheight
+		} );
+		this.tabs['confirmation'].addSprite( shopid + "-tabs-confirmation-yes", { 
+			animation: this.approveAnimation,
+			width: EXIT_WIDTH,
+			height: EXIT_HEIGHT,
+			posx: shopwidth - 2 * EXIT_WIDTH , //shopwidth - 2 * EXIT_WIDTH,
+			posy: shopheight - EXIT_HEIGHT - 5
+		} );
+		this.tabs['confirmation'].addSprite( shopid + "-tabs-confirmation-no", { 
+			animation: this.exitAnimation,
+			width: EXIT_WIDTH,
+			height: EXIT_HEIGHT,
+			'posx' : shopwidth - EXIT_WIDTH , //shopwidth - EXIT_WIDTH ,
+			'posy' : shopheight - EXIT_HEIGHT - 5
+		} );
+		this.tabs['confirmation'].addSprite( shopid + "-tabs-confirmation-text", { 
+			width: shopwidth - 2 * EXIT_WIDTH,
+			height: 0.25 * shopheight,
+			posx: 0.5 * shopwidth,
+			posy: 10
+		} );
+		$( "#" + shopid + "-tabs-confirmation-text" ).append( "<h2>Confirm Purchase...</h2>" );
+		$( "#" + shopid + "-tabs-confirmation-yes" ).mouseover( function(){
+			tooltip.show( "Confirm purchase" );
+		} );
+		$( "#" + shopid + "-tabs-confirmation-yes" ).mouseleave( function(){ 
+			tooltip.hide();
+		} );
+		$( "#" + shopid + "-tabs-confirmation-no" ).mouseover( function(){
+			tooltip.show( "Cancel purchase" );
+		} );
+		$( "#" + shopid + "-tabs-confirmation-no" ).mouseleave( function(){ 
+			tooltip.hide();
+		} );
+		
+		
+		// Setting up the payment tabs
+		this.tabs['payment'] = this.container.addGroup( shopid + "-tabs-payment", { 
+			width: shopwidth,
+			height: shopheight
+		} );
+		
+		this.tabs['payment'].addSprite( shopid + "-tabs-payment-form", { 
+			width: shopwidth,
+			height: shopheight,
+			posx: 5,
+			posy: 5
+		} );
+		
+		
+		this.tabs['payment'].addSprite( shopid + "-tabs-payment-submit", { 
+			animation: this.approveAnimation,
+			width: EXIT_WIDTH,
+			height: EXIT_HEIGHT,
+			posx: shopwidth - 2 * EXIT_WIDTH,
+			posy: shopheight - EXIT_HEIGHT - 5
+		} )
+		this.tabs['payment'].addSprite( shopid + "-tabs-payment-cancel", { 
+			animation: this.exitAnimation,
+			width: EXIT_WIDTH,
+			height: EXIT_HEIGHT,
+			posx: shopwidth - EXIT_WIDTH,
+			posy: shopheight - EXIT_HEIGHT - 5
+		} );
+		
+		/*
+		this.tabs['payment'].addSprite( shopid + "-tabs-payment-submit", { 
+			animation: this.approveAnimation,
+			width: EXIT_WIDTH,
+			height: EXIT_HEIGHT,
+			posx: shopwidth / 2,
+			posy: shopheight - EXIT_HEIGHT - 5
+		} );
+		this.tabs['payment'].addSprite( shopid + "-tabs-payment-cancel", { 
+			animation: this.exitAnimation,
+			width: EXIT_WIDTH,
+			height: EXIT_HEIGHT,
+			posx: shopwidth - EXIT_WIDTH,
+			posy: EXIT_HEIGHT
+		} );
+		*/
+		
+		$( "#" + shopid + "-tabs-payment-submit" ).mouseover( function(){ 
+			tooltip.show( "Submit payment" );
+		} );
+		$( "#" + shopid + "-tabs-payment-submit" ).mouseleave( function(){
+			tooltip.hide();
+		} );
+		$( "#" + shopid + "-tabs-payment-submit" ).click( function(){ 
+			var data = GetPaymentForm();
+			BuyItem( data );	
+		} );
+		$( "#" + shopid + "-tabs-payment-cancel" ).mouseover( function(){ 
+			tooltip.show( "Cancel" );
+		} );
+		$( "#" + shopid + "-tabs-payment-cancel" ).mouseleave( function(){
+			tooltip.hide();
+		} );
+		$( "#" + shopid + "-tabs-payment-cancel" ).click( (function(sh){ 
+			return function(){
+				sh.mall.show(); 
+				sh.tabs['payment'].hide(500); 
+			};
+		} )(this) );
+		
+		
+		// Temporarily hiding the stuff I don't need
+		this.tabs['confirmation'].hide();
+		this.tabs['payment'].hide();
 		
 		// Setting up the sprites for the 10 items
 		this.items = []; this.itemtiles = [];
@@ -315,8 +452,8 @@ var IndigioShop = function(){
 		// I declare an anonymouse function of 1 variable
 		// which returns a function closing the dom element passed in
 		this.exit.click( (function(faggot){
-			return function(){ faggot.hide(1000); };
-		})(this.container) );
+			return function(){ faggot.destroy(); };
+		})(this) );
 		this.exit.mouseover( function(){
 			tooltip.show( "Close the shop" );
 		} );
@@ -391,6 +528,7 @@ var IndigioShop = function(){
 	
 	this.destroy = function(){ 
 		// Step 1: Remove all the elements
+		this.container.hide(1000);
 		this.container.remove();
 		
 		// Step 2: Null all the dom elements
@@ -399,22 +537,84 @@ var IndigioShop = function(){
 		this.items = undefined;
 		this.exit = undefined;
 		this.tabs = undefined;
+		tooltip.hide();
 		
 		// Step 3: deleting the animations
 		delete this.itemAnimations;
 		delete this.lockedAnimation;
 		delete this.vacantAnimation;
 		delete this.exitAnimation;
+		delete this.approveAnimation;
 		
 		// Step 4: Setting the flag
 		this.initializationFlag = false;
 	}
 	
 	this.SetupConfirmation = function( item ){ 
+		this.mall.hide();
+		this.tabs['confirmation'].css( "z-index", 501);
+		this.tabs['confirmation'].show(1000);
+		
+		$( "#" + SHOP_ID + "-tabs-confirmation-yes" ).click( (function(it, sh){ 
+			return function(){ sh.SetupPayment(it); };
+		})(item, this) );
+		
+		$( "#" + SHOP_ID + "-tabs-confirmation-no" ).click( (function(sh){
+			return function(){ 
+				sh.tabs['confirmation'].hide(500); 
+				sh.mall.show(1000); 
+			};
+		})(this) );
+	}
+	
+	this.SetupPayment = function( item ){ 
+		this.tabs['confirmation'].hide();
+		this.tabs['payment'].css( "z-index", 501 );
+		this.tabs['payment'].show(550);
+		var formdata = GeneratePaymentForm(item);
+		$("#" + SHOP_ID + "-tabs-payment-form").html(formdata);
+	}
+	
+	this.CompletePurchase = function( result ){ 
+		this.tabs['payment'].hide();
+		this.mall.show( 500 );
+		this.flash.append( "<h2>" + result + "</h2>" );
+		this.flash.show( 250, (function(el){ return function(){ el.hide(2000) }; })(this.flash));
 		
 	}
 }
 
+function GeneratePaymentForm(item){
+	var ftag = SHOP_ID + "-payment-form";
+	var output = "<h1>Payment Information</h1>";
+	output += JSForm.build( { 
+		itemId: { 
+			tag: "input",
+			type: "hidden",
+			value: item['id']
+		} ,
+		name: { 
+			tag: 'input',
+			type: 'text',
+			placeholder: 'Jack Jackson'
+		},
+		phone:{ 
+			tag: 'input',
+			type: 'text',
+			placeholder: '323 555 5555'
+		},
+		email: { 
+			tag: "input",
+			type: "text",
+			placeholder: "example@email.com"
+		}
+	}, ftag );
+	return output;
+}
+
+function GetPaymentForm(){ 
+	return JSForm.get();
+}
 
 function GetMouseOverCallback( item ){ 
 	return function(){ 
@@ -456,7 +656,7 @@ function GetShopItems( metadata ){
 }
 
 socket.on( "open shop down", function( data ){ 
-	alert(JSON.stringify(data));
+	// alert(JSON.stringify(data));
 	var tempItems = data['items'];
 	if( data['sessionId'] == sessionId ) {
 		shopItems = (function(raw){ 
@@ -486,12 +686,13 @@ socket.on( "open shop down", function( data ){
 } );
 
 // playerToken and item id are required to complete a purchase
-function BuyItem( player, item ){ 
-	socket.emit( "purchase item up", { playerToken: player, itemId: item } );
+function BuyItem( data ){ 
+	socket.emit( "purchase item up", data );
 }
 
 socket.on( "purchase item down", function(result){
 	// TODO: write a function to display some sort of message for success or failure
+	myShop.CompletePurchase( result );
 } );
 
 AddShopFunction( "open shop down", function(stuff){ 

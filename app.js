@@ -1,3 +1,4 @@
+//adding comments so app works
 /******************************
  * Module dependencies.                 *
  ******************************/
@@ -262,7 +263,7 @@ myrooms.Initialize();
 ****************************/
 // Initialize the socket connection
 io.sockets.on('connection', function(socket){
-	console.log('we are connected');
+	console.log('connection to server confirmed');
 	socket.emit( 'connection', socket.id );
 		
 	socket.on("disconnect", function(){ 

@@ -10,10 +10,10 @@ var MahjongGraphics = function(){
 	
 	this.initialize = function( element ){ 
 		// Initializing the gameQuery playground
-		$("#" + element).playground( { 
+		/*$("#" + element).playground( { 
 			'height': GAME_HEIGHT,
 			'width': GAME_WIDTH
-		} );
+		} );*/
 		MahjongStaticInitialization();
 		this.background.initialize( element );
 		this.board.initialize( element );
@@ -23,10 +23,11 @@ var MahjongGraphics = function(){
 	
 	// gamestate is a json file
 	this.draw = function(gamestate){
+		board = gamestate['board'];
 		this.board.draw(gamestate['board']);
 		this.player.draw(gamestate['players'][playerNumber]);
-		$.playground().startGame( function(){} );
 	}
+	
 }
 
 

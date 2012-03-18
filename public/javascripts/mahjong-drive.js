@@ -7,7 +7,7 @@ var playerNumber;
 var actions = [];
 var startFlag = false;
 var readyFlag = false;
-
+var playerCanDiscard = false;
 /**************************
 * Mahjong Events Down          *
 ***************************/
@@ -48,6 +48,7 @@ AddGameFunction( "join room down", function(data){
 		$("#chat").append( "<p>you have joined " + data['roomId'] + "</p>" );
 		$("#joingame").hide();
 		$("#quitgame").show();
+		//game.playerJoined();
 	}
 	else
 		$("#chat").append( "<p>" + data['sessionId'] + " has joined " + data['roomId'] + "</p>" );		
@@ -77,7 +78,7 @@ AddGameFunction( "room stat down", function(data){
 
 AddGameFunction( "start game down", function(data){ 
 	startFlag = true;
-	game.initialize();
+
 	game.newgame();
 	for( var k in playerVec )
 		if( playerVec[k] == sessionId )
@@ -95,9 +96,9 @@ AddGameFunction( "end game down", function(data){
 ***************************/
 $(document).ready( function(){ 
 	ManageUI();
-	
 	$("#joingame").click( function(){ 
 		JoinRoom();
+		
 	} );
 	
 	$("#quitgame").click( function(){ 
@@ -108,10 +109,12 @@ $(document).ready( function(){
 		game.DrawTile( playerNumber );
 		actions = game.GetPossibleActions(playerNumber);
 		ManageUI(actions);
+		
 		$("#display").html( game.tohtml() );
 	} );
 	
 	$("#discardtile").submit( function(){ 
+
 		game.DiscardTile( playerNumber, $("#tile").val() );
 		actions = game.GetPossibleActions(playerNumber);
 		ManageUI(actions);
@@ -141,12 +144,35 @@ function ManageUI ( actions ){
 	if( actions['draw'] )
 		$("#drawtile").show();
 	if( actions['discard'] )
-		$("#discardtile").show();
-	if( actions['endturn'] )
+		{
+			playerCanDiscard = true;
+			//$("#drawtile").hide();
+			$("#discardtile").show();
+		}
+	if( actions['endturn'] ){
+		$("#drawtile").hide();
 		$("#endturn").show();
+		}
+	if( !(actions['endturn']) && !(actions['discard']) && !(actions['draw']))
+		{
+		$("#drawtile").hide();
+		$("#discardtile").hide();
+		
+		$("#endturn").hide();
+		}
 	
 }
+function discardTile(tileVals){
 
+	if(playerCanDiscard){	
+	game.DiscardTile( playerNumber, tileVals );
+	actions = game.GetPossibleActions(playerNumber);
+	ManageUI(actions);
+	$("#display").html( game.tohtml() );
+	playerCanDiscard = false;
+	return false;
+	}
+}
 function GetPlayerNumber( sId ){ 
 	for( var x in playerVec ){ 
 		if( playerVec[x] == sId )

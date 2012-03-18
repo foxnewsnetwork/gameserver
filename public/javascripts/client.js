@@ -89,6 +89,7 @@ var tooltip = function(){
 var socket = io.connect('http://localhost');
 var sessionId;
 
+
 socket.on( "connection", function(id){ 
 	sessionId = id;
 });
@@ -188,13 +189,20 @@ function AddChatFunction( eventname, func ){
 **********************/
 // playerinfo is a json 
 function LoginPlayer( playerinfo ){
-	var data = { 'sessionId': sessionId, 'login': playerinfo }; 
+	var data = playerinfo;
+	data['sessionId'] = sessionId; 
 	socket.emit( "player login up", data ); 
+	alert( "Emitted up: " + JSON.stringify( data ) );
 }
 
 socket.on( "player login down", function(data) { 
-	if(data['sessionId'] == sessionId) 
-		playerToken = data['token'];
+	if(data['sessionId'] == sessionId) { 
+		playerToken = data['playerToken'];
+		var handlers = shopFunctionHandlers['player login down'];
+		for( var k = 0; k < handlers.length; k++ ){ 
+			handlers[k]( playerToken );
+		}
+	}
 	else {
 		// inform player of mistake
 	}

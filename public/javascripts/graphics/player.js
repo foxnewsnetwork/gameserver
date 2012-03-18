@@ -54,8 +54,7 @@ var MahjongGraphicsPlayer = function(){
 					tooltip.hide();
 				} );
 				this.ptileset[k].SetCallback( "click", function(event){
-					 alert("clicked tile" + tiletohtml(event['suit'], event['value'] -1 ) );
-					 discardTile(tiletohtml(event['suit'], event['value'] -1 ) );
+					 discardTile(tiletohtml(event['suit'], event['value'] ) );
 					 });
 			}
 		}

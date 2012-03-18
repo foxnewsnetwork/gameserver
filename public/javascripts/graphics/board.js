@@ -23,18 +23,24 @@ var MahjongGraphicsBoard = function(){
 	
 	// remember, json files
 	this.draw = function( boardstate ){ 
-		var discard = boardstate['freshTiles'];
+		var discard = boardstate['discardTiles'];
 		
 		var x, xpos, ypos;
+		if(discard.length > 0)
+		//alert(discard.length);
+
 		for( x = 0; x < discard.length; x++ ){ 
 			var mytile = discard[x];
+	//		if(discard.length >0)
+//			alert(tiletohtml(mytile['suit'],mytile['value']));
 			if( this.btileset[x] == undefined ){ 
 				var atile = new MahjongTileSprite();
 				xpos = Math.floor(x/TILE_PER_COL) * TILE_WIDTH + X_BOARD;
 				//$("#debug").append( " xpos: " + xpos + " mathfloor " + Math.floor(x/6) );
 				ypos = x%TILE_PER_COL * TILE_HEIGHT + Y_BOARD;
-				atile.SetAt(xpos, ypos);
 				atile.SetAs(mytile['suit'], mytile['value']);
+
+				atile.SetAt(xpos, ypos);
 				
 				/*atile.SetCallback( 'mouseover', function(event){ 
 					tooltip.show( tiletohtml(event['suit'], event['value'] ) );

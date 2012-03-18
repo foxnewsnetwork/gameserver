@@ -153,11 +153,17 @@ function ManageUI ( actions ){
 		$("#drawtile").hide();
 		$("#endturn").show();
 		}
+	if( !(actions['endturn']) && !(actions['discard']) && !(actions['draw']))
+		{
+		$("#drawtile").hide();
+		$("#discardtile").hide();
+		
+		$("#endturn").hide();
+		}
 	
 }
 function discardTile(tileVals){
-	//tileValues = tileVals.replace("| ","");
-	//tileValues = tileValues.replace(" |","");
+
 	if(playerCanDiscard){	
 	game.DiscardTile( playerNumber, tileVals );
 	actions = game.GetPossibleActions(playerNumber);

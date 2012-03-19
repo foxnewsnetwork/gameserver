@@ -36,7 +36,7 @@ $(function(){
 				//draw a blank table. No idea how thats hooked up now
 	
 			}
-		} ,1/60);
+		} ,60);
 	
 } );
 $(document).ready(function(){

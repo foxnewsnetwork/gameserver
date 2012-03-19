@@ -20,7 +20,9 @@ var MahjongGraphics = function(){
 		this.player.initialize( element );	
 		// this.ui.initialize( element );
 	}
-	
+	this.setPlayerPick = function(handId){
+		this.player.setPick(handId);
+	}
 	// gamestate is a json file
 	this.draw = function(gamestate){
 		board = gamestate['board'];

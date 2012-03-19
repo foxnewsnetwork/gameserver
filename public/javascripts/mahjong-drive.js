@@ -14,6 +14,7 @@ var playerCanDiscard = false;
 
 AddGameFunction( "drawtile", function( origin, eventdata ){ 
 	var pn = GetPlayerNumber( origin );
+	
 	game.DrawTile( pn );
 } );
 
@@ -25,6 +26,8 @@ AddGameFunction( "discardtile", function( origin, eventdata ){
 AddGameFunction( "endturn", function( origin, eventdata ){ 
 	var pn = GetPlayerNumber( origin );
 	game.EndTurn( pn );
+	actions = game.GetPossibleActions(playerNumber);
+	ManageUI(actions);
 } );
 
 AddGameFunction( "initial sync", function( origin, eventdata ){ 
@@ -111,6 +114,7 @@ $(document).ready( function(){
 		ManageUI(actions);
 		
 		$("#display").html( game.tohtml() );
+		FireEvent("drawtile","-");
 	} );
 	
 	$("#discardtile").submit( function(){ 
@@ -119,6 +123,7 @@ $(document).ready( function(){
 		actions = game.GetPossibleActions(playerNumber);
 		ManageUI(actions);
 		$("#display").html( game.tohtml() );
+		FireEvent("discardtile",$("#tile").val());
 		return false;
 	} );
 	
@@ -127,6 +132,7 @@ $(document).ready( function(){
 		actions = game.GetPossibleActions(playerNumber);
 		ManageUI(actions);
 		$("#display").html( game.tohtml() );
+		FireEvent("endturn","-");
 	} );
 } );
 
@@ -151,13 +157,13 @@ function ManageUI ( actions ){
 		}
 	if( actions['endturn'] ){
 		$("#drawtile").hide();
+		
 		$("#endturn").show();
 		}
 	if( !(actions['endturn']) && !(actions['discard']) && !(actions['draw']))
 		{
 		$("#drawtile").hide();
 		$("#discardtile").hide();
-		
 		$("#endturn").hide();
 		}
 	
@@ -172,6 +178,9 @@ function discardTile(tileVals){
 	playerCanDiscard = false;
 	return false;
 	}
+}
+function setPlayerPickTile(handId){
+	graphics.setPlayerPick(handId);
 }
 function GetPlayerNumber( sId ){ 
 	for( var x in playerVec ){ 

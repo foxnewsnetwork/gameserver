@@ -26,8 +26,9 @@ var MahjongGraphicsBoard = function(){
 		var discard = boardstate['discardTiles'];
 		
 		var x, xpos, ypos;
-		if(discard.length > 0)
-		//alert(discard.length);
+		
+		if(discard.length > 1)
+		alert(discard.length);
 
 		for( x = 0; x < discard.length; x++ ){ 
 			var mytile = discard[x];
@@ -50,10 +51,10 @@ var MahjongGraphicsBoard = function(){
 				} );*/
 				// atile.SetCallback( "click", function(event){ alert("you're a fag"); } );
 				this.btileset.push( atile );
+				
 			}
 			else{ 
-				var atile = this.btileset[x];
-				atile.SetAs(mytile['suit'], mytile['value']);
+				this.btileset[x].SetAs(mytile['suit'], mytile['value']);
 				/*atile.SetCallback( 'mouseover', function(event){ 
 					tooltip.show( tiletohtml(event['suit'], event['value'] ) );
 				} );

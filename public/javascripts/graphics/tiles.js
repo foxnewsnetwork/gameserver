@@ -37,7 +37,7 @@ var MahjongTileSprite = function(){
 	this.y;
 	this.suit;
 	this.value;
-	
+	this.handId
 	this.SetCallback = function( name, callback ){ 
 		if( this.sprite == undefined ){ 
 			alert( "You've tried to set a callback for a completely uninitiated tile, you dumbass" );
@@ -57,7 +57,8 @@ var MahjongTileSprite = function(){
 			'ypos': this.y,
 			'suit': this.suit,
 			'value': this.value,
-			'tileId': this.tileId
+			'tileId': this.tileId,
+			'handId': this.handId
 		};
 		switch( name ){ 
 			case 'click':
@@ -187,8 +188,13 @@ var MahjongTileSprite = function(){
  
 	}
 	
-	this.SetAs = function(suit, value){ 
+	this.SetAs = function(suit, value,handId){ 
 		var changed = false;
+		if(this.handId != handId || this.handId == undefined)
+		{
+			this.handId = handId;
+			
+		}
 		if(this.suit != suit || this.suit == undefined)
 		{
 			this.suit = suit;

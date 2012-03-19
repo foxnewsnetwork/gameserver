@@ -16,7 +16,7 @@ var MahjongHand = function(){
 		var tileLoc = 0;
 		for(var i = 0; i < length; i++)
 		{
-
+		//	alert("comparing " + this.hidden[i].tohtml() + " with " + tile);
 		if(this.hidden[i].tohtml() == tile)
 				{
 					tileLoc = i;

@@ -1,6 +1,23 @@
 
 var MahjongGraphicsPlayer = function(){ 
 	this.ptileset;
+	this.pickedTile;
+	
+	
+	 this.setPick = function(num){
+		 if(this.pickedTile != undefined){
+				xpos = X_PLAYER + this.pickedTile*TILE_WIDTH;
+				ypos = Y_PLAYER;
+				this.ptileset[this.pickedTile].SetAt(xpos, ypos);	
+			}
+			xpos2 = X_PLAYER + num*TILE_WIDTH;
+			ypos2 = Y_PLAYER - 20;
+			this.ptileset[num].SetAt(xpos2, ypos2);
+
+			
+			this.pickedTile = num;
+			
+	}
 	
 	this.initialize = function(element){ 
 		this.ptileset = [];
@@ -16,6 +33,10 @@ var MahjongGraphicsPlayer = function(){
 	    return str;
 	}
 	this.draw = function( playerstate ){ 
+		if(this.pickedTile != undefined)
+			{
+			$('#clickedtile').html(this.pickedTile);
+			}
 		var hand = playerstate['hand'];
 		var hidden = hand['hidden'];
 		var exposed = hand['exposed'];
@@ -28,7 +49,7 @@ var MahjongGraphicsPlayer = function(){
 				var atile = new MahjongTileSprite();
 				xpos = X_PLAYER + k*TILE_WIDTH;
 				ypos = Y_PLAYER;
-				atile.SetAs(hidden[k]['suit'], hidden[k]['value']);
+				atile.SetAs(hidden[k]['suit'], hidden[k]['value'],k);
 				atile.SetAt(xpos, ypos);
 				atile.SetCallback( 'mouseover', function(event){ 
 					tooltip.show( tiletohtml(event['suit'], event['value'] ) );
@@ -36,25 +57,33 @@ var MahjongGraphicsPlayer = function(){
 				atile.SetCallback( 'mouseout', function(event){
 					tooltip.hide();
 				} );
-				 //atile.SetCallback( "click", function(event){
-					// alert("clicked tiles" + event['suit'] +" "+ event['value'] );
-					 //discardTile( tiletohtml(event['suit'], event['value'] ));
-					 //});
+				/* atile.SetCallback( "click", function(event){
+					 alert("clicked tiles" + event['suit'] +" "+ event['value'] );
+					// discardTile( tiletohtml(event['suit'], event['value'] ));
+					 });*/
 				this.ptileset.push( atile );
 
 			}
 			else{ 
 			
-				this.ptileset[k].SetAs( hidden[k]['suit'], hidden[k]['value'] );
+				this.ptileset[k].SetAs( hidden[k]['suit'], hidden[k]['value'],k );
 				
 				this.ptileset[k].SetCallback( 'mouseover', function(event){ 
 					tooltip.show( tiletohtml(event['suit'], event['value'] ) );
+					//tooltip.show(event['handId']);
 				} );
 				this.ptileset[k].SetCallback( 'mouseout', function(event){
 					tooltip.hide();
 				} );
 				this.ptileset[k].SetCallback( "click", function(event){
-					 discardTile(tiletohtml(event['suit'], event['value'] ) );
+					//alert(tiletohtml(event['suit'], event['value'] ) );
+					deleteTile = tiletohtml(event['suit'], event['value'] );
+					//$("#clickedtile").append(deleteTile);
+					$("#tile").val(deleteTile);
+					deleteTileSpot = event['handId'];
+					//Click discarding temporarily disabled.
+					//discardTile(deleteTile);
+					setPlayerPickTile(deleteTileSpot);
 					 });
 			}
 		}

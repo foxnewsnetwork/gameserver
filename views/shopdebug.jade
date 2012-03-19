@@ -1,19 +1,15 @@
 script(type = "text/javascript", src="javascripts/jquery/jquery.js" )
-script(type = "text/javascript", src="javascripts/shop-debug.js" )
+script(type = 'text/javascript', src='socket.io/socket.io.js' )
+script(type = "text/javascript", src="javascripts/gameQuery/gameQuery.js" )
+script(type = "text/javascript", src="javascripts/client.js" )
+script(type = "text/javascript", src="javascripts/form.js" )
+link(rel = "stylesheet", href="stylesheets/extensions.css" ) 
 script(type = "text/javascript")
-	var myshoptest = new IndigioShop();
-	$(document).ready( function(){ 
-		myshoptest.initialize( { 
-			'divid': "debug"
-		} );
+	$(document).ready( function(){
 		$("#setupshop").click( function(){ 
-			myshoptest.SetupShop( array( { 
-				'description': "henry is a faggot",
-				'tileset': "images/tiles/0.png"
-			} ) );
+			CallShop();
 		} );
 	} );
-
 h1= title
 p Welcome to #{title}
 #debug

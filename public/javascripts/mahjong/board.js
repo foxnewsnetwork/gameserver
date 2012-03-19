@@ -41,7 +41,7 @@ var MahjongBoard = function(){
 			data['freshTiles'].push( this.freshTiles[x].tojson() );
 		}
 		for( var k in this.discardTiles ){ 
-			data['discardTiles'].push( this.discardTiles[x].tojson() );
+			data['discardTiles'].push( this.discardTiles[k].tojson() );
 		} 
 		return data;
 	}	

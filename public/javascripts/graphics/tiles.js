@@ -7,9 +7,10 @@ function CreateSet(){
 			tileset.push( new $.gameQuery.Animation( { 
 				'imageURL': IMAGE_PATH + "tiles/" + ( suit * 10 + value ) + ".png"
 			} ) );
-			$("#debug").append( "<p><img alt='tile' src='" + IMAGE_PATH + "tiles/" + ( suit * 10 + value ) + ".png" + "' /></p>" );
 		}
 	}
+	//$("#debug").append( "<p><img alt='tile' src='" + IMAGE_PATH + "tiles/" + ( suit * 10 + value ) + ".png" + "' /></p>" );
+   $("#debug").append("took out list of tiles for now");
 	return tileset;
 }
 
@@ -26,6 +27,11 @@ function MahjongStaticInitialization(){
 var MahjongTileSprite = function(){ 
 	this.sprite;
 	staticTileId += 1;
+
+	if(staticTileId >= 129)
+		{
+		staticTileId += 1;
+		}
 	this.tileId = staticTileId;
 	this.x;
 	this.y;
@@ -155,11 +161,13 @@ var MahjongTileSprite = function(){
 		
 	this.SetAt = function(xpos, ypos){ 
 		this.x = xpos;
+		
 		this.y = ypos;
 		if( this.suit == undefined || this.value == undefined )
 			return;
 		else{
 			if(this.sprite != undefined){
+				
 				this.sprite.css( "left" , xpos + "px" );
 				this.sprite.css( "top" , ypos + "px" );
 				this.sprite.css( "z-index", 99 );
@@ -180,8 +188,17 @@ var MahjongTileSprite = function(){
 	}
 	
 	this.SetAs = function(suit, value){ 
-		this.suit = suit;
-		this.value = value;
+		var changed = false;
+		if(this.suit != suit || this.suit == undefined)
+		{
+			this.suit = suit;
+			changed = true;
+		}
+		if(this.value != value || this.value == undefined)
+			{
+			this.value = value;
+			changed = true;
+			}
 		if( suit == undefined && value == undefined ){ 
 			// blank tile
 			this.suit = 4;
@@ -190,10 +207,11 @@ var MahjongTileSprite = function(){
 		if( this.x == undefined || this.y == undefined )
 			return;
 		else{
-			if(this.sprite != undefined){
+			if(this.sprite != undefined && changed){
 				this.sprite.setAnimation(MahjongSet[ this.suit *9 + this.value ]);
+		        
 			}
-			else{
+			else if (this.sprite == undefined){
 				this.sprite = staticTileGroup.addSprite( "tile" + this.tileId, { 
 					animation: MahjongSet[ this.suit *9 + this.value ],
 					width: TILE_WIDTH,
@@ -203,7 +221,7 @@ var MahjongTileSprite = function(){
 					posz: 99
 				} ); 
 				this.sprite = $( "#tile" + this.tileId );
-			}
+			  }
 		} 
 	}
 	

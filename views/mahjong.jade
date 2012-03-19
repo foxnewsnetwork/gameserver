@@ -1,6 +1,18 @@
 script(type = 'text/javascript', src="javascripts/jquery/jquery.js" )
 script(type = 'text/javascript', src='socket.io/socket.io.js' )
 script(type = "text/javascript", src="javascripts/client.js" )
+
+script(type = "text/javascript", src="javascripts/gameQuery/gameQuery.js" )
+
+script(type = "text/javascript", src="javascripts/graphics/extensions.js" )
+script(type = "text/javascript", src="javascripts/graphics/constants.js" )
+script(type = "text/javascript", src="javascripts/graphics/ui.js" )
+script(type = "text/javascript", src="javascripts/graphics/tiles.js" )
+script(type = "text/javascript", src="javascripts/graphics/game.js" )
+script(type = "text/javascript", src="javascripts/graphics/player.js" )
+script(type = "text/javascript", src="javascripts/graphics/board.js" )
+script(type = 'text/javascript', src='javascripts/graphics/background.js' );
+
 script(type = "text/javascript", src="javascripts/mahjong/board.js" )
 script(type = "text/javascript", src="javascripts/mahjong/constants.js" )
 script(type = "text/javascript", src="javascripts/mahjong/game.js" )
@@ -8,11 +20,13 @@ script(type = "text/javascript", src="javascripts/mahjong/hand.js" )
 script(type = "text/javascript", src="javascripts/mahjong/helpers.js" )
 script(type = "text/javascript", src="javascripts/mahjong/player.js" )
 script(type = "text/javascript", src="javascripts/mahjong/tiles.js" )
-script(type='text/javascript', src='javascripts/mahjong-drive.js' );
+script(type = "text/javascript", src="javascripts/mahjong-drive.js")
+script(type = "text/javascript", src="javascripts/v5debug.js")
+link(href="/stylesheets/extensions.css", media="screen", rel="stylesheet", type="text/css")
 
 h1= title
 p Welcome to #{title}
-
+#testarea
 #UI
 	button#joingame Join Game
 	button#quitgame Quit Game
@@ -25,4 +39,6 @@ p Welcome to #{title}
 #display
 #chat
 #debug
+#playground
+
 

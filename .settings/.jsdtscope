@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="public/javascripts/|node_modules/socket.io/node_modules/policyfile/lib/|node_modules/socket.io/node_modules/socket.io-client/node_modules/uglify-js/test/unit/compress/test/|node_modules/mongoose/node_modules/mongodb/lib/mongodb/goog/math/|node_modules/hiredis/test/|node_modules/socket.io/examples/irc-output/|node_modules/hiredis/|node_modules/socket.io/node_modules/policyfile/examples/|node_modules/socket.io/lib/|node_modules/indigio/controller/|node_modules/mongoose/node_modules/mongodb/test/manual_tests/|node_modules/mongoose/node_modules/mongodb/deps/nodeunit/lib/reporters/|node_modules/stylus/|node_modules/mongoose/support/expresso/lib/|node_modules/stylus/lib/convert/|node_modules/socket.io/node_modules/policyfile/tests/|node_modules/socket.io/node_modules/redis/lib/parser/|node_modules/stylus/lib/nodes/|node_modules/express/testing/foo/routes/|node_modules/socket.io/node_modules/socket.io-client/node_modules/uglify-js/|node_modules/mongoose/node_modules/mongodb/test/auxilliary/|node_modules/express/node_modules/connect/node_modules/formidable/|node_modules/mongoose/node_modules/mongodb/deps/nodeunit/|node_modules/mongoose/node_modules/mongodb/deps/step/test/|node_modules/socket.io/node_modules/redis/tests/stress/pubsub/|node_modules/stylus/lib/visitor/|node_modules/stylus/lib/|node_modules/stylus/node_modules/mkdirp/examples/|node_modules/socket.io/node_modules/socket.io-client/bin/|node_modules/express/lib/router/|node_modules/socket.io/node_modules/redis/|node_modules/socket.io/lib/transports/websocket/|node_modules/redis/|node_modules/mongoose/lib/schema/|node_modules/stylus/node_modules/mkdirp/test/|node_modules/socket.io/node_modules/redis/tests/stress/rpushblpop/|node_modules/socket.io/node_modules/socket.io-client/node_modules/uglify-js/test/unit/|node_modules/mongoose/test/|node_modules/mongoose/node_modules/mongodb/test/replicaset/|routes/|node_modules/socket.io/node_modules/socket.io-client/test/|node_modules/mongoose/node_modules/mongodb/deps/nodeunit/examples/browser/|node_modules/stylus/lib/stack/|node_modules/mongoose/support/expresso/test/|node_modules/mongoose/node_modules/mongodb/test/connection/|node_modules/socket.io/node_modules/socket.io-client/lib/|node_modules/socket.io/node_modules/socket.io-client/node_modules/websocket-client/test/|node_modules/stylus/testing/|node_modules/socket.io/node_modules/socket.io-client/lib/transports/|node_modules/express/lib/|node_modules/express/node_modules/connect/node_modules/formidable/test/legacy/simple/|node_modules/express/node_modules/connect/|node_modules/express/node_modules/connect/node_modules/formidable/test/legacy/|node_modules/socket.io/support/node-websocket-client/lib/|node_modules/stylus/node_modules/mkdirp/|node_modules/express/node_modules/connect/node_modules/formidable/test/legacy/system/|node_modules/mongoose/node_modules/mongodb/deps/nodeunit/lib/|node_modules/express/node_modules/mkdirp/test/|node_modules/socket.io/node_modules/socket.io-client/node_modules/uglify-js/tmp/|node_modules/socket.io/node_modules/socket.io-client/lib/vendor/web-socket-js/|node_modules/socket.io/node_modules/socket.io-client/node_modules/uglify-js/lib/|node_modules/mongoose/node_modules/mongodb/deps/nodeunit/test/|node_modules/mongoose/node_modules/mongodb/external-libs/bson/|node_modules/mongoose/node_modules/mongodb/lib/mongodb/responses/|node_modules/socket.io/node_modules/policyfile/|node_modules/socket.io/node_modules/socket.io-client/node_modules/websocket-client/examples/|node_modules/mongoose/node_modules/mongodb/external-libs/bson/test/|node_modules/express/node_modules/connect/lib/middleware/session/|node_modules/express/node_modules/mkdirp/|public/javascripts/mahjong/|node_modules/mongoose/node_modules/mongodb/test/tools/|node_modules/mongoose/node_modules/mongodb/harness/|node_modules/socket.io/node_modules/socket.io-client/dist/|node_modules/socket.io/node_modules/redis/tests/|node_modules/indigio/model/|node_modules/socket.io/support/node-websocket-client/test/|node_modules/express/node_modules/connect/node_modules/formidable/test/fixture/js/|node_modules/express/node_modules/connect/node_modules/formidable/example/|node_modules/jade/node_modules/commander/lib/|node_modules/mongoose/node_modules/mongodb/deps/gleak/|node_modules/stylus/node_modules/growl/lib/|node_modules/express/node_modules/connect/node_modules/formidable/test/unit/|node_modules/express/node_modules/connect/lib/middleware/|node_modules/mongoose/lib/types/|node_modules/mongoose/node_modules/mongodb/deps/step/lib/|node_modules/jade/node_modules/mkdirp/test/|node_modules/socket.io/benchmarks/|node_modules/express/node_modules/connect/node_modules/formidable/lib/|node_modules/socket.io/node_modules/redis/lib/|node_modules/redis/tests/stress/pubsub/|node_modules/redis/tests/stress/|node_modules/express/node_modules/connect/node_modules/formidable/test/integration/|node_modules/jade/node_modules/commander/|node_modules/express/node_modules/connect/node_modules/formidable/test/fixture/|node_modules/stylus/node_modules/debug/example/|node_modules/socket.io/lib/stores/|node_modules/express/node_modules/mime/|node_modules/socket.io/node_modules/socket.io-client/test/node/|node_modules/mongoose/node_modules/mongodb/test/|node_modules/express/node_modules/connect/node_modules/formidable/tool/|node_modules/express/node_modules/connect/lib/|node_modules/redis/lib/|node_modules/express/lib/view/|node_modules/mongoose/node_modules/mongodb/deps/nodeunit/deps/|node_modules/express/node_modules/qs/test/|node_modules/mongoose/lib/|node_modules/socket.io/support/node-websocket-client/examples/|node_modules/socket.io/examples/chat/|node_modules/mongoose/node_modules/mongodb/lib/mongodb/|public/javascripts/jquery/|node_modules/mongoose/node_modules/mongodb/deps/nodeunit/test/fixtures/|node_modules/express/node_modules/connect/node_modules/formidable/test/|node_modules/socket.io/node_modules/socket.io-client/node_modules/uglify-js/test/|node_modules/jade/|node_modules/mongoose/benchmarks/|node_modules/mongoose/node_modules/mongodb/deps/gleak/test/|node_modules/socket.io/node_modules/socket.io-client/node_modules/xmlhttprequest/tests/|node_modules/mongoose/node_modules/mongodb/lib/mongodb/connection/|node_modules/socket.io/node_modules/redis/tests/stress/speed/|node_modules/mongoose/node_modules/mongodb/|node_modules/express/testing/foo/|node_modules/socket.io/node_modules/redis/tests/stress/|node_modules/redis/tests/|node_modules/socket.io/lib/transports/|node_modules/socket.io/|node_modules/mongoose/node_modules/mongodb/lib/mongodb/commands/|node_modules/jade/lib/nodes/|node_modules/stylus/node_modules/cssom/lib/|node_modules/mongoose/lib/drivers/node-mongodb-native/|node_modules/mongoose/node_modules/mongodb/examples/|node_modules/mongoose/node_modules/mongodb/deps/nodeunit/test/fixtures/dir/|node_modules/stylus/node_modules/growl/|node_modules/stylus/node_modules/cssom/|node_modules/jade/lib/|node_modules/mongoose/support/expresso/test/serial/|node_modules/mongoose/examples/|node_modules/socket.io/node_modules/socket.io-client/node_modules/uglify-js/test/unit/compress/expected/|node_modules/mongoose/node_modules/mongodb/lib/mongodb/gridfs/|node_modules/jade/node_modules/mkdirp/|node_modules/mongoose/node_modules/mongodb/test/gridstore/|node_modules/mongoose/test/drivers/node-mongodb-native/|node_modules/jade/node_modules/mkdirp/examples/|node_modules/socket.io/node_modules/socket.io-client/node_modules/websocket-client/lib/|node_modules/express/|node_modules/mongoose/|node_modules/mongoose/node_modules/mongodb/tools/|node_modules/mongoose/node_modules/mongodb/lib/mongodb/bson/|node_modules/express/node_modules/connect/node_modules/formidable/benchmark/|node_modules/express/node_modules/mkdirp/examples/|node_modules/mongoose/node_modules/hooks/|node_modules/redis/tests/stress/rpushblpop/|node_modules/stylus/node_modules/debug/lib/|node_modules/redis/lib/parser/|node_modules/express/node_modules/connect/node_modules/formidable/test/legacy/integration/|node_modules/jade/testing/|node_modules/mongoose/node_modules/mongodb/lib/mongodb/connection/strategies/|node_modules/express/testing/|node_modules/stylus/lib/functions/|node_modules/express/node_modules/qs/lib/|node_modules/redis/tests/stress/speed/|node_modules/mongoose/node_modules/mongodb/deps/nodeunit/share/|node_modules/socket.io/node_modules/redis/examples/|node_modules/socket.io/node_modules/socket.io-client/node_modules/xmlhttprequest/|node_modules/stylus/node_modules/debug/|node_modules/indigio/|node_modules/express/node_modules/qs/|node_modules/mongoose/node_modules/mongodb/test/bson/|node_modules/redis/examples/" kind="src" path=""/>
+	<classpathentry excluding="testing/foo/routes/|node_modules/connect/node_modules/formidable/|lib/router/|lib/|node_modules/connect/node_modules/formidable/test/legacy/simple/|node_modules/connect/|node_modules/connect/node_modules/formidable/test/legacy/|node_modules/connect/node_modules/formidable/test/legacy/system/|node_modules/mkdirp/test/|node_modules/connect/lib/middleware/session/|node_modules/mkdirp/|node_modules/connect/node_modules/formidable/test/fixture/js/|node_modules/connect/node_modules/formidable/example/|node_modules/connect/node_modules/formidable/test/unit/|node_modules/connect/lib/middleware/|node_modules/connect/node_modules/formidable/lib/|node_modules/connect/node_modules/formidable/test/integration/|node_modules/connect/node_modules/formidable/test/fixture/|node_modules/mime/|node_modules/connect/node_modules/formidable/tool/|node_modules/connect/lib/|lib/view/|node_modules/qs/test/|node_modules/connect/node_modules/formidable/test/|testing/foo/|node_modules/connect/node_modules/formidable/benchmark/|node_modules/mkdirp/examples/|node_modules/connect/node_modules/formidable/test/legacy/integration/|testing/|node_modules/qs/lib/|node_modules/qs/" kind="src" path="node_modules/express"/>
+	<classpathentry excluding="router/|view/" kind="src" path="node_modules/express/lib"/>
+	<classpathentry kind="src" path="node_modules/express/lib/router"/>
+	<classpathentry kind="src" path="node_modules/express/lib/view"/>
+	<classpathentry excluding="node_modules/formidable/|node_modules/formidable/test/legacy/simple/|node_modules/formidable/test/legacy/|node_modules/formidable/test/legacy/system/|lib/middleware/session/|node_modules/formidable/test/fixture/js/|node_modules/formidable/example/|node_modules/formidable/test/unit/|lib/middleware/|node_modules/formidable/lib/|node_modules/formidable/test/integration/|node_modules/formidable/test/fixture/|node_modules/formidable/tool/|lib/|node_modules/formidable/test/|node_modules/formidable/benchmark/|node_modules/formidable/test/legacy/integration/" kind="src" path="node_modules/express/node_modules/connect"/>
+	<classpathentry excluding="middleware/session/|middleware/" kind="src" path="node_modules/express/node_modules/connect/lib"/>
+	<classpathentry excluding="session/" kind="src" path="node_modules/express/node_modules/connect/lib/middleware"/>
+	<classpathentry kind="src" path="node_modules/express/node_modules/connect/lib/middleware/session"/>
+	<classpathentry excluding="test/legacy/simple/|test/legacy/|test/legacy/system/|test/fixture/js/|example/|test/unit/|lib/|test/integration/|test/fixture/|tool/|test/|benchmark/|test/legacy/integration/" kind="src" path="node_modules/express/node_modules/connect/node_modules/formidable"/>
+	<classpathentry kind="src" path="node_modules/express/node_modules/connect/node_modules/formidable/benchmark"/>
+	<classpathentry kind="src" path="node_modules/express/node_modules/connect/node_modules/formidable/example"/>
+	<classpathentry kind="src" path="node_modules/express/node_modules/connect/node_modules/formidable/lib"/>
+	<classpathentry excluding="legacy/simple/|legacy/|legacy/system/|fixture/js/|unit/|integration/|fixture/|legacy/integration/" kind="src" path="node_modules/express/node_modules/connect/node_modules/formidable/test"/>
+	<classpathentry excluding="js/" kind="src" path="node_modules/express/node_modules/connect/node_modules/formidable/test/fixture"/>
+	<classpathentry kind="src" path="node_modules/express/node_modules/connect/node_modules/formidable/test/fixture/js"/>
+	<classpathentry kind="src" path="node_modules/express/node_modules/connect/node_modules/formidable/test/integration"/>
+	<classpathentry excluding="simple/|system/|integration/" kind="src" path="node_modules/express/node_modules/connect/node_modules/formidable/test/legacy"/>
+	<classpathentry kind="src" path="node_modules/express/node_modules/connect/node_modules/formidable/test/legacy/integration"/>
+	<classpathentry kind="src" path="node_modules/express/node_modules/connect/node_modules/formidable/test/legacy/simple"/>
+	<classpathentry kind="src" path="node_modules/express/node_modules/connect/node_modules/formidable/test/legacy/system"/>
+	<classpathentry kind="src" path="node_modules/express/node_modules/connect/node_modules/formidable/test/unit"/>
+	<classpathentry kind="src" path="node_modules/express/node_modules/connect/node_modules/formidable/tool"/>
+	<classpathentry kind="src" path="node_modules/express/node_modules/mime"/>
+	<classpathentry excluding="test/|examples/" kind="src" path="node_modules/express/node_modules/mkdirp"/>
+	<classpathentry kind="src" path="node_modules/express/node_modules/mkdirp/examples"/>
+	<classpathentry kind="src" path="node_modules/express/node_modules/mkdirp/test"/>
+	<classpathentry excluding="test/|lib/" kind="src" path="node_modules/express/node_modules/qs"/>
+	<classpathentry kind="src" path="node_modules/express/node_modules/qs/lib"/>
+	<classpathentry kind="src" path="node_modules/express/node_modules/qs/test"/>
+	<classpathentry excluding="foo/routes/|foo/" kind="src" path="node_modules/express/testing"/>
+	<classpathentry excluding="routes/" kind="src" path="node_modules/express/testing/foo"/>
+	<classpathentry kind="src" path="node_modules/express/testing/foo/routes"/>
+	<classpathentry excluding="test/" kind="src" path="node_modules/hiredis"/>
+	<classpathentry kind="src" path="node_modules/hiredis/test"/>
+	<classpathentry excluding="controller/|model/" kind="src" path="node_modules/indigio"/>
+	<classpathentry kind="src" path="node_modules/indigio/controller"/>
+	<classpathentry kind="src" path="node_modules/indigio/model"/>
+	<classpathentry excluding="node_modules/commander/lib/|node_modules/mkdirp/test/|node_modules/commander/|lib/nodes/|lib/|node_modules/mkdirp/|node_modules/mkdirp/examples/|testing/" kind="src" path="node_modules/jade"/>
+	<classpathentry excluding="nodes/" kind="src" path="node_modules/jade/lib"/>
+	<classpathentry kind="src" path="node_modules/jade/lib/nodes"/>
+	<classpathentry excluding="lib/" kind="src" path="node_modules/jade/node_modules/commander"/>
+	<classpathentry kind="src" path="node_modules/jade/node_modules/commander/lib"/>
+	<classpathentry excluding="test/|examples/" kind="src" path="node_modules/jade/node_modules/mkdirp"/>
+	<classpathentry kind="src" path="node_modules/jade/node_modules/mkdirp/examples"/>
+	<classpathentry kind="src" path="node_modules/jade/node_modules/mkdirp/test"/>
+	<classpathentry kind="src" path="node_modules/jade/testing"/>
+	<classpathentry excluding="node_modules/mongodb/lib/mongodb/goog/math/|node_modules/mongodb/test/manual_tests/|node_modules/mongodb/deps/nodeunit/lib/reporters/|support/expresso/lib/|node_modules/mongodb/test/auxilliary/|node_modules/mongodb/deps/nodeunit/|node_modules/mongodb/deps/step/test/|lib/schema/|test/|node_modules/mongodb/test/replicaset/|node_modules/mongodb/deps/nodeunit/examples/browser/|support/expresso/test/|node_modules/mongodb/test/connection/|node_modules/mongodb/deps/nodeunit/lib/|node_modules/mongodb/deps/nodeunit/test/|node_modules/mongodb/external-libs/bson/|node_modules/mongodb/lib/mongodb/responses/|node_modules/mongodb/external-libs/bson/test/|node_modules/mongodb/test/tools/|node_modules/mongodb/harness/|node_modules/mongodb/deps/gleak/|lib/types/|node_modules/mongodb/deps/step/lib/|node_modules/mongodb/test/|node_modules/mongodb/deps/nodeunit/deps/|lib/|node_modules/mongodb/lib/mongodb/|node_modules/mongodb/deps/nodeunit/test/fixtures/|benchmarks/|node_modules/mongodb/deps/gleak/test/|node_modules/mongodb/lib/mongodb/connection/|node_modules/mongodb/|node_modules/mongodb/lib/mongodb/commands/|lib/drivers/node-mongodb-native/|node_modules/mongodb/examples/|node_modules/mongodb/deps/nodeunit/test/fixtures/dir/|support/expresso/test/serial/|examples/|node_modules/mongodb/lib/mongodb/gridfs/|node_modules/mongodb/test/gridstore/|test/drivers/node-mongodb-native/|node_modules/mongodb/tools/|node_modules/mongodb/lib/mongodb/bson/|node_modules/hooks/|node_modules/mongodb/lib/mongodb/connection/strategies/|node_modules/mongodb/deps/nodeunit/share/|node_modules/mongodb/test/bson/" kind="src" path="node_modules/mongoose"/>
+	<classpathentry kind="src" path="node_modules/mongoose/benchmarks"/>
+	<classpathentry kind="src" path="node_modules/mongoose/examples"/>
+	<classpathentry excluding="schema/|types/|drivers/node-mongodb-native/" kind="src" path="node_modules/mongoose/lib"/>
+	<classpathentry kind="src" path="node_modules/mongoose/lib/drivers/node-mongodb-native"/>
+	<classpathentry kind="src" path="node_modules/mongoose/lib/schema"/>
+	<classpathentry kind="src" path="node_modules/mongoose/lib/types"/>
+	<classpathentry kind="src" path="node_modules/mongoose/node_modules/hooks"/>
+	<classpathentry excluding="lib/mongodb/goog/math/|test/manual_tests/|deps/nodeunit/lib/reporters/|test/auxilliary/|deps/nodeunit/|deps/step/test/|test/replicaset/|deps/nodeunit/examples/browser/|test/connection/|deps/nodeunit/lib/|deps/nodeunit/test/|external-libs/bson/|lib/mongodb/responses/|external-libs/bson/test/|test/tools/|harness/|deps/gleak/|deps/step/lib/|test/|deps/nodeunit/deps/|lib/mongodb/|deps/nodeunit/test/fixtures/|deps/gleak/test/|lib/mongodb/connection/|lib/mongodb/commands/|examples/|deps/nodeunit/test/fixtures/dir/|lib/mongodb/gridfs/|test/gridstore/|tools/|lib/mongodb/bson/|lib/mongodb/connection/strategies/|deps/nodeunit/share/|test/bson/" kind="src" path="node_modules/mongoose/node_modules/mongodb"/>
+	<classpathentry excluding="test/" kind="src" path="node_modules/mongoose/node_modules/mongodb/deps/gleak"/>
+	<classpathentry kind="src" path="node_modules/mongoose/node_modules/mongodb/deps/gleak/test"/>
+	<classpathentry excluding="lib/reporters/|examples/browser/|lib/|test/|deps/|test/fixtures/|test/fixtures/dir/|share/" kind="src" path="node_modules/mongoose/node_modules/mongodb/deps/nodeunit"/>
+	<classpathentry kind="src" path="node_modules/mongoose/node_modules/mongodb/deps/nodeunit/deps"/>
+	<classpathentry kind="src" path="node_modules/mongoose/node_modules/mongodb/deps/nodeunit/examples/browser"/>
+	<classpathentry excluding="reporters/" kind="src" path="node_modules/mongoose/node_modules/mongodb/deps/nodeunit/lib"/>
+	<classpathentry kind="src" path="node_modules/mongoose/node_modules/mongodb/deps/nodeunit/lib/reporters"/>
+	<classpathentry kind="src" path="node_modules/mongoose/node_modules/mongodb/deps/nodeunit/share"/>
+	<classpathentry excluding="fixtures/|fixtures/dir/" kind="src" path="node_modules/mongoose/node_modules/mongodb/deps/nodeunit/test"/>
+	<classpathentry excluding="dir/" kind="src" path="node_modules/mongoose/node_modules/mongodb/deps/nodeunit/test/fixtures"/>
+	<classpathentry kind="src" path="node_modules/mongoose/node_modules/mongodb/deps/nodeunit/test/fixtures/dir"/>
+	<classpathentry kind="src" path="node_modules/mongoose/node_modules/mongodb/deps/step/lib"/>
+	<classpathentry kind="src" path="node_modules/mongoose/node_modules/mongodb/deps/step/test"/>
+	<classpathentry kind="src" path="node_modules/mongoose/node_modules/mongodb/examples"/>
+	<classpathentry excluding="test/" kind="src" path="node_modules/mongoose/node_modules/mongodb/external-libs/bson"/>
+	<classpathentry kind="src" path="node_modules/mongoose/node_modules/mongodb/external-libs/bson/test"/>
+	<classpathentry kind="src" path="node_modules/mongoose/node_modules/mongodb/harness"/>
+	<classpathentry excluding="goog/math/|responses/|connection/|commands/|gridfs/|bson/|connection/strategies/" kind="src" path="node_modules/mongoose/node_modules/mongodb/lib/mongodb"/>
+	<classpathentry kind="src" path="node_modules/mongoose/node_modules/mongodb/lib/mongodb/bson"/>
+	<classpathentry kind="src" path="node_modules/mongoose/node_modules/mongodb/lib/mongodb/commands"/>
+	<classpathentry excluding="strategies/" kind="src" path="node_modules/mongoose/node_modules/mongodb/lib/mongodb/connection"/>
+	<classpathentry kind="src" path="node_modules/mongoose/node_modules/mongodb/lib/mongodb/connection/strategies"/>
+	<classpathentry kind="src" path="node_modules/mongoose/node_modules/mongodb/lib/mongodb/goog/math"/>
+	<classpathentry kind="src" path="node_modules/mongoose/node_modules/mongodb/lib/mongodb/gridfs"/>
+	<classpathentry kind="src" path="node_modules/mongoose/node_modules/mongodb/lib/mongodb/responses"/>
+	<classpathentry excluding="manual_tests/|auxilliary/|replicaset/|connection/|tools/|gridstore/|bson/" kind="src" path="node_modules/mongoose/node_modules/mongodb/test"/>
+	<classpathentry kind="src" path="node_modules/mongoose/node_modules/mongodb/test/auxilliary"/>
+	<classpathentry kind="src" path="node_modules/mongoose/node_modules/mongodb/test/bson"/>
+	<classpathentry kind="src" path="node_modules/mongoose/node_modules/mongodb/test/connection"/>
+	<classpathentry kind="src" path="node_modules/mongoose/node_modules/mongodb/test/gridstore"/>
+	<classpathentry kind="src" path="node_modules/mongoose/node_modules/mongodb/test/manual_tests"/>
+	<classpathentry kind="src" path="node_modules/mongoose/node_modules/mongodb/test/replicaset"/>
+	<classpathentry kind="src" path="node_modules/mongoose/node_modules/mongodb/test/tools"/>
+	<classpathentry kind="src" path="node_modules/mongoose/node_modules/mongodb/tools"/>
+	<classpathentry kind="src" path="node_modules/mongoose/support/expresso/lib"/>
+	<classpathentry excluding="serial/" kind="src" path="node_modules/mongoose/support/expresso/test"/>
+	<classpathentry kind="src" path="node_modules/mongoose/support/expresso/test/serial"/>
+	<classpathentry excluding="drivers/node-mongodb-native/" kind="src" path="node_modules/mongoose/test"/>
+	<classpathentry kind="src" path="node_modules/mongoose/test/drivers/node-mongodb-native"/>
+	<classpathentry excluding="tests/stress/pubsub/|tests/stress/|lib/|tests/|tests/stress/rpushblpop/|lib/parser/|tests/stress/speed/|examples/" kind="src" path="node_modules/redis"/>
+	<classpathentry kind="src" path="node_modules/redis/examples"/>
+	<classpathentry excluding="parser/" kind="src" path="node_modules/redis/lib"/>
+	<classpathentry kind="src" path="node_modules/redis/lib/parser"/>
+	<classpathentry excluding="stress/pubsub/|stress/|stress/rpushblpop/|stress/speed/" kind="src" path="node_modules/redis/tests"/>
+	<classpathentry excluding="pubsub/|rpushblpop/|speed/" kind="src" path="node_modules/redis/tests/stress"/>
+	<classpathentry kind="src" path="node_modules/redis/tests/stress/pubsub"/>
+	<classpathentry kind="src" path="node_modules/redis/tests/stress/rpushblpop"/>
+	<classpathentry kind="src" path="node_modules/redis/tests/stress/speed"/>
+	<classpathentry excluding="node_modules/policyfile/lib/|node_modules/socket.io-client/node_modules/uglify-js/test/unit/compress/test/|examples/irc-output/|node_modules/policyfile/examples/|lib/|node_modules/policyfile/tests/|node_modules/redis/lib/parser/|node_modules/socket.io-client/node_modules/uglify-js/|node_modules/redis/tests/stress/pubsub/|node_modules/socket.io-client/bin/|node_modules/redis/|lib/transports/websocket/|node_modules/redis/tests/stress/rpushblpop/|node_modules/socket.io-client/node_modules/uglify-js/test/unit/|node_modules/socket.io-client/test/|node_modules/socket.io-client/lib/|node_modules/socket.io-client/node_modules/websocket-client/test/|node_modules/socket.io-client/lib/transports/|support/node-websocket-client/lib/|node_modules/socket.io-client/node_modules/uglify-js/tmp/|node_modules/socket.io-client/lib/vendor/web-socket-js/|node_modules/socket.io-client/node_modules/uglify-js/lib/|node_modules/policyfile/|node_modules/socket.io-client/node_modules/websocket-client/examples/|node_modules/socket.io-client/dist/|node_modules/redis/tests/|support/node-websocket-client/test/|benchmarks/|node_modules/redis/lib/|lib/stores/|node_modules/socket.io-client/test/node/|support/node-websocket-client/examples/|examples/chat/|node_modules/socket.io-client/node_modules/uglify-js/test/|node_modules/socket.io-client/node_modules/xmlhttprequest/tests/|node_modules/redis/tests/stress/speed/|node_modules/redis/tests/stress/|lib/transports/|node_modules/socket.io-client/node_modules/uglify-js/test/unit/compress/expected/|node_modules/socket.io-client/node_modules/websocket-client/lib/|node_modules/redis/examples/|node_modules/socket.io-client/node_modules/xmlhttprequest/" kind="src" path="node_modules/socket.io"/>
+	<classpathentry kind="src" path="node_modules/socket.io/benchmarks"/>
+	<classpathentry kind="src" path="node_modules/socket.io/examples/chat"/>
+	<classpathentry kind="src" path="node_modules/socket.io/examples/irc-output"/>
+	<classpathentry excluding="transports/websocket/|stores/|transports/" kind="src" path="node_modules/socket.io/lib"/>
+	<classpathentry kind="src" path="node_modules/socket.io/lib/stores"/>
+	<classpathentry excluding="websocket/" kind="src" path="node_modules/socket.io/lib/transports"/>
+	<classpathentry kind="src" path="node_modules/socket.io/lib/transports/websocket"/>
+	<classpathentry excluding="lib/|examples/|tests/" kind="src" path="node_modules/socket.io/node_modules/policyfile"/>
+	<classpathentry kind="src" path="node_modules/socket.io/node_modules/policyfile/examples"/>
+	<classpathentry kind="src" path="node_modules/socket.io/node_modules/policyfile/lib"/>
+	<classpathentry kind="src" path="node_modules/socket.io/node_modules/policyfile/tests"/>
+	<classpathentry excluding="lib/parser/|tests/stress/pubsub/|tests/stress/rpushblpop/|tests/|lib/|tests/stress/speed/|tests/stress/|examples/" kind="src" path="node_modules/socket.io/node_modules/redis"/>
+	<classpathentry kind="src" path="node_modules/socket.io/node_modules/redis/examples"/>
+	<classpathentry excluding="parser/" kind="src" path="node_modules/socket.io/node_modules/redis/lib"/>
+	<classpathentry kind="src" path="node_modules/socket.io/node_modules/redis/lib/parser"/>
+	<classpathentry excluding="stress/pubsub/|stress/rpushblpop/|stress/speed/|stress/" kind="src" path="node_modules/socket.io/node_modules/redis/tests"/>
+	<classpathentry excluding="pubsub/|rpushblpop/|speed/" kind="src" path="node_modules/socket.io/node_modules/redis/tests/stress"/>
+	<classpathentry kind="src" path="node_modules/socket.io/node_modules/redis/tests/stress/pubsub"/>
+	<classpathentry kind="src" path="node_modules/socket.io/node_modules/redis/tests/stress/rpushblpop"/>
+	<classpathentry kind="src" path="node_modules/socket.io/node_modules/redis/tests/stress/speed"/>
+	<classpathentry kind="src" path="node_modules/socket.io/node_modules/socket.io-client/bin"/>
+	<classpathentry kind="src" path="node_modules/socket.io/node_modules/socket.io-client/dist"/>
+	<classpathentry excluding="transports/|vendor/web-socket-js/" kind="src" path="node_modules/socket.io/node_modules/socket.io-client/lib"/>
+	<classpathentry kind="src" path="node_modules/socket.io/node_modules/socket.io-client/lib/transports"/>
+	<classpathentry kind="src" path="node_modules/socket.io/node_modules/socket.io-client/lib/vendor/web-socket-js"/>
+	<classpathentry excluding="test/unit/compress/test/|test/unit/|tmp/|lib/|test/|test/unit/compress/expected/" kind="src" path="node_modules/socket.io/node_modules/socket.io-client/node_modules/uglify-js"/>
+	<classpathentry kind="src" path="node_modules/socket.io/node_modules/socket.io-client/node_modules/uglify-js/lib"/>
+	<classpathentry excluding="unit/compress/test/|unit/|unit/compress/expected/" kind="src" path="node_modules/socket.io/node_modules/socket.io-client/node_modules/uglify-js/test"/>
+	<classpathentry excluding="compress/test/|compress/expected/" kind="src" path="node_modules/socket.io/node_modules/socket.io-client/node_modules/uglify-js/test/unit"/>
+	<classpathentry kind="src" path="node_modules/socket.io/node_modules/socket.io-client/node_modules/uglify-js/test/unit/compress/expected"/>
+	<classpathentry kind="src" path="node_modules/socket.io/node_modules/socket.io-client/node_modules/uglify-js/test/unit/compress/test"/>
+	<classpathentry kind="src" path="node_modules/socket.io/node_modules/socket.io-client/node_modules/uglify-js/tmp"/>
+	<classpathentry kind="src" path="node_modules/socket.io/node_modules/socket.io-client/node_modules/websocket-client/examples"/>
+	<classpathentry kind="src" path="node_modules/socket.io/node_modules/socket.io-client/node_modules/websocket-client/lib"/>
+	<classpathentry kind="src" path="node_modules/socket.io/node_modules/socket.io-client/node_modules/websocket-client/test"/>
+	<classpathentry excluding="tests/" kind="src" path="node_modules/socket.io/node_modules/socket.io-client/node_modules/xmlhttprequest"/>
+	<classpathentry kind="src" path="node_modules/socket.io/node_modules/socket.io-client/node_modules/xmlhttprequest/tests"/>
+	<classpathentry excluding="node/" kind="src" path="node_modules/socket.io/node_modules/socket.io-client/test"/>
+	<classpathentry kind="src" path="node_modules/socket.io/node_modules/socket.io-client/test/node"/>
+	<classpathentry kind="src" path="node_modules/socket.io/support/node-websocket-client/examples"/>
+	<classpathentry kind="src" path="node_modules/socket.io/support/node-websocket-client/lib"/>
+	<classpathentry kind="src" path="node_modules/socket.io/support/node-websocket-client/test"/>
+	<classpathentry excluding="lib/convert/|lib/nodes/|lib/visitor/|lib/|node_modules/mkdirp/examples/|node_modules/mkdirp/test/|lib/stack/|testing/|node_modules/mkdirp/|node_modules/growl/lib/|node_modules/debug/example/|node_modules/cssom/lib/|node_modules/growl/|node_modules/cssom/|node_modules/debug/lib/|lib/functions/|node_modules/debug/" kind="src" path="node_modules/stylus"/>
+	<classpathentry excluding="convert/|nodes/|visitor/|stack/|functions/" kind="src" path="node_modules/stylus/lib"/>
+	<classpathentry kind="src" path="node_modules/stylus/lib/convert"/>
+	<classpathentry kind="src" path="node_modules/stylus/lib/functions"/>
+	<classpathentry kind="src" path="node_modules/stylus/lib/nodes"/>
+	<classpathentry kind="src" path="node_modules/stylus/lib/stack"/>
+	<classpathentry kind="src" path="node_modules/stylus/lib/visitor"/>
+	<classpathentry excluding="lib/" kind="src" path="node_modules/stylus/node_modules/cssom"/>
+	<classpathentry kind="src" path="node_modules/stylus/node_modules/cssom/lib"/>
+	<classpathentry excluding="example/|lib/" kind="src" path="node_modules/stylus/node_modules/debug"/>
+	<classpathentry kind="src" path="node_modules/stylus/node_modules/debug/example"/>
+	<classpathentry kind="src" path="node_modules/stylus/node_modules/debug/lib"/>
+	<classpathentry excluding="lib/" kind="src" path="node_modules/stylus/node_modules/growl"/>
+	<classpathentry kind="src" path="node_modules/stylus/node_modules/growl/lib"/>
+	<classpathentry excluding="examples/|test/" kind="src" path="node_modules/stylus/node_modules/mkdirp"/>
+	<classpathentry kind="src" path="node_modules/stylus/node_modules/mkdirp/examples"/>
+	<classpathentry kind="src" path="node_modules/stylus/node_modules/mkdirp/test"/>
+	<classpathentry kind="src" path="node_modules/stylus/testing"/>
+	<classpathentry excluding="mahjong/|jquery/" kind="src" path="public/javascripts"/>
+	<classpathentry kind="src" path="public/javascripts/jquery"/>
+	<classpathentry kind="src" path="public/javascripts/mahjong"/>
+	<classpathentry kind="src" path="routes"/>
+	<classpathentry kind="con" path="org.eclipse.wst.jsdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path=""/>
+</classpath>

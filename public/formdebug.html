@@ -1,0 +1,41 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;"/>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-language" content="en" />
+
+<script type="text/javascript" src="javascripts/jquery/jquery.js" ></script>
+<script type="text/javascript" src="javascripts/form.js" ></script>
+<script type="text/javascript">
+	$(document).ready( function(){ 
+		var mySpecs = {
+			'faggot': { 
+				'tag': "input",
+				'class': 'gay',
+				'placeholder': "Trevor is a fag",
+				type: "text"
+			},
+			'nigger':{ 
+				'tag': 'input',
+				'class': 'black',
+				'placeholder': 'Shit',
+				type: "text"
+			}
+		};
+		var myform = JSForm.build( mySpecs );
+		var mydata;
+		$("#debug").html( myform );
+		$("#generate").click( function(){ 
+			mydata = JSForm.get();
+			alert(JSON.stringify( mydata ));
+		} );
+	} );
+</script>
+<title>Shop Tests</title>
+</head>
+<body>
+<div id="debug"></div>
+<button id="generate">Generate</button>
+<input type="text" id="asdf" />
+</body>
+</html>

@@ -16,11 +16,19 @@ AddGameFunction( "drawtile", function( origin, eventdata ){
 	var pn = GetPlayerNumber( origin );
 	
 	game.DrawTile( pn );
+
+	actions = game.GetPossibleActions(playerNumber);
+	ManageUI(actions);
+	
+	$("#display").html( game.tohtml() );
 } );
 
 AddGameFunction( "discardtile", function( origin, eventdata ){ 
 	var pn = GetPlayerNumber( origin );
 	game.DiscardTile( pn, eventdata ); 
+	actions = game.GetPossibleActions(playerNumber);
+	ManageUI(actions);
+	$("#display").html( game.tohtml() );
 } );
 
 AddGameFunction( "endturn", function( origin, eventdata ){ 
@@ -32,7 +40,9 @@ AddGameFunction( "endturn", function( origin, eventdata ){
 
 AddGameFunction( "initial sync", function( origin, eventdata ){ 
 	if( origin != sessionId )
-		game.fromjson( eventdata );
+		{
+			game.fromjson( eventdata );
+		}
 	$("#debug").html( "Game ready and synced!" );
 	$("#debug").append( "<p>PlayerNumber: " + playerNumber + "</p>");
 	readyFlag = true;
@@ -109,30 +119,28 @@ $(document).ready( function(){
 	} );
 	
 	$("#drawtile").click( function(){ 
-		game.DrawTile( playerNumber );
-		actions = game.GetPossibleActions(playerNumber);
-		ManageUI(actions);
-		
-		$("#display").html( game.tohtml() );
+		//game.DrawTile( playerNumber );
 		FireEvent("drawtile","-");
+
 	} );
 	
 	$("#discardtile").submit( function(){ 
-
-		game.DiscardTile( playerNumber, $("#tile").val() );
-		actions = game.GetPossibleActions(playerNumber);
-		ManageUI(actions);
-		$("#display").html( game.tohtml() );
 		FireEvent("discardtile",$("#tile").val());
+
+		//game.DiscardTile( playerNumber, $("#tile").val() );
+		//actions = game.GetPossibleActions(playerNumber);
+		//ManageUI(actions);
+		//$("#display").html( game.tohtml() );
 		return false;
 	} );
 	
 	$("#endturn").click( function(){ 
-		game.EndTurn( playerNumber );
-		actions = game.GetPossibleActions(playerNumber);
-		ManageUI(actions);
-		$("#display").html( game.tohtml() );
+//		game.EndTurn( playerNumber );
 		FireEvent("endturn","-");
+
+		//actions = game.GetPossibleActions(playerNumber);
+		//ManageUI(actions);
+		//$("#display").html( game.tohtml() );
 	} );
 } );
 

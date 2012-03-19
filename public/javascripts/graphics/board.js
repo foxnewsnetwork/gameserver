@@ -15,7 +15,7 @@ var MahjongGraphicsBoard = function(){
 				//ypos = Y_BOARD + j * TILE_HEIGHT;
 				//stuff = "btile-" + (k*9 + j);
 				temptile.SetAt(xpos, ypos);
-				this.btileset.push( temptile );
+				//this.btileset.push( temptile );
 			}
 		}
 		return this;
@@ -27,8 +27,7 @@ var MahjongGraphicsBoard = function(){
 		
 		var x, xpos, ypos;
 		
-		if(discard.length > 1)
-		alert(discard.length);
+	
 
 		for( x = 0; x < discard.length; x++ ){ 
 			var mytile = discard[x];

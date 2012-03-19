@@ -39,10 +39,10 @@ AddGameFunction( "endturn", function( origin, eventdata ){
 } );
 
 AddGameFunction( "initial sync", function( origin, eventdata ){ 
-	if( origin != sessionId )
-		{
+	
+	//Everyone syncs. It gets rid of the weird one person off error.
 			game.fromjson( eventdata );
-		}
+
 	$("#debug").html( "Game ready and synced!" );
 	$("#debug").append( "<p>PlayerNumber: " + playerNumber + "</p>");
 	readyFlag = true;
@@ -160,12 +160,12 @@ function ManageUI ( actions ){
 	if( actions['discard'] )
 		{
 			playerCanDiscard = true;
-			//$("#drawtile").hide();
+			$("#drawtile").hide();
 			$("#discardtile").show();
 		}
 	if( actions['endturn'] ){
 		$("#drawtile").hide();
-		
+		$("#discardtile").hide();
 		$("#endturn").show();
 		}
 	if( !(actions['endturn']) && !(actions['discard']) && !(actions['draw']))

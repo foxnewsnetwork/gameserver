@@ -1,0 +1,31 @@
+script(type = "text/javascript", src="javascripts/jquery/jquery.js" )
+script(type = 'text/javascript', src='socket.io/socket.io.js' )
+script(type = "text/javascript", src="javascripts/gameQuery/gameQuery.js" )
+script(type = "text/javascript", src="javascripts/client.js" )
+script(type = "text/javascript")
+	$(document).ready(function(){
+		$("#loginform").submit( function(){
+			var info = { 
+				'username': $("#name").val(),
+				'email': $("#email").val(),
+				'password': $("#password").val()
+			};
+			LoginPlayer( info );
+			$("#debug-display").html( "Request submitted " + JSON.stringify( info ) );
+			return false;
+		} );	
+	});
+	
+	AddShopFunction( "player login down", function( token ){ 
+		$("#debug-display").html( token );
+	} );
+
+h1= title
+p Welcome to #{title}
+#debug-display	
+form#loginform
+	input#name( type="text", name="name" )
+	input#email( type="text", name="email" )
+	input#password( type="password", name="password" )
+	input#submit( type="submit", name="submit", value="Submit" )
+

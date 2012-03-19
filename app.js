@@ -16,14 +16,13 @@ var app = module.exports = express.createServer();
 // socket.io for server-client communication
 var io = require('socket.io').listen(app);
 
-// mongoose for mongodb storage
-// var mongoose = require("mongoose");
-// mongoose.connect('mongodb://localhost/my_ingidio_database');
+// Models communicate with the db through mongoose
+var playerModel = require( "./models/player.js" );
+var Player = playerModel.Player;
 
-// redis for rooms and channels
-/*var redis = require("redis"),
-	client = redis.createClient();
-*/
+// Password encryption use
+var md5 = require( "MD5" );
+
 
 /*******************************
 * Express Server Setup                *
@@ -66,23 +65,21 @@ app.get("/faggot", function(req, res){
 app.get("/shop", function(req, res){ 
 	res.render( "shopdebug.jade", { title: "Shop Test" } );
 } );
+
+app.get("/player", function(req, res){ 
+	res.render( "player.jade", { title : "Player test" } );
+} );
 /****************************
 * Useful Constants                     *
 *****************************/
 var gameToken = 'cf242dcaf5d0a4a0b0e2949e804dcebf';
+var playerPath = "/api/v1/players";
 var shopSite = 'gamertiser.com';
 var shopPath = '/api/v1/product.json?token=';
 var shopPort = 80;
 var maxPerRoom = 4; // 0 means no limit
 var maxPerChannel = 500; 
-
-
-/****************************
-* MongoDB Configuration           *
-*****************************/
-/*
-TODO: Implement me!
-*/
+var PlayerCache = { };
 
 /****************************
 * Channel Models                           *
@@ -316,41 +313,70 @@ io.sockets.on('connection', function(socket){
 	****************************/
 	// player login
 	socket.on( "player login up", function(data){ 
-		var playerPath = "/api/v1/players";
-		var postData = querystring.stringify({
-			'gameToken': gameToken,
-			'username': data['username'],
-			'email': data['email'],
-			'password': data['password'] // mike@mxhi
-		});
-		
-		// TODO: handle and process playerinfo
-		var options = { 
-			host: shopSite,
-			port: shopPort,
-			path: playerPath,
-			method: "POST",
-			header: { 
-				'Content-Type': 'application/x-www-form-urlencoded',
-				'Content-Length': postData.length
-			}
-		};
-		
-		var request = http.request( options, function(response){
-			console.log( "status: " + response.statusCode );
-			console.log( "headers: " + JSON.stringify(response.headers) );
-			response.on("data", function(chunk){ 
-				console.log( "body: " + chunk );
-				output = { 'sessionId': data['sessionId'], 'playerToken': JSON.parse(chunk)['playerToken'] };
-				socket.emit( "player login down", output );
-			});	
-		});
-		
-		request.write( postData );
-		request.end();
+		var user; 
+		Player.login( { 
+			email : data['email'], 
+			password : data['password'] 
+		}, (function(data){ 
+			return function(err, obj){
+				if( err || obj == undefined ){ 
+					// New user case; We need to register this guy from the main site
+					// TODO: handle and process playerinfo
+					var postData = querystring.stringify({
+						'gameToken': gameToken,
+						'username': data['username'],
+						'email': data['email'],
+						'password': data['password']
+					});
+					var aPlayer = new Player( { 
+						name : data['username'], 
+						email : data['email'], 
+						password : data['password']
+					} );
+					aPlayer.save();
+					
+					var options = { 
+						host: shopSite,
+						port: shopPort,
+						path: playerPath,
+						method: "POST",
+						header: { 
+							'Content-Type': 'application/x-www-form-urlencoded',
+							'Content-Length': postData.length
+						}
+					};
+					var request = http.request( options, (function(player){ 
+						return function(response){
+							console.log( "status: " + response.statusCode );
+							console.log( "headers: " + JSON.stringify(response.headers) );
+							response.on("data", function(chunk){ 
+								console.log( "body: " + chunk );
+								// var theToken = JSON.parse(chunk)['playerToken'];
+								// TODO: make it so that logins actually work
+								var theToken = Math.floor( Math.random() * 1000 );
+								output = { 'sessionId': data['sessionId'], 'playerToken': theToken };
+								socket.emit( "player login down", output );
+								// Now we must write this to the database
+								player.playertoken = theToken;
+								player.save();
+								PlayerCache[theToken] = player;
+							});	
+						};
+					} )(aPlayer) );
+					request.write( postData );
+					request.end();
+				}
+				else{ 
+					// Returning user case
+					PlayerCache[obj.playertoken] = obj;
+					var output = { 'sessionId': data['sessionId'], 'playerToken': obj.playertoken };
+					socket.emit( "player login down", output );
+					return;
+				}
+			}; 
+		} )(data) );
 	} );
-	
-	
+
 	/****************************
 	* Shop Server Response           *
 	****************************/

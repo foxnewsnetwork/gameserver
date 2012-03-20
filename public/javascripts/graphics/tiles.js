@@ -28,16 +28,16 @@ var MahjongTileSprite = function(){
 	this.sprite;
 	staticTileId += 1;
 
-	if(staticTileId >= 129)
-		{
-		staticTileId += 1;
-		}
+//	if(staticTileId >= 129)
+//		{
+//		staticTileId += 1;
+//		}
 	this.tileId = staticTileId;
 	this.x;
 	this.y;
 	this.suit;
 	this.value;
-	this.handId
+	this.handId;
 	this.SetCallback = function( name, callback ){ 
 		if( this.sprite == undefined ){ 
 			alert( "You've tried to set a callback for a completely uninitiated tile, you dumbass" );

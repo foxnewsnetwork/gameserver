@@ -12,19 +12,19 @@ var MahjongHand = function(){
 	}
 	
 	this.discardtile = function(tiles, tile){ 
-		var length = this.hidden.length;
-		var tileLoc = 0;
-		for(var i = 0; i < length; i++)
-		{
-		//	alert("comparing " + this.hidden[i].tohtml() + " with " + tile);
-		if(this.hidden[i].tohtml() == tile)
-				{
-					tileLoc = i;
-				}
-		}	
-		var faggot = this.hidden[tileLoc];
+//		var length = this.hidden.length;
+//		var tileLoc = 0;
+//		for(var i = 0; i < length; i++)
+//		{
+//		//	alert("comparing " + this.hidden[i].tohtml() + " with " + tile);
+//		if(this.hidden[i].tohtml() == tile)
+//				{
+//					tileLoc = i;
+//				}
+//		}	
+		var faggot = this.hidden[tile];
 		$('#testarea').append(faggot.tohtml());
-		this.hidden.splice(tileLoc, 1);
+		this.hidden.splice(tile, 1);
 		tiles.push(faggot);
 		this.sorthand();
 		return faggot;

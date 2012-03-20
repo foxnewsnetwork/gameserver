@@ -98,6 +98,7 @@ AddGameFunction( "start game down", function(data){
 			playerNumber = k;
 	var gamestate = game.tojson();
 	FireEvent( "initial sync", gamestate );
+	
 } );
 
 AddGameFunction( "end game down", function(data){ 
@@ -126,7 +127,6 @@ $(document).ready( function(){
 	
 	$("#discardtile").submit( function(){ 
 		FireEvent("discardtile",$("#tile").val());
-
 		//game.DiscardTile( playerNumber, $("#tile").val() );
 		//actions = game.GetPossibleActions(playerNumber);
 		//ManageUI(actions);
@@ -157,35 +157,41 @@ function ManageUI ( actions ){
 	}
 	if( actions['draw'] )
 		$("#drawtile").show();
+		graphics.board.actionsDraw();
 	if( actions['discard'] )
 		{
 			playerCanDiscard = true;
 			$("#drawtile").hide();
 			$("#discardtile").show();
+			graphics.board.actionsDiscard();
 		}
 	if( actions['endturn'] ){
 		$("#drawtile").hide();
 		$("#discardtile").hide();
 		$("#endturn").show();
+		graphics.board.actionsEndTurn();
 		}
 	if( !(actions['endturn']) && !(actions['discard']) && !(actions['draw']))
 		{
 		$("#drawtile").hide();
 		$("#discardtile").hide();
 		$("#endturn").hide();
+		graphics.board.actionsInactive();
+
 		}
 	
 }
-function discardTile(tileVals){
+function drawTile(){
+	FireEvent("drawtile","-");
+	
+}
+function discardTile(){
 
-	if(playerCanDiscard){	
-	game.DiscardTile( playerNumber, tileVals );
-	actions = game.GetPossibleActions(playerNumber);
-	ManageUI(actions);
-	$("#display").html( game.tohtml() );
-	playerCanDiscard = false;
-	return false;
-	}
+	FireEvent("discardtile",graphics.player.returnTile());
+
+}
+function endTurn(){
+	FireEvent("endturn","-");
 }
 function setPlayerPickTile(handId){
 	graphics.setPlayerPick(handId);

@@ -18,7 +18,9 @@ var MahjongGraphicsPlayer = function(){
 			this.pickedTile = num;
 			
 	}
-	
+	this.returnTile = function(){
+		return this.pickedTile;
+	}
 	this.initialize = function(element){ 
 		this.ptileset = [];
 		return this;

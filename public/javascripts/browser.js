@@ -1,7 +1,7 @@
 /***************************
 * Browser-side Call Code        *
 ***************************/
-var SCRIPT_PATH = "http://localhost:3000/";
+var SCRIPT_PATH = "http://crunchymall.com/";
 
 // Call this code from within the favorites bar in a browser to summon the shop
 function LoadStyleSheets(){ 

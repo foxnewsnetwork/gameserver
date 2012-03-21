@@ -1,6 +1,6 @@
 var playerToken = 1;
 
-var PATH_NAME = "http://localhost:3000/",
+var PATH_NAME = "http://crunchymall.com/",
 	SHOP_ID = "indigio_shop" ,
 	SHOP_WIDTH = 480 ,
 	SHOP_HEIGHT = 220 ,

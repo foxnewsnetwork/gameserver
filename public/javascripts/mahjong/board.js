@@ -24,12 +24,13 @@ var MahjongBoard = function(){
 	this.shuffle = function(){ 
 		var tempTile;
 		var k;
-		for( var j = 0; j < 144; j++){
+		for( var j = 0; j < this.freshTiles.length; j++){
 			k = Math.floor( Math.random() * 144 );
 			var tempTile = this.freshTiles[k];
 			this.freshTiles[k] = this.freshTiles[j];
 			this.freshTiles[j] = tempTile; 
 		}
+	
 	}
 
 	this.tojson = function(){ 

@@ -102,6 +102,7 @@ var MahjongGame = function(){
 		this.players[this.activePlayer].deactivate();
 		this.activePlayer = ( this.activePlayer + 1 ) % PLAYER_COUNT;
 		this.players[this.activePlayer].activate();
+		
 	}
 	
 	// Draws a tile at the beginning of your turn

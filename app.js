@@ -1,4 +1,3 @@
-//adding comments so app works
 /******************************
  * Module dependencies.                 *
  ******************************/

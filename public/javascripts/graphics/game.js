@@ -15,12 +15,16 @@ var MahjongGraphics = function(){
 			'width': GAME_WIDTH
 		} );*/
 		MahjongStaticInitialization();
+		MahjongButtonInit();
 		this.background.initialize( element );
 		this.board.initialize( element );
 		this.player.initialize( element );	
 		// this.ui.initialize( element );
+		this.board.setupButtons();
 	}
-	
+	this.setPlayerPick = function(handId){
+		this.player.setPick(handId);
+	}
 	// gamestate is a json file
 	this.draw = function(gamestate){
 		board = gamestate['board'];

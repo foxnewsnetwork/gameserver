@@ -15,19 +15,84 @@ var MahjongGraphicsBoard = function(){
 				//ypos = Y_BOARD + j * TILE_HEIGHT;
 				//stuff = "btile-" + (k*9 + j);
 				temptile.SetAt(xpos, ypos);
-				this.btileset.push( temptile );
+				//this.btileset.push( temptile );
 			}
 		}
 		return this;
 	}
-	
+	var drawButton;
+	var discardButton;
+	var endTurnButton;
+	var staticButtonGroup;
+	this.setupButtons = function(){
+		//staticButtonGroup = $.playground().addGroup( "buttons", { width: GAME_WIDTH, height: GAME_HEIGHT } ).end();
+		//create draw button
+		drawButton = new MahjongButtonSprite();
+		drawButton.set(0,0,"draw");
+		drawButton.SetCallback( 'mouseover', function(event){ 
+		tooltip.show( event['action'] );
+		} );
+		drawButton.SetCallback( 'mouseout', function(event){
+		tooltip.hide();
+		} );
+		drawButton.SetCallback( 'click', function(event){
+			drawTile();
+			} );
+		
+		discardButton = new MahjongButtonSprite();
+		discardButton.set(0,BUTTON_HEIGHT,"discard");
+		discardButton.SetCallback( 'mouseover', function(event){ 
+			tooltip.show( event['action'] );
+			} );
+		discardButton.SetCallback( 'mouseout', function(event){
+			tooltip.hide();
+			} );
+		discardButton.SetCallback( 'click', function(event){
+			discardTile();
+			} );
+			
+		endTurnButton = new MahjongButtonSprite();
+		endTurnButton.set(0,2*BUTTON_HEIGHT,"endturn");
+		endTurnButton.SetCallback( 'mouseover', function(event){ 
+			tooltip.show( event['action'] );
+			} );
+		endTurnButton.SetCallback( 'mouseout', function(event){
+			tooltip.hide();
+			} );
+		endTurnButton.SetCallback("click", function(event){
+			endTurn();
+		});	
+		drawButton.hide();
+		discardButton.hide();
+		endTurnButton.hide();
+	}
+	this.actionsDraw = function(){
+		drawButton.show();
+		discardButton.hide();
+		endTurnButton.hide();
+	}
+	this.actionsDiscard = function(){
+		discardButton.show();
+		drawButton.hide();
+		endTurnButton.hide();
+	}
+	this.actionsEndTurn = function(){
+		endTurnButton.show();
+		discardButton.hide();
+		drawButton.hide();
+	}
+	this.actionsInactive = function(){
+		drawButton.hide();
+		discardButton.hide();
+		endTurnButton.hide();	
+	}
 	// remember, json files
 	this.draw = function( boardstate ){ 
 		var discard = boardstate['discardTiles'];
 		
 		var x, xpos, ypos;
-		if(discard.length > 0)
-		//alert(discard.length);
+		
+	
 
 		for( x = 0; x < discard.length; x++ ){ 
 			var mytile = discard[x];
@@ -50,10 +115,10 @@ var MahjongGraphicsBoard = function(){
 				} );*/
 				// atile.SetCallback( "click", function(event){ alert("you're a fag"); } );
 				this.btileset.push( atile );
+				
 			}
 			else{ 
-				var atile = this.btileset[x];
-				atile.SetAs(mytile['suit'], mytile['value']);
+				this.btileset[x].SetAs(mytile['suit'], mytile['value']);
 				/*atile.SetCallback( 'mouseover', function(event){ 
 					tooltip.show( tiletohtml(event['suit'], event['value'] ) );
 				} );

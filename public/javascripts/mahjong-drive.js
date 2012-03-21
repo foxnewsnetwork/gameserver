@@ -14,22 +14,35 @@ var playerCanDiscard = false;
 
 AddGameFunction( "drawtile", function( origin, eventdata ){ 
 	var pn = GetPlayerNumber( origin );
+	
 	game.DrawTile( pn );
+
+	actions = game.GetPossibleActions(playerNumber);
+	ManageUI(actions);
+	
+	$("#display").html( game.tohtml() );
 } );
 
 AddGameFunction( "discardtile", function( origin, eventdata ){ 
 	var pn = GetPlayerNumber( origin );
 	game.DiscardTile( pn, eventdata ); 
+	actions = game.GetPossibleActions(playerNumber);
+	ManageUI(actions);
+	$("#display").html( game.tohtml() );
 } );
 
 AddGameFunction( "endturn", function( origin, eventdata ){ 
 	var pn = GetPlayerNumber( origin );
 	game.EndTurn( pn );
+	actions = game.GetPossibleActions(playerNumber);
+	ManageUI(actions);
 } );
 
 AddGameFunction( "initial sync", function( origin, eventdata ){ 
-	if( origin != sessionId )
-		game.fromjson( eventdata );
+	
+	//Everyone syncs. It gets rid of the weird one person off error.
+			game.fromjson( eventdata );
+
 	$("#debug").html( "Game ready and synced!" );
 	$("#debug").append( "<p>PlayerNumber: " + playerNumber + "</p>");
 	readyFlag = true;
@@ -85,6 +98,7 @@ AddGameFunction( "start game down", function(data){
 			playerNumber = k;
 	var gamestate = game.tojson();
 	FireEvent( "initial sync", gamestate );
+	
 } );
 
 AddGameFunction( "end game down", function(data){ 
@@ -106,27 +120,27 @@ $(document).ready( function(){
 	} );
 	
 	$("#drawtile").click( function(){ 
-		game.DrawTile( playerNumber );
-		actions = game.GetPossibleActions(playerNumber);
-		ManageUI(actions);
-		
-		$("#display").html( game.tohtml() );
+		//game.DrawTile( playerNumber );
+		FireEvent("drawtile","-");
+
 	} );
 	
 	$("#discardtile").submit( function(){ 
-
-		game.DiscardTile( playerNumber, $("#tile").val() );
-		actions = game.GetPossibleActions(playerNumber);
-		ManageUI(actions);
-		$("#display").html( game.tohtml() );
+		FireEvent("discardtile",$("#tile").val());
+		//game.DiscardTile( playerNumber, $("#tile").val() );
+		//actions = game.GetPossibleActions(playerNumber);
+		//ManageUI(actions);
+		//$("#display").html( game.tohtml() );
 		return false;
 	} );
 	
 	$("#endturn").click( function(){ 
-		game.EndTurn( playerNumber );
-		actions = game.GetPossibleActions(playerNumber);
-		ManageUI(actions);
-		$("#display").html( game.tohtml() );
+//		game.EndTurn( playerNumber );
+		FireEvent("endturn","-");
+
+		//actions = game.GetPossibleActions(playerNumber);
+		//ManageUI(actions);
+		//$("#display").html( game.tohtml() );
 	} );
 } );
 
@@ -143,35 +157,44 @@ function ManageUI ( actions ){
 	}
 	if( actions['draw'] )
 		$("#drawtile").show();
+		graphics.board.actionsDraw();
 	if( actions['discard'] )
 		{
 			playerCanDiscard = true;
-			//$("#drawtile").hide();
+			$("#drawtile").hide();
 			$("#discardtile").show();
+			graphics.board.actionsDiscard();
 		}
 	if( actions['endturn'] ){
 		$("#drawtile").hide();
+		$("#discardtile").hide();
 		$("#endturn").show();
+		graphics.board.actionsEndTurn();
 		}
 	if( !(actions['endturn']) && !(actions['discard']) && !(actions['draw']))
 		{
 		$("#drawtile").hide();
 		$("#discardtile").hide();
-		
 		$("#endturn").hide();
+		graphics.board.actionsInactive();
+
 		}
 	
 }
-function discardTile(tileVals){
+function drawTile(){
+	FireEvent("drawtile","-");
+	
+}
+function discardTile(){
 
-	if(playerCanDiscard){	
-	game.DiscardTile( playerNumber, tileVals );
-	actions = game.GetPossibleActions(playerNumber);
-	ManageUI(actions);
-	$("#display").html( game.tohtml() );
-	playerCanDiscard = false;
-	return false;
-	}
+	FireEvent("discardtile",graphics.player.returnTile());
+
+}
+function endTurn(){
+	FireEvent("endturn","-");
+}
+function setPlayerPickTile(handId){
+	graphics.setPlayerPick(handId);
 }
 function GetPlayerNumber( sId ){ 
 	for( var x in playerVec ){ 

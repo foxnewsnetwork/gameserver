@@ -81,8 +81,8 @@ app.get("/shop", function(req, res){
 		};
 	var request = http.get( options, function(response){ 
 		response.on("data", function(chunk){ 
-			console.log( "body: " + chunk );
-			var lolcat = JSON.parse(chunk);
+			var lolcat = JSON.parse(chunk)['results'];
+			console.log(lolcat);
 			var fag, stuff = [];
 			for( var k = 0; k < lolcat.length; k++ ){ 
 				fag = lolcat[k];
@@ -90,7 +90,7 @@ app.get("/shop", function(req, res){
 					'description': fag['description'],
 					'id': fag['id'],
 					'company_id': fag['company_id'],
-					'tileset': fag['picture_path'],
+					'tileset': fag['picture_path_small'],
 					'price': fag['cost'],
 					'title': fag['title'],
 					'created_at': fag['created_at'],

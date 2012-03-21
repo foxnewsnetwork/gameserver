@@ -25,7 +25,7 @@ var md5 = require( "MD5" );
 /****************************
 * Useful Constants                     *
 *****************************/
-var gameToken = 'bfcd2259e6f517a0dbc8e70b040b0463';
+var gameToken = '12345';
 var playerPath = "/api/v1/players";
 var shopSite = 'gamertiser.com';
 var shopPath = '/api/v1/product.json?token=';
@@ -82,7 +82,6 @@ app.get("/shop", function(req, res){
 	var request = http.get( options, function(response){ 
 		response.on("data", function(chunk){ 
 			console.log( "body: " + chunk );
-			/*
 			var lolcat = JSON.parse(chunk);
 			var fag, stuff = [];
 			for( var k = 0; k < lolcat.length; k++ ){ 
@@ -99,12 +98,13 @@ app.get("/shop", function(req, res){
 				} );
 			}
 			rawcode += JSON.stringify(stuff);
-			*/
+			/*
 			rawcode += JSON.stringify([{
 				'description' : "Faggot",
 				'tileset' : "http://i299.photobucket.com/albums/mm281/foxnewsnetwork/csharp.png" ,
 				'price': 1000
 			}] );
+			*/
 			rawcode += "; myshop.SetupShop( items ); } );";
 			console.log(rawcode);
 			res.send( rawcode );

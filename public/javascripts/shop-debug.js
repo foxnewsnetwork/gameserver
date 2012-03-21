@@ -147,9 +147,9 @@ var IndigioShop = function(){
 		if( divid == undefined )
 			divid = 'body';
 		if( shopx == undefined )
-			shopx = 250;
+			shopx = window.innerWidth / 2 - SHOP_WIDTH + window.pageXOffset;
 		if( shopy == undefined )
-			shopy = 150;
+			shopy = window.innerHeight - SHOP_HEIGHT + window.pageYOffset;
 		
 		// Refreshing stuff
 		RefreshConstants( shopwidth, shopheight );	
@@ -542,11 +542,4 @@ function BuyItem( data ){
 	// TODO: write me!
 }
 	
-$(document).ready( function(){ 
-	var items = [{
-		'price' : 15.0 ,
-		'description' : "Iron pig stuffed animal" ,
-		'tileset' : PATH_NAME + "images/shopicons/upa.png"
-	}];
-	myshop.SetupShop( items );
-} );
+

@@ -22,6 +22,17 @@ var Player = playerModel.Player;
 // Password encryption use
 var md5 = require( "MD5" );
 
+/****************************
+* Useful Constants                     *
+*****************************/
+var gameToken = 'bfcd2259e6f517a0dbc8e70b040b0463';
+var playerPath = "/api/v1/players";
+var shopSite = 'gamertiser.com';
+var shopPath = '/api/v1/product.json?token=';
+var shopPort = 80;
+var maxPerRoom = 4; // 0 means no limit
+var maxPerChannel = 500; 
+var PlayerCache = { };
 
 /*******************************
 * Express Server Setup                *
@@ -62,7 +73,43 @@ app.get("/faggot", function(req, res){
 } );
 
 app.get("/shop", function(req, res){ 
-	res.render( "shopdebug.jade", { title: "Shop Test" } );
+	var rawcode = "$(document).ready(function(){ var items =";
+	var options = { 
+			host: shopSite,
+			port: shopPort,
+			path: shopPath + gameToken
+		};
+	var request = http.get( options, function(response){ 
+		response.on("data", function(chunk){ 
+			console.log( "body: " + chunk );
+			/*
+			var lolcat = JSON.parse(chunk);
+			var fag, stuff = [];
+			for( var k = 0; k < lolcat.length; k++ ){ 
+				fag = lolcat[k];
+				stuff.push( { 
+					'description': fag['description'],
+					'id': fag['id'],
+					'company_id': fag['company_id'],
+					'tileset': fag['picture_path'],
+					'price': fag['cost'],
+					'title': fag['title'],
+					'created_at': fag['created_at'],
+					'updated_at': fag['updated_at']
+				} );
+			}
+			rawcode += JSON.stringify(stuff);
+			*/
+			rawcode += JSON.stringify([{
+				'description' : "Faggot",
+				'tileset' : "http://i299.photobucket.com/albums/mm281/foxnewsnetwork/csharp.png" ,
+				'price': 1000
+			}] );
+			rawcode += "; myshop.SetupShop( items ); } );";
+			console.log(rawcode);
+			res.send( rawcode );
+		});
+	});
 } );
 
 app.get("/player", function(req, res){ 
@@ -72,17 +119,7 @@ app.get("/player", function(req, res){
 app.get( "/dinocards", function(req, res){ 
 	res.render( "dinocard.jade", { title : "Dino Cards" } );
 } );
-/****************************
-* Useful Constants                     *
-*****************************/
-var gameToken = 'cf242dcaf5d0a4a0b0e2949e804dcebf';
-var playerPath = "/api/v1/players";
-var shopSite = 'gamertiser.com';
-var shopPath = '/api/v1/product.json?token=';
-var shopPort = 80;
-var maxPerRoom = 4; // 0 means no limit
-var maxPerChannel = 500; 
-var PlayerCache = { };
+
 
 /****************************
 * Channel Models                           *

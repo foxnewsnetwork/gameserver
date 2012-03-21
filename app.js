@@ -69,6 +69,10 @@ app.get("/shop", function(req, res){
 app.get("/player", function(req, res){ 
 	res.render( "player.jade", { title : "Player test" } );
 } );
+
+app.get( "/dinocards", function(req, res){ 
+	res.render( "dinocard.jade", { title : "Dino Cards" } );
+} );
 /****************************
 * Useful Constants                     *
 *****************************/

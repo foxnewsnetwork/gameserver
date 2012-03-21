@@ -545,13 +545,8 @@ function BuyItem( data ){
 $(document).ready( function(){ 
 	var items = [{
 		'price' : 15.0 ,
-		'description' : "trevor is a fag" ,
+		'description' : "Iron pig stuffed animal" ,
 		'tileset' : PATH_NAME + "images/shopicons/upa.png"
-	},
-	{
-		'price': 16.0,
-		'description': "trevor is really a fag" ,
-		'tileset' : PATH_NAME + "images/tiles/0.png"
 	}];
 	myshop.SetupShop( items );
 } );

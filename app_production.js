@@ -22,6 +22,7 @@ var Player = playerModel.Player;
 // Password encryption use
 var md5 = require( "MD5" );
 
+
 /****************************
 * Useful Constants                     *
 *****************************/

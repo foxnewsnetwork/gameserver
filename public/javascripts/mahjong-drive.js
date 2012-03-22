@@ -28,6 +28,8 @@ AddGameFunction( "discardtile", function( origin, eventdata ){
 	game.DiscardTile( pn, eventdata ); 
 	actions = game.GetPossibleActions(playerNumber);
 	ManageUI(actions);
+	if(pn == playerNumber)
+	graphics.player.resetPick();
 	$("#display").html( game.tohtml() );
 } );
 

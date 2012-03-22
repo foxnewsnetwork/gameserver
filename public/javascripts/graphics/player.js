@@ -18,6 +18,13 @@ var MahjongGraphicsPlayer = function(){
 			this.pickedTile = num;
 			
 	}
+	 this.resetPick = function(){
+		 xpos = X_PLAYER + this.pickedTile*TILE_WIDTH;
+			ypos = Y_PLAYER;
+			this.ptileset[this.pickedTile].SetAt(xpos, ypos);	
+			
+			this.pickedTile = undefined;
+	 }
 	this.returnTile = function(){
 		return this.pickedTile;
 	}
@@ -35,10 +42,7 @@ var MahjongGraphicsPlayer = function(){
 	    return str;
 	}
 	this.draw = function( playerstate ){ 
-		if(this.pickedTile != undefined)
-			{
-			$('#clickedtile').html(this.pickedTile);
-			}
+	
 		var hand = playerstate['hand'];
 		var hidden = hand['hidden'];
 		var exposed = hand['exposed'];
@@ -46,7 +50,8 @@ var MahjongGraphicsPlayer = function(){
 		var k, xpos, ypos;
 		for( k = 0; k < hidden.length; k++){ 
 			if( this.ptileset[k] == undefined ){ 
-				
+				if(k == 14)
+					alert("should be here twice");
 					
 				var atile = new MahjongTileSprite();
 				xpos = X_PLAYER + k*TILE_WIDTH;
@@ -123,7 +128,9 @@ var MahjongGraphicsPlayer = function(){
 		// Step 3: deleting extra crap
 		var m = k+j;
 		while( m < this.ptileset.length ){ 
-			this.ptileset[m].destroy();
+			if(this.ptileset[m] != undefined)
+			{this.ptileset[m].destroy();
+			this.ptileset.splice(m,1);}
 			m += 1;
 		}	
 	}

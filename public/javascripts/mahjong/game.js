@@ -127,7 +127,8 @@ var MahjongGame = function(){
 				continue;
 			fag = this.players[k];
 			fag.checkKan( tossedtile );
-			fag.checkPon( tossedtile );
+			ponAvailable = fag.checkPon( tossedtile );
+			
 		}
 		
 		// check chi for the previous player

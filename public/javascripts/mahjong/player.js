@@ -61,7 +61,7 @@ var MahjongPlayer = function(){
 	
 	// pon is 3 of a kind
 	this.checkPon = function(tile){ 
-		var result = this.hand.checkKan(tile);
+		var result = this.hand.checkPon(tile);
 		if( result ){
 			this.actions['pon'] = true;
 		}

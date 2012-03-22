@@ -54,7 +54,7 @@ app.get('/', function(req, res){
 });
 
 app.get( "/mahjong", function(req, res){ 
-	res.render("mahjong.jade", { title: "Trevor is a faggot" } );
+	res.render("mahjong.jade", { title: "Mahjong" } );
 } );
 
 app.get("/faggot", function(req, res){

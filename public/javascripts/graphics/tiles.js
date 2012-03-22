@@ -232,7 +232,7 @@ var MahjongTileSprite = function(){
 	}
 	
 	this.destroy = function(){ 
-		staticTileId -= 1;
+		//staticTileId -= 1;
 		this.x = undefined;
 		this.y = undefined;
 		if( this.sprite != undefined )

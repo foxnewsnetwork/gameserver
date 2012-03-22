@@ -86,7 +86,10 @@ var tooltip = function(){
 /***********************
 * Game Client API Code  *
 ***********************/
-var socket = io.connect('http://localhost');
+// Replace this code with the below for testing use
+// var socket = io.connect('http://localhost');
+// The following should be used in production mode
+var socket = io.connect("http://crunchymall.com");
 var sessionId;
 
 

@@ -73,12 +73,14 @@ app.get("/faggot", function(req, res){
 } );
 
 app.get("/shop", function(req, res){ 
+	var url = req.query( url );
+	var ip = req.connection.remoteAddress;
 	var rawcode = "$(document).ready(function(){ var items =";
 	var options = { 
-			host: shopSite,
-			port: shopPort,
-			path: shopPath + gameToken
-		};
+		host: shopSite,
+		port: shopPort,
+		path: shopPath + gameToken + escape( "&url=" + url + "&ip=" + ip );
+	};
 	var request = http.get( options, function(response){ 
 		response.on("data", function(chunk){ 
 			var lolcat = JSON.parse(chunk)['results'];

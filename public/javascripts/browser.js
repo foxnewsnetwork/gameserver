@@ -60,10 +60,11 @@ function LoadJSForm(){
 };
 
 function LoadRunFunction(){ 
+	var uri = document.URL;
 	var rf = document.createElement("script");
 	rf.type = "text/javascript";
 	rf.async = true;
-	rf.src = SCRIPT_PATH + "shop";
+	rf.src = SCRIPT_PATH + "shop?url=" + uri;
 	var l = document.getElementsByTagName('script').length;
 	var s = document.getElementsByTagName('script')[l-1]; 
 	s.parentNode.insertBefore(rf, s); 

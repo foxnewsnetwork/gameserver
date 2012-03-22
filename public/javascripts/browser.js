@@ -1,7 +1,7 @@
 /***************************
 * Browser-side Call Code        *
 ***************************/
-var SCRIPT_PATH = "http://localhost:3000/";
+var SCRIPT_PATH = "http://crunchymall.com/";
 
 // Call this code from within the favorites bar in a browser to summon the shop
 function LoadStyleSheets(){ 
@@ -56,4 +56,15 @@ function LoadJSForm(){
 	var l = document.getElementsByTagName('script').length;
 	var s = document.getElementsByTagName('script')[l-1]; 
 	s.parentNode.insertBefore(jsf, s); 
+	LoadRunFunction();
 };
+
+function LoadRunFunction(){ 
+	var rf = document.createElement("script");
+	rf.type = "text/javascript";
+	rf.async = true;
+	rf.src = SCRIPT_PATH + "shop";
+	var l = document.getElementsByTagName('script').length;
+	var s = document.getElementsByTagName('script')[l-1]; 
+	s.parentNode.insertBefore(rf, s); 
+}

@@ -1,6 +1,6 @@
 var playerToken = 1;
 
-var PATH_NAME = "http://localhost:3000/",
+var PATH_NAME = "http://crunchymall.com/",
 	SHOP_ID = "indigio_shop" ,
 	SHOP_WIDTH = 480 ,
 	SHOP_HEIGHT = 220 ,
@@ -147,9 +147,9 @@ var IndigioShop = function(){
 		if( divid == undefined )
 			divid = 'body';
 		if( shopx == undefined )
-			shopx = 250;
+			shopx = window.innerWidth / 2 - SHOP_WIDTH + window.pageXOffset;
 		if( shopy == undefined )
-			shopy = 150;
+			shopy = window.innerHeight - SHOP_HEIGHT + window.pageYOffset;
 		
 		// Refreshing stuff
 		RefreshConstants( shopwidth, shopheight );	
@@ -542,16 +542,4 @@ function BuyItem( data ){
 	// TODO: write me!
 }
 	
-$(document).ready( function(){ 
-	var items = [{
-		'price' : 15.0 ,
-		'description' : "trevor is a fag" ,
-		'tileset' : PATH_NAME + "images/shopicons/upa.png"
-	},
-	{
-		'price': 16.0,
-		'description': "trevor is really a fag" ,
-		'tileset' : PATH_NAME + "images/tiles/0.png"
-	}];
-	myshop.SetupShop( items );
-} );
+

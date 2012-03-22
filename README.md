@@ -1,3 +1,7 @@
+Status
+=
+Unstable; Check back next week!
+
 Game Server for General Multiplayer Games
 ===
 The idea of the game engine is that it is general enough

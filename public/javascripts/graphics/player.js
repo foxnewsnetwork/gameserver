@@ -1,6 +1,7 @@
 
 var MahjongGraphicsPlayer = function(){ 
 	this.ptileset;
+	this.exposeTileSet;
 	this.pickedTile;
 	
 	
@@ -30,6 +31,7 @@ var MahjongGraphicsPlayer = function(){
 	}
 	this.initialize = function(element){ 
 		this.ptileset = [];
+		this.exposeTileSet = [];
 		return this;
 	}
 	function objToString (obj) {
@@ -50,8 +52,7 @@ var MahjongGraphicsPlayer = function(){
 		var k, xpos, ypos;
 		for( k = 0; k < hidden.length; k++){ 
 			if( this.ptileset[k] == undefined ){ 
-				if(k == 14)
-					alert("should be here twice");
+
 					
 				var atile = new MahjongTileSprite();
 				xpos = X_PLAYER + k*TILE_WIDTH;
@@ -99,8 +100,9 @@ var MahjongGraphicsPlayer = function(){
 		var j;
 		for( j = 0; j < exposed.length; j++){ 
 			
-			if( this.ptileset[k+j] == undefined ){ 
-				xpos = X_PLAYER + 15 + (k+j)*TILE_WIDTH;
+			if( this.exposeTileSet[j] == undefined ){ 
+				var atile = new MahjongTileSprite();
+				xpos = X_PLAYER + 15 + (k+1+j)*TILE_WIDTH;
 				ypos = Y_PLAYER; - 25;
 				atile.SetAs(exposed[j]['suit'], exposed[j]['value']);
 				atile.SetAt(xpos, ypos);
@@ -110,29 +112,40 @@ var MahjongGraphicsPlayer = function(){
 				atile.SetCallback( 'mouseout', function(event){
 					tooltip.hide();
 				} );
-				atile.SetCallback( "click", PlayerTileClick(atile) );
-				this.ptileset.push( atile );
+				atile.SetCallback( "click", function(event){
+					
+				} );
+				this.exposeTileSet.push( atile );
 			}
 			else{ 
-				atile.SetAs(exposed[j]['suit'], exposed[j]['value']);
-				atile.SetCallback( 'mouseover', function(event){ 
+				this.exposeTileSet[j].SetAs(exposed[j]['suit'], exposed[j]['value']);
+				this.exposeTileSet[j].SetCallback( 'mouseover', function(event){ 
 					tooltip.show( tiletohtml(event['suit'], event['value'] ) );
 				} );
-				atile.SetCallback( 'mouseout', function(event){
+				this.exposeTileSet[j].SetCallback( 'mouseout', function(event){
 					tooltip.hide();
 				} );
-				atile.SetCallback( "click", PlayerTileClick(atile) );
+				this.exposeTileSet[j].SetCallback( "click", function(event){
+					
+				} );
 			}
 		}
 		
 		// Step 3: deleting extra crap
-		var m = k+j;
+		var m = k;
 		while( m < this.ptileset.length ){ 
 			if(this.ptileset[m] != undefined)
 			{this.ptileset[m].destroy();
 			this.ptileset.splice(m,1);}
 			m += 1;
-		}	
+		}
+		var n = j;
+		while( n < this.exposeTileSet.length ){ 
+			if(this.exposeTileSet[n] != undefined)
+			{this.exposeTileSet[n].destroy();
+			this.exposeTileSet.splice(n,1);}
+			n += 1;
+		}
 	}
 }
 

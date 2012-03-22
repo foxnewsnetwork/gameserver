@@ -9,8 +9,22 @@ var MahjongHand = function(){
 	
 		this.hidden.push( tileToAdd );
 		this.sorthand();
+		
+		return tileToAdd;
 	}
-	
+	this.exposeTile = function(tile){
+		var length = this.hidden.length;
+		var tileLoc = 0;
+		for(var i = 0; i < length; i++)
+		{
+		if(this.hidden[i].tohtml() == tile.tohtml())
+				{
+					tileLoc = i;
+				}
+		}
+		this.hidden.splice(tileLoc,1);
+		this.exposed.push(tile);
+	}
 	this.discardtile = function(tiles, tile){ 
 //		var length = this.hidden.length;
 //		var tileLoc = 0;

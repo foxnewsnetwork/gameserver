@@ -6,7 +6,9 @@ var MahjongBoard = function(){
 		this.freshTiles = [];
 		this.discardTiles = [];
 		for( var j = 0; j < 5; j++) {
+			if(j != 4){
 			for( var k = 0; k < 9; k++ ) {
+				
 				if( j == 4 && k == 8 )
 					continue;
 				if( j == 3 && k > 6 )
@@ -16,6 +18,11 @@ var MahjongBoard = function(){
 				this.freshTiles.push( new MahjongTiles(j, k) );
 				this.freshTiles.push( new MahjongTiles(j, k) );
 			}
+			}
+			else
+				for(var k = 0; k< 9;k++){
+					this.freshTiles.push( new MahjongTiles(j, k) );	
+				}
 		}
 		
 	}

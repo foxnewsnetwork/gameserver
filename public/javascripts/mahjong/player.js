@@ -102,7 +102,14 @@ var MahjongPlayer = function(){
 	this.drawtile = function(board){ 
 		if( this.hand == undefined )
 			this.hand = new MahjongHand();
-		this.hand.drawtile( board.freshTiles );
+		tileToAdd = this.hand.drawtile( board.freshTiles );
+		while(tileToAdd.suit == 4)
+			{
+			this.hand.exposeTile(tileToAdd);
+			
+			tileToAdd = this.hand.drawtile( board.freshTiles);
+			}
+		
 		this.actions['draw'] = false;
 		this.actions['discard'] = true;
 		this.actions['pon'] = false;

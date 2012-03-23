@@ -87,9 +87,9 @@ var tooltip = function(){
 * Game Client API Code  *
 ***********************/
 // Replace this code with the below for testing use
-// var socket = io.connect('http://localhost');
+var socket = io.connect('http://localhost');
 // The following should be used in production mode
-var socket = io.connect("http://crunchymall.com");
+// var socket = io.connect("http://crunchymall.com");
 var sessionId;
 
 
@@ -251,9 +251,9 @@ var IndigioShop = function(){
 		if( divid == undefined )
 			divid = 'body';
 		if( shopx == undefined )
-			shopx = 250;
+			shopx = 75;
 		if( shopy == undefined )
-			shopy = 150;
+			shopy = 125;
 		
 		// Refreshing stuff
 		RefreshConstants( shopwidth, shopheight );	
@@ -668,6 +668,7 @@ function GetShopItems( metadata ){
 
 socket.on( "open shop down", function( data ){ 
 	// alert(JSON.stringify(data));
+	var shopItems;
 	var tempItems = data['items'];
 	if( data['sessionId'] == sessionId ) {
 		shopItems = (function(raw){ 
@@ -678,7 +679,7 @@ socket.on( "open shop down", function( data ){
 					'description': fag['description'],
 					'id': fag['id'],
 					'company_id': fag['company_id'],
-					'tileset': fag['picture_path'],
+					'tileset': fag['picture_path_small'],
 					'price': fag['cost'],
 					'title': fag['title'],
 					'created_at': fag['created_at'],

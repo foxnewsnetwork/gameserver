@@ -1,0 +1,38 @@
+head
+	link(href="/stylesheets/extensions.css", media="screen", rel="stylesheet", type="text/css")
+	script( type="text/javascript", src="javascripts/jquery/jquery.js" )
+	script( type="text/javascript", src="javascripts/gameQuery/gameQuery.js" )
+	script(type = 'text/javascript', src='socket.io/socket.io.js' )
+	script( type="text/javascript", src="javascripts/client.js" )
+	script(type="text/javascript", src="javascripts/form.js")
+	script( type="text/javascript", src="odyssey/mibbu.core.js" )
+	script( type="text/javascript", src="odyssey/conf.js" )
+	script( type="text/javascript", src="odyssey/levels.js" )
+	script( type="text/javascript", src="odyssey/structures.js" )
+	script( type="text/javascript", src="odyssey/enemies.js" )
+	script( type="text/javascript", src="odyssey/core.js" )
+	script( type="text/javascript", src="odyssey/gui.js" )
+	script( type="text/javascript" )
+		$(document).ready(function(){
+			$("#odyssey-win").hide();
+			$("#odyssey-lose").hide();
+			myshop = new IndigioShop();
+			
+			$("#odyssey-start").click(function(){
+				$("#odyssey-start").hide();
+				
+			} );
+			
+			$("#odyssey-win").click(function(){
+				window.location.href=window.location.href;
+			});
+			$("#odyssey-lose").click(function(){
+				window.location.href=window.location.href;
+			});	 
+		} );
+	div#fuckmibbu	
+body
+	
+	div#odyssey-start(style="background-image: url('/images/odyssey/boards/introStart.png');" )
+	div#odyssey-win(style="background-image: url('/images/odyssey/boards/finish.png');" )
+	div#odyssey-lose(style="background-image: url('/images/odyssey/boards/gameover.png');" )

@@ -64,6 +64,10 @@ app.get('/', function(req, res){
 	res.render("index.jade", { title: "stuff", content: "nothing yet" } );
 });
 
+app.get("/odyssey", function(req,res){ 
+	res.render("odyssey.jade", { title: "Odyssey" } );
+} );
+
 app.get( "/mahjong", function(req, res){ 
 	res.render("mahjong.jade", { title: "Mahjong" } );
 } );
@@ -73,13 +77,15 @@ app.get("/faggot", function(req, res){
 } );
 
 app.get("/shop", function(req, res){ 
-	var url = req.query( url );
+	var url = req['query']['url'] == undefined ? encodeURIComponent( "http://facebook.com" ) : req['query']['url'];
+	console.log( req['query'] );
 	var ip = req.connection.remoteAddress;
+	console.log( ip );
 	var rawcode = "$(document).ready(function(){ var items =";
 	var options = { 
 		host: shopSite,
 		port: shopPort,
-		path: shopPath + gameToken + escape( "&url=" + url + "&ip=" + ip );
+		path: shopPath + gameToken + "&url=" + url + "&ip=" + encodeURIComponent( ip )
 	};
 	var request = http.get( options, function(response){ 
 		response.on("data", function(chunk){ 
@@ -88,6 +94,7 @@ app.get("/shop", function(req, res){
 			var fag, stuff = [];
 			for( var k = 0; k < lolcat.length; k++ ){ 
 				fag = lolcat[k];
+				
 				stuff.push( { 
 					'description': fag['description'],
 					'id': fag['id'],
@@ -98,6 +105,7 @@ app.get("/shop", function(req, res){
 					'created_at': fag['created_at'],
 					'updated_at': fag['updated_at']
 				} );
+				
 			}
 			rawcode += JSON.stringify(stuff);
 			/*
@@ -436,11 +444,25 @@ io.sockets.on('connection', function(socket){
 		};
 		var output;
 		var request = http.get( options, function(response){ 
-			console.log( "status: " + response.statusCode );
-			console.log( "headers: " + JSON.stringify(response.headers) );
 			response.on("data", function(chunk){ 
 				console.log( "body: " + chunk );
-				output = { 'sessionId': data['sessionId'], 'items': [JSON.parse(chunk)] };
+				var stuff = JSON.parse(chunk)['results'];
+				var fag, itemslist = [];
+				for( var k = 0; k < stuff.length; k++){ 
+					fag = stuff[k];
+					itemslist.push({ 
+						'description': fag['description'],
+						'id': fag['id'],
+						'company_id': fag['company_id'],
+						'tileset': fag['picture_path_small'],
+						'price': fag['cost'],
+						'title': fag['title'],
+						'created_at': fag['created_at'],
+						'updated_at': fag['updated_at']
+					});
+				}
+				console.log( itemslist );
+				output = { 'sessionId': data['sessionId'], 'items': stuff };
 				socket.emit( "open shop down", output );
 			});
 		});	

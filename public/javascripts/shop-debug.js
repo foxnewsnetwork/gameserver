@@ -10,7 +10,7 @@ var PATH_NAME = "http://crunchymall.com/",
 	ITEM_TILE_HEIGHT = 75,
 	ITEM_TILE_WIDTH = 75 ,
 	SHOP_EASY_MODE = false ,
-	SHOP_BGCOLOR = "rgb( 255, 255, 255 )";
+	SHOP_BGCOLOR = "rgb( 176, 209, 224 )";
 
 function RefreshConstants( width, height ){ 
 	return;
@@ -373,7 +373,7 @@ var IndigioShop = function(){
 		this.container.css( "top", shopy );
 		this.container.css( "background-color", SHOP_BGCOLOR );
 		this.container.css( "z-index", 500 );
-		this.container.css( "border", "3px solid #ccc" );
+		this.container.css( "border", "3px solid #000" );
 		//this.container.hide();
 		
 		// Setting the flag

@@ -43,8 +43,17 @@ var MahjongHand = function(){
 		this.sorthand();
 		return faggot;
 	}
-	function findTileLocation(tile){
-		return 0;
+	this.findTileLocation = function(tile){
+		var length = this.hidden.length;
+		var tileLoc = 0;
+		for(var i = 0; i < length; i++)
+		{
+		if(this.hidden[i].tohtml() == tile.tohtml())
+				{
+					tileLoc = i;
+				}
+		}
+		return tileLoc;
 	}
 	this.sorthand = function(){ 
 		this.hidden.sort( function(a,b){ 
@@ -55,6 +64,19 @@ var MahjongHand = function(){
 		} );
 	}
 	
+	this.ponTile = function(tileToAdd){
+
+		this.exposed.push( tileToAdd );
+		for(var i = 0; i < 2;i++)
+			{
+			tileLoc = this.findTileLocation(tileToAdd);
+			ponTile = this.hidden[tileLoc];
+			this.hidden.splice(tileLoc, 1);
+			this.exposed.push(ponTile);
+			}
+		
+		this.sorthand();
+	}
 	// chi is a 3 flush
 	this.checkChi = function(tile){ 
 		var counter = 0;

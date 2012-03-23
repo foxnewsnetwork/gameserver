@@ -26,7 +26,10 @@ var MahjongBoard = function(){
 		}
 		
 	}
-	
+	this.ponTile = function(){
+		tile = this.discardTiles.pop();
+		return tile;
+	}
 	// shuffles the frestiles
 	this.shuffle = function(){ 
 		var tempTile;

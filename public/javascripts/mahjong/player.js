@@ -32,7 +32,12 @@ var MahjongPlayer = function(){
 		this.actions['draw'] = false;
 		this.actions['discard'] = false;
 	}
-	
+	this.recentPon = function(){
+		this.actions['draw'] = false;
+		this.actions['discard'] = true;
+		this.actions['endturn'] = false;
+		this.actions['pon'] = false;
+	}
 	// call this function to query possible actions of the player
 	// calling this function also updates the actions list
 	this.cando = function( action ){ 
@@ -106,7 +111,6 @@ var MahjongPlayer = function(){
 		while(tileToAdd.suit == 4)
 			{
 			this.hand.exposeTile(tileToAdd);
-			
 			tileToAdd = this.hand.drawtile( board.freshTiles);
 			}
 		
@@ -132,6 +136,11 @@ var MahjongPlayer = function(){
 		while( this.hand.hidden.length < limit && board.freshTiles.length > 0 ){ 
 			this.drawtile( board );
 		}
+	}
+	
+	this.ponTile = function(board){
+		ponTile = board.ponTile();
+		this.hand.ponTile(ponTile);
 	}
 	this.sorthand = function(){ 
 		this.hand.sorthand();

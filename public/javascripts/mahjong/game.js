@@ -126,7 +126,7 @@ var MahjongGame = function(){
 			if( k == this.interactivePlayer )
 				continue;
 			fag = this.players[k];
-			fag.checkKan( tossedtile );
+			kanAvailable = fag.checkKan( tossedtile );
 			ponAvailable = fag.checkPon( tossedtile );
 			
 		}
@@ -134,6 +134,16 @@ var MahjongGame = function(){
 		// check chi for the previous player
 		var previous = this.players[(this.interactivePlayer + PLAYER_COUNT - 1 ) % PLAYER_COUNT];
 		previous.checkChi( tossedtile );
+	}
+	this.Pon = function(player){
+		this.players[this.activePlayer].deactivate();
+		this.SetInteractivePlayer(player);
+		currentPlayer = this.players[this.interactivePlayer];
+		currentPlayer.ponTile(this.board);
+		
+		this.activePlayer = this.interactivePlayer;
+		this.players[this.activePlayer].recentPon();
+
 	}
 	this.playerJoined = function(){
 		

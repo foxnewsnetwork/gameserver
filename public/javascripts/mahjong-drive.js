@@ -40,6 +40,16 @@ AddGameFunction( "endturn", function( origin, eventdata ){
 	ManageUI(actions);
 } );
 
+AddGameFunction( "pon", function( origin, eventdata ){ 
+	var pn = GetPlayerNumber( origin );
+	game.Pon( pn );
+	actions = game.GetPossibleActions(playerNumber);
+	ManageUI(actions);
+
+	$("#display").html( game.tohtml() );
+
+} );
+
 AddGameFunction( "initial sync", function( origin, eventdata ){ 
 	
 	//Everyone syncs. It gets rid of the weird one person off error.
@@ -173,6 +183,21 @@ function ManageUI ( actions ){
 		$("#endturn").show();
 		graphics.board.actionsEndTurn();
 		}
+	if(actions['pon']){
+		graphics.board.actionsPon();
+	}
+	if(!(actions['pon'])){
+		graphics.board.actionsDeactivatePon();
+	}
+	if(actions['chi']){
+		
+	}
+	if(actions['kan']){
+		
+	}
+	if(actions['ron']){
+		
+	}
 	if( !(actions['endturn']) && !(actions['discard']) && !(actions['draw']))
 		{
 		$("#drawtile").hide();
@@ -195,6 +220,10 @@ function discardTile(){
 function endTurn(){
 	FireEvent("endturn","-");
 }
+function pon(){
+	FireEvent("pon","-");
+}
+
 function setPlayerPickTile(handId){
 	graphics.setPlayerPick(handId);
 }

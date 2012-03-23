@@ -23,6 +23,7 @@ var MahjongGraphicsBoard = function(){
 	var drawButton;
 	var discardButton;
 	var endTurnButton;
+	var ponButton;
 	var staticButtonGroup;
 	this.setupButtons = function(){
 		//staticButtonGroup = $.playground().addGroup( "buttons", { width: GAME_WIDTH, height: GAME_HEIGHT } ).end();
@@ -62,9 +63,23 @@ var MahjongGraphicsBoard = function(){
 		endTurnButton.SetCallback("click", function(event){
 			endTurn();
 		});	
+		
+		ponButton = new MahjongButtonSprite();
+		ponButton.set(BUTTON_WIDTH,0,"endturn");
+		ponButton.SetCallback( 'mouseover', function(event){ 
+			tooltip.show( event['action'] );
+			} );
+		ponButton.SetCallback( 'mouseout', function(event){
+			tooltip.hide();
+			} );
+		ponButton.SetCallback("click", function(event){
+			pon();
+		});	
+		
 		drawButton.hide();
 		discardButton.hide();
 		endTurnButton.hide();
+		ponButton.hide();
 	}
 	this.actionsDraw = function(){
 		drawButton.show();
@@ -85,6 +100,12 @@ var MahjongGraphicsBoard = function(){
 		drawButton.hide();
 		discardButton.hide();
 		endTurnButton.hide();	
+	}
+	this.actionsPon = function(){
+		ponButton.show();
+	}
+	this.actionsDeactivatePon = function(){
+		ponButton.hide();
 	}
 	// remember, json files
 	this.draw = function( boardstate ){ 
@@ -132,6 +153,7 @@ var MahjongGraphicsBoard = function(){
 		
 		while( x < this.btileset.length ){ 
 			this.btileset[x].destroy();
+			this.btileset.splice(x,1);
 			x += 1;
 		}
 		

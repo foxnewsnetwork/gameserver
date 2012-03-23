@@ -1,3 +1,7 @@
+Random Adivce
+=
+1. Build a personal code-generation framework in either c# or java
+
 Status
 =
 Unstable; Check back next week!kasjldfkj

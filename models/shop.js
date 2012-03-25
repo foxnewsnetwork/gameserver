@@ -30,13 +30,16 @@ var ServerShop = function(){
 		callback : a function you wish to have called when the store is ready
 	};
 	*/
-	this.RequestItems = function(data){ 
+	this.RequestItems = function(data, cb){ 
 		var callback, metadata;
 		if( data != undefined ){ 
 			this.url = data['url']; 
 			this.ip = data['ip']; 
 			callback = data['callback'];
 			metadata = data['metadata'];
+		}
+		if( cb != undefined ){ 
+			callback = cb;
 		}
 		var rawquerydata = { token : GAME_TOKEN };
 		if( this.url != undefined )
@@ -119,11 +122,62 @@ var ServerShop = function(){
 	// Parameter explanations
 	/**
 		data = { 
-			
+			'productid' :
+			'email' : 
+			'name' :
+			'creditcard' :
+			'ccv' :
+			'expirationmonth' :
+			'expirationyear' :
+			'username' :
+			'playertoken' :
+			'ip' :
+			'url' :
+			'gametoken':
 		}
 	*/
-	this.BuyItem = function( data ){ 
-		// TODO: write me!
+	this.BuyItem = function( data, callback ){ 
+		// Step 1: Setup the request
+		var tempdata = data;
+		var postdata = querystring.stringify( data );
+		var options = { 
+			method : "POST",
+			host : SHOP_SITE,
+			port : SHOP_PORT,
+			path : SHOP_PATH ,
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				'Content-Length': postdata.length
+			}
+		}; // end options
+		
+		// Step 2: Starting the request
+		var request = http.request( options, function(response){ 
+			// Handle 400 erros
+			if( response.statusCode > 400 ){ 
+				console.log( "We have encountered the error @ status code : " + response.statusCode );
+				return;
+			} // end statusCode if
+			
+			// Setup to receive information
+			var fullsize = response.headers['content-length'];
+			var currentsize = 0;
+			var buffer = "";
+			response.on( "data", function(chunk){ 
+				currentsize += chunk.length;
+				buffer += chunk;
+				if( currentsize / fullsize > 0.995 ){ 
+					var data = JSON.parse(buffer);	
+					console.log( "Purchase status: " + buffer );
+					if(callback != undefined)
+						callback(data);
+				} // end size check if
+			} ); // end response.on data
+		} ); // end http.request
+		
+		// Step 3: Write the post data and wait for the reply
+		request.write(postdata);
+		request.end();
 	} // end this.BuyItem
 }
 

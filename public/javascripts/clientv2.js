@@ -2,13 +2,14 @@
 * Game Client API Code  *
 ***********************/
 // Replace this code with the below for testing use
-var socket = io.connect('http://localhost');
+var socket = io.connect('http://localhost:3000');
 // The following should be used in production mode
 // var socket = io.connect("http://crunchymall.com");
 var sessionId;
 
 
 socket.on( "connection", function(id){ 
+	// alert( "We are Connected Again!!" );
 	sessionId = id;
 });
 
@@ -115,7 +116,6 @@ function GetShopItems( reqdata ){
 
 socket.on( "open shop down", function( data ){ 
 	var shopItems = data['items'];
-	alert( JSON.stringify(shopItems) );
 	if( data['sessionId'] == sessionId ) {
 		var handlers = shopFunctionHandlers[ 'open shop down' ];
 		for( var x in handlers ){
@@ -132,7 +132,7 @@ function BuyItem( data ){
 
 socket.on( "purchase item down", function(result){
 	// TODO: write a function to display some sort of message for success or failure
-	myShop.CompletePurchase( result );
+	// myShop.CompletePurchase( result );
 } );
 
 /**********************

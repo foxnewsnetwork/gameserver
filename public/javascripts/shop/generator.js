@@ -397,6 +397,7 @@ var Generator = function(){
 				};
 				generator.CreateFlashMessage( "Purchase Pending...", position );
 				var paydata = InGidioForm.get();
+				paydata['url'] = document.url;
 				fspec['callbacks']['buyitem']( item, paydata );
 			};
 		} )(this) );

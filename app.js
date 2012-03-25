@@ -26,6 +26,12 @@ var md5 = require( "MD5" );
 var shopModel = require( "./models/shop.js" );
 var Shop = shopModel.InGidioShop;
 
+// Javascript rendering engine
+var ejs = require("ejs");
+
+// File service
+var fs = require("fs");
+
 /****************************
 * Useful Constants                     *
 *****************************/
@@ -85,51 +91,22 @@ app.get( "/shopv2", function(req, res){
 } );
 
 app.get("/shop", function(req, res){ 
-	var url = req['query']['url'] == undefined ? encodeURIComponent( "http://facebook.com" ) : req['query']['url'];
-	console.log( req['query'] );
+	// Step 1: Setting up the querydata
+	var url = req['query']['url'] == undefined ?  "http://www.facebook.com" : req['query']['url'];
 	var ip = req.connection.remoteAddress;
-	console.log( ip );
-	var rawcode = "$(document).ready(function(){ var items =";
-	var options = { 
-		host: shopSite,
-		port: shopPort,
-
-		path: shopPath + gameToken + "&url=" + url + "&ip=" + encodeURIComponent( ip )
+	var data = { 
+		'url' : url,
+		'ip' : ip
 	};
-	var request = http.get( options, function(response){ 
-		response.on("data", function(chunk){ 
-			var lolcat = JSON.parse(chunk)['results'];
-			console.log(lolcat);
-			var fag, stuff = [];
-			for( var k = 0; k < lolcat.length; k++ ){ 
-				fag = lolcat[k];
-				
-				stuff.push( { 
-					'description': fag['description'],
-					'id': fag['id'],
-					'company_id': fag['company_id'],
-					'tileset': fag['picture_path_small'],
-					'price': fag['cost'],
-					'title': fag['title'],
-					'created_at': fag['created_at'],
-					'updated_at': fag['updated_at']
-				} );
-				
-			}
-			rawcode += JSON.stringify(stuff);
-			/*
-			rawcode += JSON.stringify([{
-				'description' : "Faggot",
-				'tileset' : "http://i299.photobucket.com/albums/mm281/foxnewsnetwork/csharp.png" ,
-				'price': 1000
-			}] );
-			*/
-			rawcode += "; myshop.SetupShop( items ); } );";
-			console.log(rawcode);
-			res.send( rawcode );
-		});
-	});
-} );
+	
+	// Step 2: Setting up options for the request
+	Shop.RequestItems( data, function(items){  
+		var itemstring = JSON.stringify( items );
+		var str = fs.readFileSync( "./views/shop.ejs", "utf8" );
+		var ret = ejs.render( str, { items : itemstring } );
+		res.send( ret ); 
+	} ); // end Shop.RequestItems
+} ); // end app.get 
 
 app.get("/player", function(req, res){ 
 	res.render( "player.jade", { title : "Player test" } );
@@ -460,43 +437,15 @@ io.sockets.on('connection', function(socket){
 	
 	// purchase item
 	socket.on( "purchase item up", function(data){
-		// TODO: write this
+		// Temporary Code until gamertisers can correctly handle it
 		console.log( data );
 		socket.emit( "purchase item down", "Success!" );
 		return;
 		
-		var shopPath = '/api/v1/products/' + data['productId'];
-
-		var postData = querystring.stringify({
-			'gameToken': gameToken ,
-			'playerData': data['playerData'] ,
-		});
-				
-		var options = { 
-			host: shopSite ,
-			port: shopPort ,
-			path: shopPath ,
-			method: "POST" ,
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded',
-				'Content-Length': postData.length
-			}
-		};
-		
-		var request = http.request( options, function(response){
-			console.log( "status: " + response.statusCode );
-			console.log( "headers: " + JSON.stringify(response.headers) );
-			response.on("data", function(chunk){ 
-				console.log( "body: " + chunk );
-				output = { 'sessionId': data['sessionId'], 'items': JSON.parse(chunk) };
-				// TODO: MAKE IT SO THAT I ACTUALL DO SOMETHING!
-				socket.emit( "purchase item down", output );
-				
-			});
-		});
-		
-		request.write( postData );
-		request.end();
+		// actual code
+		Shop.BuyItem(data, function(stuff){ 
+			socket.emit( "purchase item down", stuff['message'] );
+		} );
 	});
 	
 	

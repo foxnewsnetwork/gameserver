@@ -74,11 +74,20 @@ var InGidioShop = function(){
 			'shopclose': function(){ },
 			'buyfailed' : function(){ },
 			'buysuccessful' : function(){ },
-			'buyitem' : function(){ } ,
+			'buyitem' : function(item, paydata){ 
+				InGidioShop.BuyItem( item, paydata );
+			} , // end buyitem
 			'approve' : function(){ }
 		}
 	};
 	return{ 
+		BuyItem : function(item, paydata){ 
+			// Step 1: Setup the query string with jquery
+			var data = $.extend( item, paydata );
+			data['url'] = document.url;
+			// var querydata = $.param( data );
+			BuyItem( data );
+		}, // end BuyItem
 		CallSimpleShop : function(items, specs){
 			// Step 1: Setting custom specs and necessar
 			var cspec = spec;

@@ -9,10 +9,11 @@ var querystring = require("querystring");
 /****************************
 * Constant Configurations        *
 *****************************/
-var SHOP_SITE = "gamertisers.com" ,
-	SHOP_PATH = "/api/v1/products.json" ,
+var SHOP_SITE = "gamertiser.com" ,
+	SHOP_PATH = "/api/v1/product.json" ,
 	SHOP_PORT = 80,
-	GAME_TOKEN = 12345 ;
+	GAME_TOKEN = 12345 ,
+	FAIL_PIC_PATH = "http://i299.photobucket.com/albums/mm281/foxnewsnetwork/1315348037812.jpg" ;
 	
 /****************************
 * Class Declarations                   *
@@ -30,49 +31,89 @@ var ServerShop = function(){
 	};
 	*/
 	this.RequestItems = function(data){ 
-		var callback;
+		var callback, metadata;
 		if( data != undefined ){ 
-			this.url = data['url']; this.ip = data['ip'];  callback = data['callback'];
+			this.url = data['url']; 
+			this.ip = data['ip']; 
+			callback = data['callback'];
+			metadata = data['metadata'];
 		}
+		var rawquerydata = { token : GAME_TOKEN };
+		if( this.url != undefined )
+			rawquerydata['url'] = this.url;
+		if( this.ip != undefined )
+			rawquerydata['ip'] = this.ip;
 		
-		var querydata = querystring.stringify({ 
-			url : this.url,
-			ip : this.ip,
-			token : GAME_TOKEN
-		});
+		var querydata = querystring.stringify(rawquerydata);
+		console.log( querydata );
 		var options = { 
 			host : SHOP_SITE,
 			port : SHOP_PORT,
 			path : SHOP_PATH + "?" + querydata
 		};
 		
+		console.log(options);
 		// This delegate goes into a thick stack and does work
 		var inceptionDelegate = (function(shop){
 			return function(items){ shop.items = items; };
 		})(this);
 		
 		var request = http.get( options, function(response){ 
+			if( response.statusCode > 400 ){
+				console.log("Status Code: " + response.statusCode);
+				if( callback != undefined ){
+					var failitem = [{ 
+						'description' : "Main shop site failed load",
+						'id' : 12 ,
+						'company_id' : 12 , 
+						'tileset' :  FAIL_PIC_PATH ,
+						'title' :  response.statusCode,
+						'created_at' : Date.now() ,
+						'updated_at': Date.now()
+					}];
+					callback( failitem );
+				} // end callback if
+				return;
+			} // end statusCode if
+			response.setEncoding('utf8');
+			
+			var contentlength = response.headers['content-length'];
+			var currentlength = 0;
+			var fillchunk = "";
 			response.on( "data", function(chunk){ 
-				var rawResult = JSON.parse(chunk)['result'];
-				var item, items=[];
-				for( var k = 0; k < rawResult.length; k++ ){ 
-					item = rawResult[k];
-					items.push( { 
-						'description': item['description'],
-						'id': item['id'],
-						'company_id': item['company_id'],
-						'tileset': item['picture_path_small'],
-						'price': item['cost'],
-						'title': item['title'],
-						'created_at': item['created_at'],
-						'updated_at': item['updated_at']
-					} ); // end push
-				} // end for
-				inceptionDelegate( items );
-				if( callback != undefined ) 
-					callback( items );
-			} ); // end response.on
+				currentlength += chunk.length;
+				fillchunk += chunk;
+				console.log( "Currently at " + currentlength + " out of " + contentlength );
+				if( currentlength / contentlength > 0.995 ){
+					var rawData = JSON.parse(fillchunk);
+					var rawResult = rawData['results'];
+					console.log(rawResult);
+					var item, items=[];
+					for( var k = 0; k < rawResult.length; k++ ){ 
+						item = rawResult[k];
+						items.push( { 
+							'description': item['description'],
+							'id': item['id'],
+							'company_id': item['company_id'],
+							'tileset': item['picture_path_thumb'],
+							'price': item['cost'],
+							'title': item['title'],
+							'created_at': item['created_at'],
+							'updated_at': item['updated_at']
+						} ); // end push
+					} // end for
+					inceptionDelegate( items );
+					if( callback != undefined ){
+						callback( items );
+					}
+				} // end percentage completion if
+			} ) // end response.on data
+			.on( "error", function(error){ 
+				console.log( error );
+				return;
+			} ); // end response.on error
 		} ); // end http.get
+		request.end();
 	} // end this.RequestItems
 	
 	// Parameter explanations
@@ -82,50 +123,8 @@ var ServerShop = function(){
 		}
 	*/
 	this.BuyItem = function( data ){ 
-		
+		// TODO: write me!
 	} // end this.BuyItem
 }
-var url = req['query']['url'] == undefined ? encodeURIComponent( "http://facebook.com" ) : req['query']['url'];
-console.log( req['query'] );
-var ip = req.connection.remoteAddress;
-console.log( ip );
-var rawcode = "$(document).ready(function(){ var items =";
-var options = { 
-	host: shopSite,
-	port: shopPort,
 
-	path: shopPath + gameToken + "&url=" + url + "&ip=" + encodeURIComponent( ip )
-};
-var request = http.get( options, function(response){ 
-	response.on("data", function(chunk){ 
-		var lolcat = JSON.parse(chunk)['results'];
-		console.log(lolcat);
-		var fag, stuff = [];
-		for( var k = 0; k < lolcat.length; k++ ){ 
-			fag = lolcat[k];
-			
-			stuff.push( { 
-				'description': fag['description'],
-				'id': fag['id'],
-				'company_id': fag['company_id'],
-				'tileset': fag['picture_path_small'],
-				'price': fag['cost'],
-				'title': fag['title'],
-				'created_at': fag['created_at'],
-				'updated_at': fag['updated_at']
-			} );
-			
-		}
-		rawcode += JSON.stringify(stuff);
-		/*
-		rawcode += JSON.stringify([{
-			'description' : "Faggot",
-			'tileset' : "http://i299.photobucket.com/albums/mm281/foxnewsnetwork/csharp.png" ,
-			'price': 1000
-		}] );
-		*/
-		rawcode += "; myshop.SetupShop( items ); } );";
-		console.log(rawcode);
-		res.send( rawcode );
-	});
-});
+this.InGidioShop = new ServerShop();

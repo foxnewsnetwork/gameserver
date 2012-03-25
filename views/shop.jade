@@ -1,0 +1,30 @@
+link(href="/stylesheets/extensions.css", media="screen", rel="stylesheet", type="text/css")
+script(type="text/javascript", src="javascripts/shop/tooltip.js")
+script(type="text/javascript", src="javascripts/jquery/jquery.js")
+script(type="text/javascript", src="javascripts/gameQuery/gameQuery.js")
+script(type="text/javascript", src="socket.io/socket.io.js" )
+script(type="text/javascript", src="javascripts/clientv2.js" )
+script(type="text/javascript", src="javascripts/shop/conf.js")
+script(type="text/javascript", src="javascripts/shop/generator.js")
+script(type="text/javascript", src="javascripts/shop/shop.js")
+script(type="text/javascript", src="javascripts/form/form.js")
+
+script(type="text/javascript")
+	$(document).ready(function(){
+		$("#callshop").click(function(){ 
+			GetShopItems({
+				url : "http://www.facebook.com/stuff/nigger/1" ,
+				ip : "123.1.4.12"
+			});
+		});
+	});
+	
+	AddShopFunction("open shop down", function(items){ 
+		InGidioShop.CallSimpleShop(items);
+	} );
+
+h1= title
+p Welcome to #{title}
+
+button#callshop callshop
+body

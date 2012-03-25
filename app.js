@@ -22,6 +22,10 @@ var Player = playerModel.Player;
 // Password encryption use
 var md5 = require( "MD5" );
 
+// Shop communication
+var shopModel = require( "./models/shop.js" );
+var Shop = shopModel.InGidioShop;
+
 /****************************
 * Useful Constants                     *
 *****************************/
@@ -74,6 +78,10 @@ app.get( "/mahjong", function(req, res){
 
 app.get("/faggot", function(req, res){
 	res.render("faggot.jade", { title: "Henry is a faggot" } );
+} );
+
+app.get( "/shopv2", function(req, res){ 
+	res.render("shop.jade", { title : "Henry is a faggot" } );
 } );
 
 app.get("/shop", function(req, res){ 
@@ -433,41 +441,22 @@ io.sockets.on('connection', function(socket){
 	****************************/
 	// open shop
 	socket.on( "open shop up", function(data){
-		// TODO: handle the api calls for this
+		var url, ip;
+		if( data['data'] != undefined ){ 
+			url = data['data']['url'];
+			ip = data['data']['ip'];
+		}
+		
 		// Step 1: declaring my constants
-		
-		
-		// Step 2: seeing we can't hit the outside world
-		var options = { 
-			host: shopSite,
-			port: shopPort,
-			path: shopPath + gameToken
-		};
-		var output;
-		var request = http.get( options, function(response){ 
-			response.on("data", function(chunk){ 
-				console.log( "body: " + chunk );
-				var stuff = JSON.parse(chunk)['results'];
-				var fag, itemslist = [];
-				for( var k = 0; k < stuff.length; k++){ 
-					fag = stuff[k];
-					itemslist.push({ 
-						'description': fag['description'],
-						'id': fag['id'],
-						'company_id': fag['company_id'],
-						'tileset': fag['picture_path_small'],
-						'price': fag['cost'],
-						'title': fag['title'],
-						'created_at': fag['created_at'],
-						'updated_at': fag['updated_at']
-					});
-				}
-				console.log( itemslist );
-				output = { 'sessionId': data['sessionId'], 'items': stuff };
+		Shop.RequestItems( {
+			'url' : url ,
+			'ip' : ip ,
+			'callback' : function(items){ 
+				var output = { 'sessionId' : data['sessionId'], 'items' : items };
 				socket.emit( "open shop down", output );
-			});
-		});	
-	});
+			} // end callback function
+		} ); // end RequestItems
+	} ); // end socket.on
 	
 	// purchase item
 	socket.on( "purchase item up", function(data){

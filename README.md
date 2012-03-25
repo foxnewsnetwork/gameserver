@@ -1,3 +1,11 @@
+Concerns
+=
+1. Get a list of products that people will purchase
+2. Get some good flushed out buzz words
+3. Tightened up pitch
+4. Get down what we want to do
+5. Full walk-through demo
+
 Random Adivce
 =
 1. Build a personal code-generation framework in either c# or java

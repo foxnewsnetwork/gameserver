@@ -169,8 +169,24 @@ var InGidioShop = function(){
 			}; // end return
 		}, // end CallSimpleShop 
 		CallNormalShop : function(items, specs){
-		
-		},
+			// Step 1: Setting custom specs and necessar
+			var cspec = spec;
+			if( specs != undefined )
+				cspec = $.extend( cspec, specs );
+			var generator = new Generator();
+			generator.initialize(items, cspec);
+			
+			// Step 2: Generating the tiles
+			var lockedtiles = generator.CreateSpareTiles( "locked" );
+			var vacanttiles = generator.CreateSpareTiles( "vacant" );
+			var itemtiles = generator.CreateTiles();
+			
+			return { 
+				lockedtiles : lockedtiles ,
+				vacanttiles : vacanttiles ,
+				itemtiles : itemtiles
+			};
+		}, // end CallNormalShop
 		CallHardShop : function(items, specs){
 		
 		}

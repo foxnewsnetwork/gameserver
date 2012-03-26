@@ -331,6 +331,7 @@ var Generator = function(){
 		} );
 		
 		// Step 3: CSS and such
+		theGroup.css( "z-index", DEFAULT_TILE_Z + 1 );
 		var text = $("#" + this.id + item['id'] + "-confirmation-text" );
 		var yes = $("#" + this.id + item['id'] + "-confirmation-yes" );
 		var no = $( "#" + this.id + item['id'] + "-confirmation-no" );
@@ -386,6 +387,7 @@ var Generator = function(){
 		if( this.groups['payment'] != undefined )
 			this.groups['payment'].remove();
 		this.groups['payment'] = theGroup;
+		theGroup.css( "z-index", DEFAULT_TILE_Z + 1 );
 		
 		// Step 2: Adding in
 		theGroup.addSprite( this.id + item['id'] + "-payment-form", { 

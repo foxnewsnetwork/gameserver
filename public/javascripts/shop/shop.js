@@ -33,12 +33,14 @@ var InGidioShop = function(){
 		'posx': DEFAULT_SHOP_X,
 		'posy': DEFAULT_SHOP_Y,
 		'posz': DEFAULT_SHOP_Z,
+		"opacity" : 1 ,
 		'background' : { 
 			'background-color': DEFAULT_BACKGROUND_COLOR,
 			'border': DEFAULT_BACKGROUND_BORDER,
 			'image': DEFAULT_BACKGROUND_IMAGE,
 			' -moz-border-radius' : "25px",
-			'border-radius' : "25px"
+			'border-radius' : "25px" ,
+			"opacity" : 1
 		},
 		'tile' : { 
 			'width' : DEFAULT_TILE_WIDTH,
@@ -47,12 +49,14 @@ var InGidioShop = function(){
 			'rowper': DEFAULT_ROW_PER,
 			'z-index' : DEFAULT_TILE_Z ,
 			' -moz-border-radius' : "5px",
-			'border-radius' : "5px"
+			'border-radius' : "5px",
+			"opacity" : 1
 		},
 		'ui' : { 
 			'buttonwidth' : DEFAULT_BUTTON_WIDTH,
 			'buttonheight' : DEFAULT_BUTTON_HEIGHT,
-			'z-index' : DEFAULT_UI_Z
+			'z-index' : DEFAULT_UI_Z,
+			"opacity" : 1
 		},
 		'form' : { 
 			'z-index' : DEFAULT_UI_Z,
@@ -88,17 +92,18 @@ var InGidioShop = function(){
 			// var querydata = $.param( data );
 			BuyItem( data );
 		}, // end BuyItem
-		CallSimpleShop : function(items, specs){
+		CallSimpleShop : function(items, niggers){
 			// Step 1: Setting custom specs and necessar
 			var cspec = spec;
-			if( specs != undefined )
-				cspec = $.extend( specs, spec );
+			if( niggers != undefined )
+				cspec = $.extend( cspec, niggers );
+			alert( JSON.stringify(cspec) );
 			var generator = new Generator();
 			generator.initialize(items, cspec);
 							
 			// Step 2: Setting up the shop container
 			var container = generator.CreateContainer();
-			var sparetiles = generator.CreateSpareTiles( "vacant" );
+			var sparetiles = generator.CreateSpareTiles( "locked" );
 			var tiles = generator.CreateTiles();
 			var gui = generator.CreateUI();
 			
@@ -108,10 +113,9 @@ var InGidioShop = function(){
 			container.css( "-moz-border-radius" , "25px" );
 			var k, j;
 			for( k = 0; k < tiles.length; k++ ){
-				tiles[k].css( "left", (k % DEFAULT_ROW_PER ) * ( cspec['tile']['width'] + 5 ) + 55 );
+				var xpos = (k % DEFAULT_ROW_PER ) * ( cspec['tile']['width'] + 5 ) + 55;
+				tiles[k].css( "left", xpos + 'px' );
 				tiles[k].css( "top", 5 );
-				sparetiles[k].css( "left", (k % DEFAULT_ROW_PER ) * ( cspec['tile']['width'] + 5 ) + 55 );
-				sparetiles[k].css( "top", 5 );
 				sparetiles[k].hide();
 				if( Math.floor( k / DEFAULT_ROW_PER ) > 1 ){ 
 					tiles[k].hide();
@@ -121,6 +125,9 @@ var InGidioShop = function(){
 				}
 			}
 			for( j = k; j < DEFAULT_ROW_PER; j++){ 
+				var xpos = (j % DEFAULT_ROW_PER ) * ( cspec['tile']['width'] + 5 ) + 55;
+				sparetiles[j].css( "left", xpos + 'px' );
+				sparetiles[j].css( "top", 5 );
 				sparetiles[j].show();
 			}
 			for( var k in gui )
@@ -137,16 +144,7 @@ var InGidioShop = function(){
 				}
 				arrowcounter += 1;
 				arrowcounter = arrowcounter % DEFAULT_ROW_PER;
-				a.spin( tiles,  "left", "", "", {
-					"value": "750ms",
-					"randomness": "0%",
-					"offset": "150ms"
-				});
-				a.spin( sparetiles,  "left", "", "", {
-					"value": "750ms",
-					"randomness": "0%",
-					"offset": "150ms"
-				});
+				
 				var k, j;
 				for( k = 0; k < tiles.length; k++ ){ 
 					sparetiles[k].hide();

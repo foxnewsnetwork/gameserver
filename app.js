@@ -421,9 +421,10 @@ io.sockets.on('connection', function(socket){
 		var url, ip;
 		if( data['data'] != undefined ){ 
 			url = data['data']['url'];
-			ip = data['data']['ip'];
 		}
+		ip = socket.handshake.address['address'];
 		
+		console.log( "Open Requested from: " + url + " by: " + ip );
 		// Step 1: declaring my constants
 		Shop.RequestItems( {
 			'url' : url ,

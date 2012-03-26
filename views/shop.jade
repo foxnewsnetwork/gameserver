@@ -16,16 +16,20 @@ script(type="text/javascript")
 	$(document).ready(function(){
 		$("#callshop").click(function(){ 
 			tooltip.show( "Loading shop..." );
-			GetShopItems({
-				url : "http://www.facebook.com/stuff/nigger/1" ,
-				ip : "123.1.4.12"
-			});
+			var meta = { 
+				'url' : document.URL 
+			};
+			GetShopItems(meta);
 		});
 	});
 	
 	AddShopFunction("open shop down", function(items){ 
 		tooltip.hide();
-		InGidioShop.CallSimpleShop(items);
+		var posx = window.innerWidth - DEFAULT_SHOP_WIDTH + window.pageXOffset - 95;
+		InGidioShop.CallSimpleShop(items, { 
+			'posx' : posx < 0 ? 0 : posx,
+			'posy' : window.pageYOffset + 35 
+		} );
 	} );
 
 h1= title

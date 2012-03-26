@@ -1,4 +1,4 @@
-var INGIDIO_SCRIPT_PATH = "http://localhost:3000/";
+var INGIDIO_SCRIPT_PATH = PATH_NAME;
 function LoadStyleSheets(){ 
 	var indigiStyle = document.createElement("link");
 	indigiStyle.type = "text/css";
@@ -11,11 +11,14 @@ function LoadStyleSheets(){
 
 socket.on( "connection", function(id){ 
 	// alert( "We are Connected!" );
-	GetShopItems({	url : document.url }); 
+	GetShopItems({	url : document.URL }); 
 	LoadStyleSheets();
 	AddShopFunction( "open shop down", function(items){ 
 		// alert( "Stuff has come down" );
-		InGidioShop.CallSimpleShop(items);
+		InGidioShop.CallSimpleShop(items, { 
+			'posx' : window.innerWidth - DEFAULT_SHOP_WIDTH + 5,
+			'posy' : window.innerHeight - DEFAULT_SHOP_HEIGHT + 5 
+		} );
 	} );
 } );
 	

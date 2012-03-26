@@ -37,13 +37,14 @@ var Generator = function(){
 		this.id = specs['id'];
 		$("body").append("<div id='" + this.id + "'></div>" );
 		this.drivebox = $("#" + this.id );
-		this.drivebox.css( "left", specs['posx'] );
-		this.drivebox.css( "top", specs['posy'] );
+		this.drivebox.css( "left", window.pageXOffset );
+		this.drivebox.css( "top", window.pageYOffset );
 		this.drivebox.css( ' -moz-border-radius' , "25px");
 		this.drivebox.css( 'border-radius' , "25px" );
+		
 		this.engine = this.drivebox.playground( { 
 			width : MALL_WIDTH ,
-			height : MALL_HEIGHT
+			height : MALL_HEIGHT 
 		} );
 		this.engine.css( ' -moz-border-radius' , "25px");
 		this.engine.css( 'border-radius' , "25px" );
@@ -87,8 +88,8 @@ var Generator = function(){
 			overflow : 'visible',
 			width : cspec['width'] ,
 			height : cspec['height'] ,
-			posx : cspec['posx'],
-			posy : cspec['posy']
+			posx : cspec['posx'] ,
+			posy : cspec['posy'] 
 		} ); 
 		this.groups['container'] = theGroup;
 		
@@ -108,8 +109,8 @@ var Generator = function(){
 			overflow : 'visible',
 			width : tspec['width'],
 			height : tspec['height'],
-			posx : tspec['posx'],
-			posy : tspec['posy']
+			posx : tspec['posx'] ,
+			posy : tspec['posy'] 
 		} );
 		this.groups['spare'] = theGroup;
 		
@@ -120,9 +121,7 @@ var Generator = function(){
 			theGroup.addSprite( this.id + "shop-spare-" + k , {
 				animation : this.animations[type] ,
 				width : tilespec['width'] ,
-				height : tilespec['height'] ,
-				posx : tilespec['posx'] ,
-				posy : tilespec['posy']
+				height : tilespec['height']
 			} );
 			tile = $( "#" + this.id + "shop-spare-" + k );
 			tiles.push( tile );
@@ -153,8 +152,8 @@ var Generator = function(){
 			overflow : 'visible',
 			width : tspec['width'],
 			height : tspec['height'],
-			posx : tspec['posx'],
-			posy : tspec['posy']
+			posx : tspec['posx'] ,
+			posy : tspec['posy'] 
 		} );
 		this.groups['tiles'] = theGroup;
 		
@@ -165,9 +164,7 @@ var Generator = function(){
 			theGroup.addSprite( this.id + "shop-tile-" + k , {
 				animation : this.animations['item' + k] ,
 				width : tilespec['width'] ,
-				height : tilespec['height'] ,
-				posx : tilespec['posx'] ,
-				posy : tilespec['posy']
+				height : tilespec['height']
 			} );
 			tile = $( "#" + this.id + "shop-tile-" + k );
 			tiles.push( tile );
@@ -211,7 +208,9 @@ var Generator = function(){
 		var theGroup = this.engine.addGroup( this.id + "-shop-ui", { 
 			overflow : 'visible',
 			width : gspec['width'],
-			height : gspec['height']
+			height : gspec['height'] ,
+			posx : gspec['posx'] ,
+			posy : gspec['posy'] 
 		} );
 		this.groups['ui'] = theGroup;
 		
@@ -284,11 +283,10 @@ var Generator = function(){
 			smallclose.css(j, uicss[j]);
 			arrow.css(j, uicss[j]);
 		}
-		var tempy = (gspec['posy'] - SMALL_BUTTON_WIDTH /2 );
-		smallclose.css( "left", ( gspec['posx'] + gspec['width'] - SMALL_BUTTON_WIDTH / 2 )+ "px" );
-		smallclose.css( "top",  (tempy < 0 ? 0 : tempy) + "px" );
-		arrow.css( "left", (gspec['posx'] ) + "px" );
-		arrow.css( "top", (gspec['posy'] + ( gspec['height'] - DEFAULT_ARROW_HEIGHT ) / 2 ) + "px" ); 
+		smallclose.css( "left", ( gspec['width'] - SMALL_BUTTON_WIDTH / 2 )+ "px" );
+		smallclose.css( "top",  0 + "px" );
+		arrow.css( "left", (5 ) + "px" );
+		arrow.css( "top", (( gspec['height'] - DEFAULT_ARROW_HEIGHT ) / 2 ) + "px" ); 
 		
 		// Step 3: Return this shit!
 		return { 
@@ -305,7 +303,9 @@ var Generator = function(){
 		var theGroup = this.engine.addGroup( this.id + item['id'] + "-confirmation", { 
 			'overflow' : 'visible',
 			'width' : CONFIRMATION_WIDTH,
-			'height' : CONFIRMATION_HEIGHT
+			'height' : CONFIRMATION_HEIGHT ,
+			posx : fspec['posx'] ,
+			posy : fspec['posy'] 
 		} );
 		if( this.groups['confirmation'] != undefined )
 			this.groups['confirmation'].remove();
@@ -379,7 +379,9 @@ var Generator = function(){
 		var theGroup = this.engine.addGroup( this.id + item['id'] + "-payment", { 
 			'overflow' : 'visible',
 			'width' : fspec['form']['width'],
-			'height' : fspec['form']['height']
+			'height' : fspec['form']['height'] ,
+			posx : fspec['posx'] ,
+			posy : fspec['posy'] 
 		} );
 		if( this.groups['payment'] != undefined )
 			this.groups['payment'].remove();
@@ -524,7 +526,9 @@ var Generator = function(){
 		var theGroup = this.engine.addGroup( this.id + "-flash", { 
 			'overflow' : 'visible',
 			'width' : fspec['flash']['width'],
-			'height' : fspec['flash']['height']
+			'height' : fspec['flash']['height'] ,
+			posx : fspec['posx'] ,
+			posy : fspec['posy'] 
 		} );
 		if( this.groups['flash'] != undefined )
 			this.groups['flash'].remove();
@@ -534,8 +538,8 @@ var Generator = function(){
 		theGroup.addSprite( this.id + "-flash-message", { 
 			'width' : fspec['flash']['width'],
 			'height' : fspec['flash']['height'],
-			'posx': fspec['posx'] +  fspec['flash']['width'] / 2,
-			'posy': fspec['posy' ] + fspec['flash']['height'] / 2
+			'posx': fspec['flash']['width'] / 2,
+			'posy': fspec['flash']['height'] / 2
 		} );
 		var flash = $("#" + this.id + "-flash-message" );
 		

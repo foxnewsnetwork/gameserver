@@ -97,7 +97,7 @@ var InGidioShop = function(){
 			var cspec = spec;
 			if( niggers != undefined )
 				cspec = $.extend( cspec, niggers );
-			alert( JSON.stringify(cspec) );
+			// alert( JSON.stringify(cspec) );
 			var generator = new Generator();
 			generator.initialize(items, cspec);
 							

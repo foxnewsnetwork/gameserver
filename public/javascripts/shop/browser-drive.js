@@ -15,9 +15,10 @@ socket.on( "connection", function(id){
 	LoadStyleSheets();
 	AddShopFunction( "open shop down", function(items){ 
 		// alert( "Stuff has come down" );
+		var posx = window.innerWidth - DEFAULT_SHOP_WIDTH + window.pageXOffset - 95;
 		InGidioShop.CallSimpleShop(items, { 
-			'posx' : window.innerWidth - DEFAULT_SHOP_WIDTH + 5,
-			'posy' : window.innerHeight - DEFAULT_SHOP_HEIGHT + 5 
+			'posx' : posx < 0 ? 0 : posx,
+			'posy' : window.pageYOffset + 35 
 		} );
 	} );
 } );

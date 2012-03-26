@@ -2,6 +2,9 @@
 files = [
 	'./public/javascripts/jquery/jquery.js' ,
 	'./public/javascripts/gameQuery/gameQuery.js' ,
+	'./public/javascripts/alice/alice.js' ,
+	'./public/javascripts/alice/alice.core.js' ,
+	'./public/javascripts/alice/alice.plugins.cheshire.js' ,
 	'./node_modules/socket.io/node_modules/socket.io-client/dist/socket.io.js',
 	'./public/javascripts/clientv2.js' ,
 	'./public/javascripts/form/form.js' ,

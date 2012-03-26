@@ -3,6 +3,7 @@
 *****************************/
 // Global constants
 var PATH_NAME = "http://localhost:3000/";
+var a = alice.init();
 
 // Easy mode setup
 var MALL_WIDTH = window.innerWidth,
@@ -34,7 +35,13 @@ var MALL_WIDTH = window.innerWidth,
 	DEFAULT_FLASH_WIDTH = 160,
 	DEFAULT_FLASH_HEIGHT = 45,
 	CONFIRMATION_WIDTH = 160,
-	CONFIRMATION_HEIGHT = 85;
+	CONFIRMATION_HEIGHT = 85,
+	SMALL_BUTTON_WIDTH = 25,
+	SMALL_BUTTON_HEIGHT = 25,
+	DEFAULT_ARROW_WIDTH = 40,
+	DEFAULT_ARROW_HEIGHT = 35 ,
+	DEFAULT_CARD_WIDTH = 246 ,
+	DEFAULT_CARD_HEIGHT = 75;
 		
 // Normal mode setup
 

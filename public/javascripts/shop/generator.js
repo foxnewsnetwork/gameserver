@@ -17,6 +17,19 @@ var Generator = function(){
 	// specifications set
 	this.specifications;
 	
+	this.destroy = function(callback){ 
+		this.drivebox.hide(750);
+		delete this.specifications;
+		delete this.items;
+		delete this.animations;
+		delete this.id;
+		this.group.remove();
+		this.engine.remove();
+		this.drivebox.remove();
+		if( callback != undefined )
+			callback();
+	}	// end this.destroy
+	
 	this.initialize = function(items, specs){ 
 		this.animations = {};
 		this.items = items;
@@ -40,6 +53,12 @@ var Generator = function(){
 				imageURL : items[k]['tileset']
 			} );
 		}
+		this.animations['arrow'] = new $.gameQuery.Animation({ 
+			imageURL : PATH_NAME + "images/shopicons/arrow.png"
+		});
+		this.animations['smallclose'] = new $.gameQuery.Animation({ 
+			imageURL : PATH_NAME + "images/shopicons/smallclose.png"
+		});
 		this.animations['locked'] = new $.gameQuery.Animation( { 
 			imageURL : PATH_NAME + "images/shopicons/locked.png" 
 		} );
@@ -81,6 +100,51 @@ var Generator = function(){
 		}
 		return theGroup;		
 	} // end this.CreateContainer
+	
+	this.CreateSpareTiles = function( type ){ 
+		// Step 1: Setting the group
+		var tspec = this.specifications;
+		var theGroup = this.engine.addGroup( this.id + "-shop-spare-set", { 
+			overflow : 'visible',
+			width : tspec['width'],
+			height : tspec['height'],
+			posx : tspec['posx'],
+			posy : tspec['posy']
+		} );
+		this.groups['spare'] = theGroup;
+		
+		// Step 2: adding in the sprites
+		var tile, tiles = [];
+		for( var k = 0; k < DEFAULT_ROW_PER; k ++ ){ 
+			var tilespec = tspec['tile'];
+			theGroup.addSprite( this.id + "shop-spare-" + k , {
+				animation : this.animations[type] ,
+				width : tilespec['width'] ,
+				height : tilespec['height'] ,
+				posx : tilespec['posx'] ,
+				posy : tilespec['posy']
+			} );
+			tile = $( "#" + this.id + "shop-spare-" + k );
+			tiles.push( tile );
+			
+			// Step 2.5: Establish CSS
+			theGroup.css( ' -moz-border-radius' , "25px");
+			theGroup.css( 'border-radius' , "25px" );
+			var tilecss = tspec['tile'];
+			for( var j in tilecss ){ 
+				tile.css( j, tilecss[j] );
+			}
+
+			// Step 3: adding in mouseover and click functions
+			tile.mouseover( function(){ 
+				tooltip.show( "Item out of stock!" );
+			} );
+			tile.mouseleave( function(){ 
+				tooltip.hide();
+			} );
+		} // end for loop
+		return tiles;
+	}
 	
 	this.CreateTiles = function( ){ 
 		// Step 1: Setting the group
@@ -162,10 +226,34 @@ var Generator = function(){
 			'height' : DEFAULT_BUTTON_HEIGHT,
 			'animation' : this.animations['approve']
 		} );
+		theGroup.addSprite( this.id + "-shop-smallclose", { 
+			'width' : SMALL_BUTTON_WIDTH,
+			'height' : SMALL_BUTTON_HEIGHT,
+			'animation' : this.animations['smallclose']
+		} );
+		theGroup.addSprite( this.id + "-shop-arrow", { 
+			'width' : DEFAULT_ARROW_WIDTH,
+			'height' : DEFAULT_ARROW_HEIGHT,
+			'animation' : this.animations['arrow']
+		} );
+		var smallclose = $("#" + this.id + "-shop-smallclose");
+		var arrow = $("#" + this.id + "-shop-arrow");
 		var close = $("#" + this.id + "-shop-close");
 		var approve = $("#" + this.id + "-shop-approve");
 		
 		// Step 2: Setup the callbacks
+		arrow.mouseover( function(){ 
+			tooltip.show( "Cycle through items" );
+		} );
+		arrow.mouseleave( function(){ 
+			tooltip.hide();
+		} );
+		smallclose.mouseover( function(){ 
+			tooltip.show( "Close shop" );
+		} );
+		smallclose.mouseleave( function(){ 
+			tooltip.hide();
+		} );
 		close.mouseover( function(){ 
 			tooltip.show( "Cancel" );
 		} );
@@ -180,7 +268,12 @@ var Generator = function(){
 		approve.mouseleave( function(){ 
 			tooltip.hide();
 		} );
-		
+		smallclose.click( (function(shop){ 
+			return function(){ 
+				shop.destroy();
+			};
+		})(this) );
+			
 		// Step 2.5: Setup the CSS
 		theGroup.css( ' -moz-border-radius' , "25px");
 		theGroup.css( 'border-radius' , "25px" );
@@ -188,10 +281,22 @@ var Generator = function(){
 		for( var j in uicss ){ 
 			close.css(j, uicss[j]);
 			approve.css(j, uicss[j]);
+			smallclose.css(j, uicss[j]);
+			arrow.css(j, uicss[j]);
 		}
+		var tempy = (gspec['posy'] - SMALL_BUTTON_WIDTH /2 );
+		smallclose.css( "left", ( gspec['posx'] + gspec['width'] - SMALL_BUTTON_WIDTH / 2 )+ "px" );
+		smallclose.css( "top",  (tempy < 0 ? 0 : tempy) + "px" );
+		arrow.css( "left", (gspec['posx'] ) + "px" );
+		arrow.css( "top", (gspec['posy'] + ( gspec['height'] - DEFAULT_ARROW_HEIGHT ) / 2 ) + "px" ); 
 		
 		// Step 3: Return this shit!
-		return { close : close, approve : approve };		
+		return { 
+			smallclose : smallclose ,
+			arrow : arrow ,
+			close : close, 
+			approve : approve 
+		};		// end return
 	} // end this.CreateUI
 	
 	this.CreateConfirmForm = function(item){ 
@@ -444,7 +549,11 @@ var Generator = function(){
 		flash.append( "<h4>" + message + "</h4>" );
 		
 		// Step 5: Setting setting the disapperance
-		flash.show(2000, function(){ flash.hide(3000); } );
+		flash.show(2000, function(){ 
+			flash.hide(3000, function(){ 
+				theGroup.remove();
+			} ); 
+		} );
 		
 	} // end CreateFlashMessage function
 }; //end Generator

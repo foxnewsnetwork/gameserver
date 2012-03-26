@@ -98,16 +98,21 @@ var InGidioShop = function(){
 							
 			// Step 2: Setting up the shop container
 			var container = generator.CreateContainer();
+			var sparetiles = generator.CreateSpareTiles( "vacant" );
 			var tiles = generator.CreateTiles();
 			var gui = generator.CreateUI();
 			
-			// Step 3: Present user with the shop
+			// Step 3: Present user with the shop	
 			container.show();
 			container.css( "border-radius", "25px" );
 			container.css( "-moz-border-radius" , "25px" );
-			for( var k = 0; k < tiles.length; k++ ){
+			var k, j;
+			for( k = 0; k < tiles.length; k++ ){
 				tiles[k].css( "left", (k % DEFAULT_ROW_PER ) * ( cspec['tile']['width'] + 5 ) + 55 );
 				tiles[k].css( "top", 5 );
+				sparetiles[k].css( "left", (k % DEFAULT_ROW_PER ) * ( cspec['tile']['width'] + 5 ) + 55 );
+				sparetiles[k].css( "top", 5 );
+				sparetiles[k].hide();
 				if( Math.floor( k / DEFAULT_ROW_PER ) > 1 ){ 
 					tiles[k].hide();
 				}
@@ -115,8 +120,48 @@ var InGidioShop = function(){
 					tiles[k].show();
 				}
 			}
+			for( j = k; j < DEFAULT_ROW_PER; j++){ 
+				sparetiles[j].show();
+			}
 			for( var k in gui )
 				gui[k].hide();
+			gui['smallclose'].show();
+			gui['arrow'].show();
+			
+			// Step 3.5: Setting the arrow scroller
+			var arrowcounter = 1;
+			gui['arrow'].click( function(e){ 
+				if( tiles.length <= DEFAULT_ROW_PER ){
+					generator.CreateFlashMessage( "No more items!", { x : e.pageX, y : e.pageY } );
+					return;
+				}
+				arrowcounter += 1;
+				arrowcounter = arrowcounter % DEFAULT_ROW_PER;
+				a.spin( tiles,  "left", "", "", {
+					"value": "750ms",
+					"randomness": "0%",
+					"offset": "150ms"
+				});
+				a.spin( sparetiles,  "left", "", "", {
+					"value": "750ms",
+					"randomness": "0%",
+					"offset": "150ms"
+				});
+				var k, j;
+				for( k = 0; k < tiles.length; k++ ){ 
+					sparetiles[k].hide();
+					if( Math.floor( k / DEFAULT_ROW_PER ) == arrowcounter ){ 
+						tiles[k].show(450);
+					}
+					else{
+						tiles[k].hide();
+					}
+				} // end for loop
+				for( j = k; j < DEFAULT_ROW_PER; j++){ 
+					sparetiles[j].show();
+				}
+				
+			} );
 			
 			// Step 4: Return the shop object programatically
 			return { 

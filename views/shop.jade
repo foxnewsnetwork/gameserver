@@ -1,5 +1,8 @@
 link(href="/stylesheets/extensions.css", media="screen", rel="stylesheet", type="text/css")
 script(type="text/javascript", src="javascripts/shop/tooltip.js")
+script(type = "text/javascript", src="javascripts/alice/alice.js" )
+script(type = "text/javascript", src="javascripts/alice/alice.core.js" )
+script(type = "text/javascript", src="javascripts/alice/alice.plugins.cheshire.js" )
 script(type="text/javascript", src="javascripts/jquery/jquery.js")
 script(type="text/javascript", src="javascripts/gameQuery/gameQuery.js")
 script(type="text/javascript", src="socket.io/socket.io.js" )
@@ -12,6 +15,7 @@ script(type="text/javascript", src="javascripts/form/form.js")
 script(type="text/javascript")
 	$(document).ready(function(){
 		$("#callshop").click(function(){ 
+			tooltip.show( "Loading shop..." );
 			GetShopItems({
 				url : "http://www.facebook.com/stuff/nigger/1" ,
 				ip : "123.1.4.12"
@@ -20,6 +24,7 @@ script(type="text/javascript")
 	});
 	
 	AddShopFunction("open shop down", function(items){ 
+		tooltip.hide();
 		InGidioShop.CallSimpleShop(items);
 	} );
 

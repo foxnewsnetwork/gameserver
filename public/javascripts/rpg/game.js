@@ -1,10 +1,22 @@
 // forked from 9leap's "enchant.js RPG Sample Game" http://jsdo.it/9leap/rpg-sample
 enchant();
-
+var EnchantShopFlag = false;
 window.onload = function() {
     var game = new Game(320, 320);
     game.fps = 15;
-    game.preload('images/rpg/map1.gif', 'images/rpg/chara0.gif');
+    game.preload(
+		'images/rpg/map1.gif', 
+		'images/rpg/chara0.gif',
+		'images/rpg/shopbuybutton2.png',
+		'images/rpg/shopbuybutton.png',
+		'images/rpg/shopcontainer.jpg',
+		'images/rpg/shopexitbutton.png',
+		'images/rpg/shopitembutton.png',
+		'images/rpg/shopitemtile.png',
+		'images/rpg/shoplogoicon.png',
+		'images/rpg/shoppricetag.jpg' ,
+		'images/rpg/item0.png'
+	);
     game.onload = function() {
         var map = new Map(16, 16);
         console.log("test");
@@ -71,7 +83,7 @@ window.onload = function() {
             [ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,461,462, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
             [ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,481,482, -1, -1, -1, -1, -1, -1, -1,421, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
             [ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,421,420, -1, -1, -1, -1, -1, -1, -1, -1]
-        ]);
+        ]); // end map.loadData
         map.collisionData = [
             [  0,  0,  0,  0,  0,  0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1],
             [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1],
@@ -103,7 +115,7 @@ window.onload = function() {
             [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1],
             [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  1,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  1,  1,  1,  1,  1,  1,  1,  1],
             [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  1,  1,  1,  1,  1,  1,  1,  1,  1]
-        ];
+        ]; // end map.collisonData
 
         var foregroundMap = new Map(16, 16);
         foregroundMap.image = game.assets['images/rpg/map1.gif'];
@@ -138,14 +150,42 @@ window.onload = function() {
             [ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,461,462, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
             [ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
             [ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
-        ]);
-
+        ]); // end foregroundMap.loadData
+		
+		/**
+		* NPC Section
+		*/
+		var npc = [];
+		npc.push( new Sprite(32,32) );
+		npc[0].x = 6 * 16 - 20;
+		npc[0].y = 10 * 16 - 95;
+		var npcimages = [];
+		npcimages.push( new Surface(96, 128) );
+		npcimages[0].draw(game.assets['images/rpg/chara0.gif'], 96, 0, 192, 128, 0, 0, 192, 128);
+		npc[0].image = npcimages[0];
+		/**
+		* End NPC section
+		*/
         var player = new Sprite(32, 32);
         player.x = 6 * 16 - 8;
         player.y = 10 * 16;
         var image = new Surface(96, 128);
         image.draw(game.assets['images/rpg/chara0.gif'], 0, 0, 96, 128, 0, 0, 96, 128);
         player.image = image;
+		
+		/**
+		* Player action 
+		*/
+		
+		if (document.addEventListener){
+		    document.addEventListener("keydown",catchKeyDownShop,false);
+			}  // end if
+		else if (document.attachEvent){
+		    document.attachEvent("onkeydown",catchKeyDownShop);
+		} // end else if
+		/**
+		* End player action
+		*/
 
         player.isMoving = false;
         player.direction = 0;
@@ -163,7 +203,8 @@ window.onload = function() {
                     this.isMoving = false;
                     this.walk = 1;
                 }
-            } else {
+            } // end this.isMoving if 
+			else {
                 this.vx = this.vy = 0;
                 if (game.input.left) {
                     this.direction = 1;
@@ -185,13 +226,14 @@ window.onload = function() {
                         this.isMoving = true;
                         arguments.callee.call(this);
                     }
-                }
-            }
-        });
+                } // end this.vx || this.vy if
+            } // end else
+        }); // end player.addEventListener
 
         var stage = new Group();
         stage.addChild(map);
         stage.addChild(player);
+		stage.addChild(npc[0]);
         stage.addChild(foregroundMap);
         game.rootScene.addChild(stage);
 
@@ -201,13 +243,35 @@ window.onload = function() {
         game.rootScene.addChild(pad);
 
         game.rootScene.addEventListener('enterframe', function(e) {
-            var x = Math.min((game.width  - 16) / 2 - player.x, 0);
-            var y = Math.min((game.height - 16) / 2 - player.y, 0);
-            x = Math.max(game.width,  x + map.width)  - map.width;
-            y = Math.max(game.height, y + map.height) - map.height;
-            stage.x = x;
-            stage.y = y;
-        });
-    };
+			var x = Math.min((game.width  - 16) / 2 - player.x, 0);
+			var y = Math.min((game.height - 16) / 2 - player.y, 0);
+			x = Math.max(game.width,  x + map.width)  - map.width;
+			y = Math.max(game.height, y + map.height) - map.height;
+			stage.x = x;
+			stage.y = y;
+        }); // end rootScene.addEventListener
+		
+		// Initializing EnchantSHop
+		var shop = new EnchantShop();
+		shop.initialize( game );
+		function catchKeyDownShop(e){ 
+			if( !CheckInteractionRadius( player, npc[0] ) )
+				return;
+			switch(e.keyCode){ 
+				case 83: // s key
+					shop.show();
+					break;
+			}; // end switch
+		}; // end catchKeyDownShop
+    }; // end game.onload
     game.start();
-};
+}; // end window.onload
+
+// Can only interact if within a radius of 50
+function CheckInteractionRadius(a, b, radius){ 
+	r = radius || 50;
+	if( (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y) < r * r )
+		return true;
+	else
+		return false;
+} // end CheckInteractionRadius

@@ -19,12 +19,16 @@ enchant.ui.Pad = enchant.Class.create(enchant.Sprite, {
 		} // end else if
 		function catchKeyUp(pad){ 
         	return function(e){ 
+				if( EnchantShopFlag )
+					return;
 		    	var input = { left: false, right: false, up: false, down:false };
 		    	pad._updateInput(input);	
         	}; // end return
         }; // end catchKeyUp
 		function catchKeyDown(pad){ 
         	return function(e){
+				if( EnchantShopFlag )
+					return;
 		    	var input = { left: false, right: false, up: false, down:false };
 		    	switch (e.keyCode) {
 					case 38: // arrow up

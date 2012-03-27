@@ -28,6 +28,8 @@ specs = {
 var InGidioShop = function(){ 
 	var spec = {
 		'id': DEFAULT_ELEMENT_ID,
+		'mallwidth' : MALL_WIDTH,
+		'mallheight' : MALL_HEIGHT,
 		'width': DEFAULT_SHOP_WIDTH,
 		'height': DEFAULT_SHOP_HEIGHT,
 		'posx': DEFAULT_SHOP_X,
@@ -184,7 +186,10 @@ var InGidioShop = function(){
 			return { 
 				lockedtiles : lockedtiles ,
 				vacanttiles : vacanttiles ,
-				itemtiles : itemtiles
+				itemtiles : itemtiles ,
+				kill : function(){ 
+					generator.destroy();
+				}
 			};
 		}, // end CallNormalShop
 		CallHardShop : function(items, specs){

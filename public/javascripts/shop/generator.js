@@ -1,6 +1,7 @@
 /****************************
 * Utility Functions Class             *
 *****************************/
+var s_GCounter = 0;
 var Generator = function(){ 
 	// Drivebox is the element where the action happens; defaults to body
 	this.drivebox;
@@ -34,20 +35,22 @@ var Generator = function(){
 		this.animations = {};
 		this.items = items;
 		this.specifications = specs;
-		this.id = specs['id'];
+		this.id = specs['id'] + s_GCounter;
+		s_GCounter += 1;
 		$("body").append("<div id='" + this.id + "'></div>" );
 		this.drivebox = $("#" + this.id );
 		this.drivebox.css( "left", window.pageXOffset );
 		this.drivebox.css( "top", window.pageYOffset );
 		this.drivebox.css( ' -moz-border-radius' , "25px");
 		this.drivebox.css( 'border-radius' , "25px" );
-		
+		this.drivebox.css( "overflow", "visible" );
 		this.engine = this.drivebox.playground( { 
-			width : MALL_WIDTH ,
-			height : MALL_HEIGHT 
+			width : specs['mallwidth'] ,
+			height : specs['mallheight']
 		} );
 		this.engine.css( ' -moz-border-radius' , "25px");
 		this.engine.css( 'border-radius' , "25px" );
+		this.engine.css( "overflow", "visible" );
 		this.groups = {};
 		for( var k = 0; k < items.length; k++ ){ 
 			this.animations['item' + k] = new $.gameQuery.Animation( {
@@ -102,16 +105,29 @@ var Generator = function(){
 		return theGroup;		
 	} // end this.CreateContainer
 	
-	this.CreateSpareTiles = function( type ){ 
+	
+	this.CreateSpareTiles = function( type, free ){ 
 		// Step 1: Setting the group
 		var tspec = this.specifications;
-		var theGroup = this.engine.addGroup( this.id + "-shop-spare-set", { 
-			overflow : 'visible',
-			width : tspec['width'],
-			height : tspec['height'],
-			posx : tspec['posx'] ,
-			posy : tspec['posy'] 
-		} );
+		var theGroup;
+		if( free ){ 
+			var theGroup = $.playground().addGroup( this.id + "-shop-spare-set", { 
+				overflow : 'visible',
+				width : tspec['tile']['width'],
+				height : tspec['tile']['height'],
+				posx : tspec['posx'] ,
+				posy : tspec['posy'] 
+			} );
+		} // end if free
+		else{
+			theGroup = this.engine.addGroup( this.id + "-shop-spare-set", { 
+				overflow : 'visible',
+				width : tspec['width'],
+				height : tspec['height'],
+				posx : tspec['posx'] ,
+				posy : tspec['posy'] 
+			} );
+		} // end else
 		this.groups['spare'] = theGroup;
 		
 		// Step 2: adding in the sprites
@@ -145,16 +161,30 @@ var Generator = function(){
 		return tiles;
 	}
 	
-	this.CreateTiles = function( ){ 
+	
+	this.CreateTiles = function(free){ 
 		// Step 1: Setting the group
 		var tspec = this.specifications;
-		var theGroup = this.engine.addGroup( this.id + "-shop-tiles-set", { 
-			overflow : 'visible',
-			width : tspec['width'],
-			height : tspec['height'],
-			posx : tspec['posx'] ,
-			posy : tspec['posy'] 
-		} );
+		var theGroup ;
+		if( free ){
+			this.engine.hide();
+			theGroup = $.playground().addGroup(this.id + "-shop-tiles-set", { 
+				overflow : 'visible',
+				width : tspec['tile']['width'],
+				height : tspec['tile']['height'],
+				posx : tspec['posx'] ,
+				posy : tspec['posy'] 
+			} );
+		} //end if free
+		else{ 
+			theGroup = this.engine.addGroup( this.id + "-shop-tiles-set", { 
+				overflow : 'visible',
+				width : tspec['width'],
+				height : tspec['height'],
+				posx : tspec['posx'] ,
+				posy : tspec['posy'] 
+			} );
+		} // end else
 		this.groups['tiles'] = theGroup;
 		
 		// Step 2: adding in the sprites
@@ -194,8 +224,9 @@ var Generator = function(){
 				return function(e){ 
 					var conform = generator.CreateConfirmForm( item );
 					var posx = ( e.pageX % window.innerWidth - CONFIRMATION_WIDTH / 2);
-					conform.css( "left",  + (posx > 0 ? posx : 0 ) + "px" );
-					conform.css( "top", (tspec['height']) + "px" );
+					var posy = ( e.pageX % window.innerHeight - CONFIRMATION_HEIGHT / 2);
+					conform.css( "left",  (posx > 0 ? posx : 0 ) + "px" );
+					conform.css( "top", (posy > 0 ? posy : 0 ) + "px" );
 				};
 			} )(this, this.items[k], k) );
 		} // end for loop

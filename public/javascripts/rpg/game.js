@@ -259,7 +259,15 @@ window.onload = function() {
 				return;
 			switch(e.keyCode){ 
 				case 83: // s key
-					shop.show();
+					shop.hide();
+					shop.show(true);
+					break;
+				case 65: // a key
+					shop.hide();
+					shop.show(false);
+					break;
+				case 27: // esc
+					shop.hide();
 					break;
 			}; // end switch
 		}; // end catchKeyDownShop

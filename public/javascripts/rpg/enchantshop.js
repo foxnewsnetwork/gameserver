@@ -61,7 +61,7 @@ var EnchantShop = function(){
 			this.shopitems.push( new Sprite( 34, 34 ) );
 			this.shopitems[k].x = (k % 4) * 42 + 15; 
 			this.shopitems[k].y = Math.floor( k / 4 ) * 38 + 89;
-		}
+		} // end for loop
 		
 		// Step 2: Creating the images 14 x 30
 		this.shopimages = {};
@@ -144,7 +144,17 @@ var EnchantShop = function(){
 		} // end for loop
 		this.stage.addChild( this.textlabel );
 	} // end initialize
-	this.show = function(){ 
+	this.show = function(real){
+		// Step 1.5: Loading in real items
+		if( InGidioItems != undefined && real == true ){ 
+			for( var k = 0 ; k < InGidioItems['itemtiles'].length; k++ ){ 
+				var j = k + 7;
+				var rlitem = InGidioItems['itemtiles'][k];
+				rlitem.css( "left", ((j % 4 ) * 83 + 27) + "px" ) ;
+				rlitem.css( "top", (Math.floor(j / 4 ) * 75 + 170) + "px" ) ;
+				rlitem.show();
+			} // end for loop
+		} // end InGidioItems null check 
 		EnchantShopFlag = true;
 		this.game.rootScene.addChild( this.stage );
 	}// this.show
@@ -152,5 +162,11 @@ var EnchantShop = function(){
 	this.hide = function(){ 
 		EnchantShopFlag = false;
 		this.game.rootScene.removeChild( this.stage );
+		if( InGidioItems != undefined ){ 
+			for( var k = 0 ; k < InGidioItems['itemtiles'].length; k++ ){ 
+				var rlitem = InGidioItems['itemtiles'][k];
+				rlitem.hide();
+			} // end for loop
+		} // end InGidioItems null check 
 	}// this.hide
 }// end EnchantShop

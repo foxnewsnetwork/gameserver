@@ -74,6 +74,10 @@ app.get('/', function(req, res){
 	res.render("index.jade", { title: "stuff", content: "nothing yet" } );
 });
 
+app.get( "/rpg", function(req, res){ 
+	res.render( "rpg.jade", { title : "RPG" } );	
+} );
+
 app.get("/odyssey", function(req,res){ 
 	res.render("odyssey.jade", { title: "Odyssey" } );
 } );

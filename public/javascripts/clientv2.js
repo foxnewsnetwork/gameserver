@@ -116,6 +116,7 @@ function GetShopItems( reqdata ){
 
 socket.on( "open shop down", function( data ){ 
 	var shopItems = data['items'];
+// 	alert( data['sessionId'] + " versus " + sessionId );
 	if( data['sessionId'] == sessionId ) {
 		var handlers = shopFunctionHandlers[ 'open shop down' ];
 		for( var x in handlers ){

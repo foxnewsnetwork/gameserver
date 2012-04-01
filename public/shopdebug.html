@@ -3,12 +3,48 @@
 <meta http-equiv="Content-Type" content="text/html;"/>
 <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 <meta http-equiv="Content-language" content="en" />
+<link rel="stylesheet" href="stylesheets/style.css"/>
+<link href="stylesheets/extensions.css" media="screen" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="javascripts/shop/tooltip.js"></script>
+<script type="text/javascript" src="javascripts/jquery/jquery.js"></script>
+<script type="text/javascript" src="javascripts/gameQuery/gameQuery.js"></script>
+<script type="text/javascript" src="javascripts/shop/shop.js"></script>
+<script type="text/javascript" src="javascripts/form/form.js"></script>
 <title>Shop Tests</title>
 </head>
 <body>
 <div id="faggot">random shit</div>
 <script type="text/javascript">
-javascript:(function(){var idg=document.createElement("script");idg.type="text/javascript";idg.async=true;idg.src="http://localhost:3000/javascripts/browser.js";var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(idg, s);})();
+	$(document).ready( function(){ 
+		var data = [
+			{ 
+				tag : "div" ,
+				content : "Name: "
+			},
+			{ 
+				tag : "input" ,
+				id : "name" ,
+				type : "text"
+			},	
+			{ 
+				tag : "div" ,
+				content : "Credit Card: "
+			},
+			{ 
+				tag : "input",
+				id : "creditcard",
+				type : "text"
+			}
+		]; // end data
+		var myForm = InGidioForm.build( data );
+		$("#debug").html(myForm);
+		$("#nigger").click(function(){ 
+			var myData = InGidioForm.get();
+			$("#debug").append(JSON.stringify(myData));
+		});
+	} );
 </script>
+<div id="debug"></div>
+<button id="nigger">Get Data</button>
 </body>
 </html>

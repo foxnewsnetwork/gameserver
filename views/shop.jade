@@ -1,0 +1,39 @@
+link(href="/stylesheets/extensions.css", media="screen", rel="stylesheet", type="text/css")
+script(type="text/javascript", src="javascripts/shop/tooltip.js")
+script(type = "text/javascript", src="javascripts/alice/alice.js" )
+script(type = "text/javascript", src="javascripts/alice/alice.core.js" )
+script(type = "text/javascript", src="javascripts/alice/alice.plugins.cheshire.js" )
+script(type="text/javascript", src="javascripts/jquery/jquery.js")
+script(type="text/javascript", src="javascripts/gameQuery/gameQuery.js")
+script(type="text/javascript", src="socket.io/socket.io.js" )
+script(type="text/javascript", src="javascripts/clientv2.js" )
+script(type="text/javascript", src="javascripts/shop/conf.js")
+script(type="text/javascript", src="javascripts/shop/generator.js")
+script(type="text/javascript", src="javascripts/shop/shop.js")
+script(type="text/javascript", src="javascripts/form/form.js")
+
+script(type="text/javascript")
+	$(document).ready(function(){
+		$("#callshop").click(function(){ 
+			tooltip.show( "Loading shop..." );
+			var meta = { 
+				'url' : document.URL 
+			};
+			GetShopItems(meta);
+		});
+	});
+	
+	AddShopFunction("open shop down", function(items){ 
+		tooltip.hide();
+		var posx = window.innerWidth - DEFAULT_SHOP_WIDTH + window.pageXOffset - 95;
+		InGidioShop.CallSimpleShop(items, { 
+			'posx' : posx < 0 ? 0 : posx,
+			'posy' : window.pageYOffset + 35 
+		} );
+	} );
+
+h1= title
+p Welcome to #{title}
+
+button#callshop callshop
+body

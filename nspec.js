@@ -77,6 +77,28 @@ function CompleteTest(){
 	}
 }
 
+// Shop tests
+var shopModel = require( "./models/shop.js" );
+var Shop = shopModel.InGidioShop;
+
+TestQ.push( function(){ 
+	// Step 1: Initialize the tests
+	var data = { 
+		url: "http://www.facebook.com/api/v1/faggot" ,
+		ip: "127.0.66.99" ,
+		callback: function(items){ 
+			if( items == undefined )
+				console.log( "Test failed");
+			else
+				console.log(items) ;
+		}
+	};
+	
+	// Step 2: Do the tests
+	Shop.RequestItems(data);
+	
+	// Step 3: Clean up after the tests
+} );
 /***********************************
 * Test Run Code                                       *
 ***********************************/

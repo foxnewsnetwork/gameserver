@@ -17655,7 +17655,7 @@ var MALL_WIDTH = window.innerWidth,
 	DEFAULT_UI_Z = 750,
 	DEFAULT_BACKGROUND_COLOR = "rgb( 10, 10, 10 )" ,
 	DEFAULT_BACKGROUND_BORDER = "solid 3px",
-	DEFAULT_BACKGROUND_IMAGE = PATH_NAME + "images/shopicons/background.png";
+	DEFAULT_BACKGROUND_IMAGE = PATH_NAME + "images/shopicons/placeholder.png";
 	DEFAULT_TILE_WIDTH = 75,
 	DEFAULT_TILE_HEIGHT= 75,
 	DEFAULT_BUTTON_WIDTH = 75,
@@ -17804,13 +17804,14 @@ var Generator = function(){
 		this.id = specs['id'];
 		$("body").append("<div id='" + this.id + "'></div>" );
 		this.drivebox = $("#" + this.id );
-		this.drivebox.css( "left", specs['posx'] );
-		this.drivebox.css( "top", specs['posy'] );
+		this.drivebox.css( "left", window.pageXOffset );
+		this.drivebox.css( "top", window.pageYOffset );
 		this.drivebox.css( ' -moz-border-radius' , "25px");
 		this.drivebox.css( 'border-radius' , "25px" );
+		
 		this.engine = this.drivebox.playground( { 
 			width : MALL_WIDTH ,
-			height : MALL_HEIGHT
+			height : MALL_HEIGHT 
 		} );
 		this.engine.css( ' -moz-border-radius' , "25px");
 		this.engine.css( 'border-radius' , "25px" );
@@ -17854,8 +17855,8 @@ var Generator = function(){
 			overflow : 'visible',
 			width : cspec['width'] ,
 			height : cspec['height'] ,
-			posx : cspec['posx'],
-			posy : cspec['posy']
+			posx : cspec['posx'] ,
+			posy : cspec['posy'] 
 		} ); 
 		this.groups['container'] = theGroup;
 		
@@ -17868,6 +17869,49 @@ var Generator = function(){
 		return theGroup;		
 	} // end this.CreateContainer
 	
+	this.CreateSpareTiles = function( type ){ 
+		// Step 1: Setting the group
+		var tspec = this.specifications;
+		var theGroup = this.engine.addGroup( this.id + "-shop-spare-set", { 
+			overflow : 'visible',
+			width : tspec['width'],
+			height : tspec['height'],
+			posx : tspec['posx'] ,
+			posy : tspec['posy'] 
+		} );
+		this.groups['spare'] = theGroup;
+		
+		// Step 2: adding in the sprites
+		var tile, tiles = [];
+		for( var k = 0; k < DEFAULT_ROW_PER; k ++ ){ 
+			var tilespec = tspec['tile'];
+			theGroup.addSprite( this.id + "shop-spare-" + k , {
+				animation : this.animations[type] ,
+				width : tilespec['width'] ,
+				height : tilespec['height']
+			} );
+			tile = $( "#" + this.id + "shop-spare-" + k );
+			tiles.push( tile );
+			
+			// Step 2.5: Establish CSS
+			theGroup.css( ' -moz-border-radius' , "25px");
+			theGroup.css( 'border-radius' , "25px" );
+			var tilecss = tspec['tile'];
+			for( var j in tilecss ){ 
+				tile.css( j, tilecss[j] );
+			}
+
+			// Step 3: adding in mouseover and click functions
+			tile.mouseover( function(){ 
+				tooltip.show( "Item out of stock!" );
+			} );
+			tile.mouseleave( function(){ 
+				tooltip.hide();
+			} );
+		} // end for loop
+		return tiles;
+	}
+	
 	this.CreateTiles = function( ){ 
 		// Step 1: Setting the group
 		var tspec = this.specifications;
@@ -17875,8 +17919,8 @@ var Generator = function(){
 			overflow : 'visible',
 			width : tspec['width'],
 			height : tspec['height'],
-			posx : tspec['posx'],
-			posy : tspec['posy']
+			posx : tspec['posx'] ,
+			posy : tspec['posy'] 
 		} );
 		this.groups['tiles'] = theGroup;
 		
@@ -17887,9 +17931,7 @@ var Generator = function(){
 			theGroup.addSprite( this.id + "shop-tile-" + k , {
 				animation : this.animations['item' + k] ,
 				width : tilespec['width'] ,
-				height : tilespec['height'] ,
-				posx : tilespec['posx'] ,
-				posy : tilespec['posy']
+				height : tilespec['height']
 			} );
 			tile = $( "#" + this.id + "shop-tile-" + k );
 			tiles.push( tile );
@@ -17933,7 +17975,9 @@ var Generator = function(){
 		var theGroup = this.engine.addGroup( this.id + "-shop-ui", { 
 			overflow : 'visible',
 			width : gspec['width'],
-			height : gspec['height']
+			height : gspec['height'] ,
+			posx : gspec['posx'] ,
+			posy : gspec['posy'] 
 		} );
 		this.groups['ui'] = theGroup;
 		
@@ -17990,9 +18034,11 @@ var Generator = function(){
 		approve.mouseleave( function(){ 
 			tooltip.hide();
 		} );
-		smallclose.click( function(){ 
-			this.destroy();
-		} );
+		smallclose.click( (function(shop){ 
+			return function(){ 
+				shop.destroy();
+			};
+		})(this) );
 			
 		// Step 2.5: Setup the CSS
 		theGroup.css( ' -moz-border-radius' , "25px");
@@ -18004,10 +18050,10 @@ var Generator = function(){
 			smallclose.css(j, uicss[j]);
 			arrow.css(j, uicss[j]);
 		}
-		smallclose.css( "left", ( gspec['posx'] + gspec['width'] - SMALL_BUTTON_WIDTH / 2 )+ "px" );
-		smallclose.css( "top", (gspec['posy'] + SMALL_BUTTON_WIDTH /2 ) + "px" );
-		arrow.css( "left", (gspec['posx'] + DEFAULT_ARROW_WIDTH / 2 + 5 ) + "px" );
-		arrow.css( "top", (gspec['posy'] + ( gspec['height'] - DEFAULT_ARROW_HEIGHT ) / 2 ) + "px" ); 
+		smallclose.css( "left", ( gspec['width'] - SMALL_BUTTON_WIDTH / 2 )+ "px" );
+		smallclose.css( "top",  0 + "px" );
+		arrow.css( "left", (5 ) + "px" );
+		arrow.css( "top", (( gspec['height'] - DEFAULT_ARROW_HEIGHT ) / 2 ) + "px" ); 
 		
 		// Step 3: Return this shit!
 		return { 
@@ -18024,7 +18070,9 @@ var Generator = function(){
 		var theGroup = this.engine.addGroup( this.id + item['id'] + "-confirmation", { 
 			'overflow' : 'visible',
 			'width' : CONFIRMATION_WIDTH,
-			'height' : CONFIRMATION_HEIGHT
+			'height' : CONFIRMATION_HEIGHT ,
+			posx : fspec['posx'] ,
+			posy : fspec['posy'] 
 		} );
 		if( this.groups['confirmation'] != undefined )
 			this.groups['confirmation'].remove();
@@ -18050,6 +18098,7 @@ var Generator = function(){
 		} );
 		
 		// Step 3: CSS and such
+		theGroup.css( "z-index", DEFAULT_TILE_Z + 1 );
 		var text = $("#" + this.id + item['id'] + "-confirmation-text" );
 		var yes = $("#" + this.id + item['id'] + "-confirmation-yes" );
 		var no = $( "#" + this.id + item['id'] + "-confirmation-no" );
@@ -18098,11 +18147,14 @@ var Generator = function(){
 		var theGroup = this.engine.addGroup( this.id + item['id'] + "-payment", { 
 			'overflow' : 'visible',
 			'width' : fspec['form']['width'],
-			'height' : fspec['form']['height']
+			'height' : fspec['form']['height'] ,
+			posx : fspec['posx'] ,
+			posy : fspec['posy'] 
 		} );
 		if( this.groups['payment'] != undefined )
 			this.groups['payment'].remove();
 		this.groups['payment'] = theGroup;
+		theGroup.css( "z-index", DEFAULT_TILE_Z + 1 );
 		
 		// Step 2: Adding in
 		theGroup.addSprite( this.id + item['id'] + "-payment-form", { 
@@ -18243,7 +18295,9 @@ var Generator = function(){
 		var theGroup = this.engine.addGroup( this.id + "-flash", { 
 			'overflow' : 'visible',
 			'width' : fspec['flash']['width'],
-			'height' : fspec['flash']['height']
+			'height' : fspec['flash']['height'] ,
+			posx : fspec['posx'] ,
+			posy : fspec['posy'] 
 		} );
 		if( this.groups['flash'] != undefined )
 			this.groups['flash'].remove();
@@ -18253,8 +18307,8 @@ var Generator = function(){
 		theGroup.addSprite( this.id + "-flash-message", { 
 			'width' : fspec['flash']['width'],
 			'height' : fspec['flash']['height'],
-			'posx': fspec['posx'] +  fspec['flash']['width'] / 2,
-			'posy': fspec['posy' ] + fspec['flash']['height'] / 2
+			'posx': fspec['flash']['width'] / 2,
+			'posy': fspec['flash']['height'] / 2
 		} );
 		var flash = $("#" + this.id + "-flash-message" );
 		
@@ -18268,7 +18322,11 @@ var Generator = function(){
 		flash.append( "<h4>" + message + "</h4>" );
 		
 		// Step 5: Setting setting the disapperance
-		flash.show(2000, function(){ flash.hide(3000); } );
+		flash.show(2000, function(){ 
+			flash.hide(3000, function(){ 
+				theGroup.remove();
+			} ); 
+		} );
 		
 	} // end CreateFlashMessage function
 }; //end Generator
@@ -18308,12 +18366,14 @@ var InGidioShop = function(){
 		'posx': DEFAULT_SHOP_X,
 		'posy': DEFAULT_SHOP_Y,
 		'posz': DEFAULT_SHOP_Z,
+		"opacity" : 1 ,
 		'background' : { 
 			'background-color': DEFAULT_BACKGROUND_COLOR,
 			'border': DEFAULT_BACKGROUND_BORDER,
 			'image': DEFAULT_BACKGROUND_IMAGE,
 			' -moz-border-radius' : "25px",
-			'border-radius' : "25px"
+			'border-radius' : "25px" ,
+			"opacity" : 1
 		},
 		'tile' : { 
 			'width' : DEFAULT_TILE_WIDTH,
@@ -18322,12 +18382,14 @@ var InGidioShop = function(){
 			'rowper': DEFAULT_ROW_PER,
 			'z-index' : DEFAULT_TILE_Z ,
 			' -moz-border-radius' : "5px",
-			'border-radius' : "5px"
+			'border-radius' : "5px",
+			"opacity" : 1
 		},
 		'ui' : { 
 			'buttonwidth' : DEFAULT_BUTTON_WIDTH,
 			'buttonheight' : DEFAULT_BUTTON_HEIGHT,
-			'z-index' : DEFAULT_UI_Z
+			'z-index' : DEFAULT_UI_Z,
+			"opacity" : 1
 		},
 		'form' : { 
 			'z-index' : DEFAULT_UI_Z,
@@ -18363,26 +18425,31 @@ var InGidioShop = function(){
 			// var querydata = $.param( data );
 			BuyItem( data );
 		}, // end BuyItem
-		CallSimpleShop : function(items, specs){
+		CallSimpleShop : function(items, niggers){
 			// Step 1: Setting custom specs and necessar
 			var cspec = spec;
-			if( specs != undefined )
-				cspec = $.extend( specs, spec );
+			if( niggers != undefined )
+				cspec = $.extend( cspec, niggers );
+			// alert( JSON.stringify(cspec) );
 			var generator = new Generator();
 			generator.initialize(items, cspec);
 							
 			// Step 2: Setting up the shop container
 			var container = generator.CreateContainer();
+			var sparetiles = generator.CreateSpareTiles( "locked" );
 			var tiles = generator.CreateTiles();
 			var gui = generator.CreateUI();
 			
-			// Step 3: Present user with the shop
+			// Step 3: Present user with the shop	
 			container.show();
 			container.css( "border-radius", "25px" );
 			container.css( "-moz-border-radius" , "25px" );
-			for( var k = 0; k < tiles.length; k++ ){
-				tiles[k].css( "left", (k % DEFAULT_ROW_PER ) * ( cspec['tile']['width'] + 5 ) + 55 );
+			var k, j;
+			for( k = 0; k < tiles.length; k++ ){
+				var xpos = (k % DEFAULT_ROW_PER ) * ( cspec['tile']['width'] + 5 ) + 55;
+				tiles[k].css( "left", xpos + 'px' );
 				tiles[k].css( "top", 5 );
+				sparetiles[k].hide();
 				if( Math.floor( k / DEFAULT_ROW_PER ) > 1 ){ 
 					tiles[k].hide();
 				}
@@ -18390,28 +18457,39 @@ var InGidioShop = function(){
 					tiles[k].show();
 				}
 			}
+			for( j = k; j < DEFAULT_ROW_PER; j++){ 
+				var xpos = (j % DEFAULT_ROW_PER ) * ( cspec['tile']['width'] + 5 ) + 55;
+				sparetiles[j].css( "left", xpos + 'px' );
+				sparetiles[j].css( "top", 5 );
+				sparetiles[j].show();
+			}
 			for( var k in gui )
 				gui[k].hide();
+			gui['smallclose'].show();
+			gui['arrow'].show();
 			
 			// Step 3.5: Setting the arrow scroller
 			var arrowcounter = 1;
-			gui['arrow'].click( function(){ 
-				if( tiles.length <= DEFAULT_ROW_PER )
+			gui['arrow'].click( function(e){ 
+				if( tiles.length <= DEFAULT_ROW_PER ){
+					generator.CreateFlashMessage( "No more items!", { x : e.pageX, y : e.pageY } );
 					return;
+				}
 				arrowcounter += 1;
 				arrowcounter = arrowcounter % DEFAULT_ROW_PER;
-				a.spin( tiles,  "left", "", "", {
-					"value": "750ms",
-					"randomness": "0%",
-					"offset": "150ms"
-				});
-				for( var k = 0; k < tiles.length; k++ ){ 
+				
+				var k, j;
+				for( k = 0; k < tiles.length; k++ ){ 
+					sparetiles[k].hide();
 					if( Math.floor( k / DEFAULT_ROW_PER ) == arrowcounter ){ 
 						tiles[k].show(450);
 					}
 					else{
 						tiles[k].hide();
 					}
+				} // end for loop
+				for( j = k; j < DEFAULT_ROW_PER; j++){ 
+					sparetiles[j].show();
 				}
 				
 			} );
@@ -18424,8 +18502,24 @@ var InGidioShop = function(){
 			}; // end return
 		}, // end CallSimpleShop 
 		CallNormalShop : function(items, specs){
-		
-		},
+			// Step 1: Setting custom specs and necessar
+			var cspec = spec;
+			if( specs != undefined )
+				cspec = $.extend( cspec, specs );
+			var generator = new Generator();
+			generator.initialize(items, cspec);
+			
+			// Step 2: Generating the tiles
+			var lockedtiles = generator.CreateSpareTiles( "locked" );
+			var vacanttiles = generator.CreateSpareTiles( "vacant" );
+			var itemtiles = generator.CreateTiles();
+			
+			return { 
+				lockedtiles : lockedtiles ,
+				vacanttiles : vacanttiles ,
+				itemtiles : itemtiles
+			};
+		}, // end CallNormalShop
 		CallHardShop : function(items, specs){
 		
 		}
@@ -18433,27 +18527,6 @@ var InGidioShop = function(){
 } ();// end InGidioShop
 
 
-var INGIDIO_SCRIPT_PATH = "http://localhost:3000/";
-function LoadStyleSheets(){ 
-	var indigiStyle = document.createElement("link");
-	indigiStyle.type = "text/css";
-	indigiStyle.href = INGIDIO_SCRIPT_PATH + "stylesheets/extensions.css";
-	indigiStyle.rel = "stylesheet";
-	indigiStyle.media = "screen";
-	var s = document.getElementsByTagName('body')[0]; 
-	s.appendChild(indigiStyle, s); 
-};
-
-socket.on( "connection", function(id){ 
-	// alert( "We are Connected!" );
-	GetShopItems({	url : document.url }); 
-	LoadStyleSheets();
-	AddShopFunction( "open shop down", function(items){ 
-		// alert( "Stuff has come down" );
-		InGidioShop.CallSimpleShop(items);
-	} );
-} );
-	
-
-
-
+/*******************************
+* game-drive file; nothing here yet *
+********************************/

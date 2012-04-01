@@ -3,8 +3,9 @@ var MahjongGraphicsPlayer = function(){
 	this.ptileset;
 	this.exposeTileSet;
 	this.pickedTile;
-	
-	
+	this.exposedTileSpot = 0;
+	this.exposedTileHeight = 0;
+	this.exposedPonChiCounter = 0;
 	 this.setPick = function(num){
 		 if(this.pickedTile != undefined){
 				xpos = X_PLAYER + this.pickedTile*TILE_WIDTH;
@@ -48,6 +49,7 @@ var MahjongGraphicsPlayer = function(){
 		var hand = playerstate['hand'];
 		var hidden = hand['hidden'];
 		var exposed = hand['exposed'];
+		var exposedO = hand['layout'];
 		// step 1: we show the hidden hand
 		var k, xpos, ypos;
 		for( k = 0; k < hidden.length; k++){ 
@@ -102,8 +104,11 @@ var MahjongGraphicsPlayer = function(){
 			
 			if( this.exposeTileSet[j] == undefined ){ 
 				var atile = new MahjongTileSprite();
-				xpos = X_PLAYER + 15 + (k+1+j)*TILE_WIDTH;
-				ypos = Y_PLAYER; - 25;
+				
+				xpos = BOARD_WIDTH + (this.exposedTileSpot * TILE_WIDTH);
+				//$("#clickedtile").append("| "+ j + " "+ exposedO[j] + " ");
+
+				ypos = (this.exposedTileHeight*TILE_HEIGHT) + 10;
 				atile.SetAs(exposed[j]['suit'], exposed[j]['value']);
 				atile.SetAt(xpos, ypos);
 				atile.SetCallback( 'mouseover', function(event){ 
@@ -116,6 +121,25 @@ var MahjongGraphicsPlayer = function(){
 					
 				} );
 				this.exposeTileSet.push( atile );
+				
+				if(exposed[j]['suit'] == 4){
+					this.exposedTileHeight++;	
+				}
+				else{
+					this.exposedTileSpot++;
+					if((this.exposedTileSpot % 3) == 0 )
+					{
+					if(exposed[j]['suit'] == exposed[j-1]['suit'] && exposed[j]['value'] == exposed[j-1]['value'])
+						{
+						 exposedTileSpot = 3;
+						}
+					else{
+						this.exposedTileSpot = 0;
+					this.exposedTileHeight++;
+					}
+					}
+				}
+				
 			}
 			else{ 
 				this.exposeTileSet[j].SetAs(exposed[j]['suit'], exposed[j]['value']);

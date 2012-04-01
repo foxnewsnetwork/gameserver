@@ -11,10 +11,12 @@ var MahjongGame = function(){
 	// interactingPlayer is the player who is interacting with the game
 	this.interactivePlayer;
 	
+	//Returns the Player object that is currently active.
 	this.getactiveplayer = function(){ 
 		return this.players[this.activePlayer];
 	}
 	
+	//Create a new Game. Initialize players and a board.
 	this.initialize = function(){
 		this.phase = PHASE_PREGAME;
 		this.board = new MahjongBoard();
@@ -25,9 +27,12 @@ var MahjongGame = function(){
 		}
 	} 
 	
+	//Begin the actual game.
+	//This means having players draw the correct amount of tiles
+	//as well as choosing whose turn it is
 	this.newgame = function(){ 
 		this.board.newboard();
-		this.board.shuffle();
+		//this.board.shuffle();
 		this.begun = true;
 		for( var k = 0; k < this.players.length; k++ ){ 
 			this.players[k].drawtiles( this.board, RULES_STARTING_TILE_COUNT );
@@ -42,6 +47,7 @@ var MahjongGame = function(){
 		}
 	}
 	
+	//Convert the game state into a json
 	this.tojson = function(){
 		var data = {
 			'board': this.board.tojson(),
@@ -55,6 +61,7 @@ var MahjongGame = function(){
 		return data;
 	} 
 	
+	//Convert a json file into the current game state.
 	this.fromjson = function( data ){ 
 		this.initialize();
 		this.board.fromjson(data['board']);
@@ -64,6 +71,7 @@ var MahjongGame = function(){
 		this.interactivePlayer = data['interactivePlayer']; 
 	}
 	
+	//Convert the game state into readable html
 	this.tohtml = function(){ 
 		var output = "<h1>Game State: </h1>";
 		output += "<h5>Active Player: " + this.activePlayer + "</h5>";
@@ -92,6 +100,9 @@ var MahjongGame = function(){
 		return actions;
 	}
 	
+	this.playerChoosingChi = function(){
+		
+	}
 	// You must call this function before performing any player actions
 	this.SetInteractivePlayer = function( player ){ 
 		this.interactivePlayer = player;
@@ -100,22 +111,29 @@ var MahjongGame = function(){
 	// Call this to end your turn. The game begins your turn for you
 	this.EndTurn = function(player){ 
 		this.players[this.activePlayer].deactivate();
-		this.activePlayer = ( this.activePlayer + 1 ) % PLAYER_COUNT;
+		   
+		this.activePlayer = ( parseInt(this.activePlayer) + 1 ) % PLAYER_COUNT;
 		this.players[this.activePlayer].activate();
-		
 	}
 	
 	// Draws a tile at the beginning of your turn
 	this.DrawTile = function(player){ 
 		this.SetInteractivePlayer(player);
 		this.players[this.interactivePlayer].drawtile( this.board );
-		
+		for( var k = 0; k < PLAYER_COUNT; k++){ 
+			
+			this.players[k].otherPlayerDrew();
+			
+			
+		}
 		// check ron for the player
-		
+		this.players[this.interactivePlayer].checkRon();
 		// check closed kan for the player
 	}
 	
 	// Discard a tile if you've drawn 
+	//After discarding, other players should check if they can perform
+	//normal mahjong actions
 	this.DiscardTile = function(player,tile){ 
 		this.SetInteractivePlayer(player);
 		var faggot = this.players[this.interactivePlayer];
@@ -128,13 +146,16 @@ var MahjongGame = function(){
 			fag = this.players[k];
 			kanAvailable = fag.checkKan( tossedtile );
 			ponAvailable = fag.checkPon( tossedtile );
-			
+			//fag.checkRonFromDiscard(tossedtile);
 		}
-		
 		// check chi for the previous player
 		var previous = this.players[(this.interactivePlayer + PLAYER_COUNT - 1 ) % PLAYER_COUNT];
 		previous.checkChi( tossedtile );
 	}
+	
+	//A player called a Pon.
+	//It is now the turn of the player who called Pon.
+	// They also get to pon a tile, duh!
 	this.Pon = function(player){
 		this.players[this.activePlayer].deactivate();
 		this.SetInteractivePlayer(player);
@@ -142,8 +163,45 @@ var MahjongGame = function(){
 		currentPlayer.ponTile(this.board);
 		
 		this.activePlayer = this.interactivePlayer;
-		this.players[this.activePlayer].recentPon();
+		
+		this.players[this.activePlayer].recentPonOrChi();
 
+	}
+	
+	//A player called a Chi
+	//It is now the turn of the player who called Chi.
+	//Also they get the tile.
+	this.Chi = function(player){
+		this.players[this.activePlayer].deactivate();
+		this.SetInteractivePlayer(player);
+		currentPlayer = this.players[this.interactivePlayer];
+		currentPlayer.chiTile(this.board);
+		
+		this.activePlayer = this.interactivePlayer;
+		
+		this.players[this.activePlayer].recentPonOrChi();
+
+	}
+	
+	//A player called Kan
+	//Similar to Pon and Chi.
+	this.Kan = function(player){
+		this.players[this.activePlayer].deactivate();
+		this.SetInteractivePlayer(player);
+		currentPlayer = this.players[this.interactivePlayer];
+		currentPlayer.kanTile(this.board);
+		
+		this.activePlayer = this.interactivePlayer;
+		
+		this.players[this.activePlayer].activate();
+
+	}
+	//A player called Ron which means they win the game
+	this.Ron = function(player){
+		this.players[this.activePlayer].deactivate();
+		this.SetInteractivePlayer(player);
+		currentPlayer = this.players[this.interactivePlayer];
+		
 	}
 	this.playerJoined = function(){
 		

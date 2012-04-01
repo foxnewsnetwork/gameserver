@@ -25,18 +25,30 @@ var MahjongPlayer = function(){
 		this.actions['draw'] = true;
 		this.actions['discard'] = false;
 		this.actions['endturn'] = false;
+		this.actions['pon'] = false;
+		this.actions['chi'] = false;
+		this.actions['openkan'] = false;
 	}
-	
+	//It is not the players turn anymore.
 	this.deactivate = function(){ 
 		this.actions['endturn'] = false;
 		this.actions['draw'] = false;
 		this.actions['discard'] = false;
 	}
-	this.recentPon = function(){
+	//Recently pon'd or chi. Means you got to discard now
+	this.recentPonOrChi = function(){
 		this.actions['draw'] = false;
 		this.actions['discard'] = true;
 		this.actions['endturn'] = false;
 		this.actions['pon'] = false;
+		this.actions['chi'] = false;
+		this.actions['openkan'] = false;
+	}
+	//If another player has drawn, you lose certain actions
+	this.otherPlayerDrew = function(){
+		this.actions['pon'] = false;
+		this.actions['chi'] = false;
+		this.actions['openkan'] = false;
 	}
 	// call this function to query possible actions of the player
 	// calling this function also updates the actions list
@@ -96,7 +108,18 @@ var MahjongPlayer = function(){
 	
 	// ron means to win the game
 	this.checkRon = function(){ 
+		
 		var result = this.hand.checkRon();	
+		if( result ){
+			this.actions['ron'] = true;
+		}
+		else
+			this.actions['ron'] = false;
+		return result;
+	}
+	//can ron if other person discards as well
+	this.checkRonFromDiscard = function(tile){ 
+		var result = this.hand.checkRonFromDiscard(tile);	
 		if( result )
 			this.actions['ron'] = true;
 		else
@@ -104,6 +127,9 @@ var MahjongPlayer = function(){
 		return result;
 	}
 	
+	//The player draws a tile.
+	//If the player is a flower, immediately expose it and draw another.
+	//Update actions accordingly
 	this.drawtile = function(board){ 
 		if( this.hand == undefined )
 			this.hand = new MahjongHand();
@@ -121,6 +147,7 @@ var MahjongPlayer = function(){
 		this.actions['openkan'] = false;
 	}
 	
+	//Throw out a tile and update actions accordingly
 	this.discardtile = function(board, tile){ 
 		if( this.hand == undefined )
 			return;
@@ -130,6 +157,7 @@ var MahjongPlayer = function(){
 		return theTile;
 	}
 	
+	//Draw the up to the limit.
 	this.drawtiles = function( board, limit ){ 
 		if( this.hand == undefined )
 			this.hand = new MahjongHand();
@@ -137,15 +165,35 @@ var MahjongPlayer = function(){
 			this.drawtile( board );
 		}
 	}
-	
+	//A pon is called. 
+	//Get a tile from the board
+	//Then put it in our hand
 	this.ponTile = function(board){
 		ponTile = board.ponTile();
 		this.hand.ponTile(ponTile);
 	}
+	//Chi is called
+	//Get the tile from the board
+	//Also yeah put it in our hand
+	this.chiTile = function(board){
+		chiTile = board.chiTile();
+		this.hand.chiTile(chiTile);
+	}
+	//Kan is called
+	//Get the kan'd tile fromt he board
+	//Put in Hand!
+	this.kanTile = function(board){ 
+		kanTile = board.kanTile();
+		this.hand.kanTile(kanTile);
+		
+	}
+	
+	//Sort your hand. The hand knows how to sort itself
 	this.sorthand = function(){ 
 		this.hand.sorthand();
 	}
 	
+	//Convert the player state into a json
 	this.tojson = function(){ 
 		var data = { 
 			'hand': this.hand.tojson(),
@@ -154,12 +202,14 @@ var MahjongPlayer = function(){
 		return data;
 	}
 	
+	//Convert the json into the player state
 	this.fromjson = function(data){ 
 		this.hand = new MahjongHand();
 		this.hand.fromjson(data['hand']);
 		this.actions = data['actions'];
 	}
 	
+	//Convert the player state into readable html
 	this.tohtml = function(){ 
 		var result = "<h1>Player: </h1>";
 		result += this.hand.tohtml();

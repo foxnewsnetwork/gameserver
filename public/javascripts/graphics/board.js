@@ -25,11 +25,13 @@ var MahjongGraphicsBoard = function(){
 	var endTurnButton;
 	var ponButton;
 	var staticButtonGroup;
+	var chiButton;
+	var kanButton;
 	this.setupButtons = function(){
 		//staticButtonGroup = $.playground().addGroup( "buttons", { width: GAME_WIDTH, height: GAME_HEIGHT } ).end();
 		//create draw button
 		drawButton = new MahjongButtonSprite();
-		drawButton.set(0,0,"draw");
+		drawButton.set(BUTTONS_XPOSITION,BUTTONS_YPOSITION,"draw");
 		drawButton.SetCallback( 'mouseover', function(event){ 
 		tooltip.show( event['action'] );
 		} );
@@ -41,7 +43,7 @@ var MahjongGraphicsBoard = function(){
 			} );
 		
 		discardButton = new MahjongButtonSprite();
-		discardButton.set(0,BUTTON_HEIGHT,"discard");
+		discardButton.set(BUTTONS_XPOSITION,BUTTONS_YPOSITION + BUTTON_HEIGHT,"discard");
 		discardButton.SetCallback( 'mouseover', function(event){ 
 			tooltip.show( event['action'] );
 			} );
@@ -53,7 +55,7 @@ var MahjongGraphicsBoard = function(){
 			} );
 			
 		endTurnButton = new MahjongButtonSprite();
-		endTurnButton.set(0,2*BUTTON_HEIGHT,"endturn");
+		endTurnButton.set(BUTTONS_XPOSITION,BUTTONS_YPOSITION + (2*BUTTON_HEIGHT),"endturn");
 		endTurnButton.SetCallback( 'mouseover', function(event){ 
 			tooltip.show( event['action'] );
 			} );
@@ -65,7 +67,7 @@ var MahjongGraphicsBoard = function(){
 		});	
 		
 		ponButton = new MahjongButtonSprite();
-		ponButton.set(BUTTON_WIDTH,0,"endturn");
+		ponButton.set(BUTTONS_XPOSITION + BUTTON_WIDTH, BUTTONS_YPOSITION,"pon");
 		ponButton.SetCallback( 'mouseover', function(event){ 
 			tooltip.show( event['action'] );
 			} );
@@ -76,10 +78,48 @@ var MahjongGraphicsBoard = function(){
 			pon();
 		});	
 		
+		chiButton = new MahjongButtonSprite();
+		chiButton.set(BUTTONS_XPOSITION + BUTTON_WIDTH,BUTTONS_YPOSITION + BUTTON_HEIGHT,"chi");
+		chiButton.SetCallback( 'mouseover', function(event){ 
+			tooltip.show( event['action'] );
+			} );
+		chiButton.SetCallback( 'mouseout', function(event){
+			tooltip.hide();
+			} );
+		chiButton.SetCallback("click", function(event){
+			chi();
+		});
+		
+		kanButton = new MahjongButtonSprite();
+		kanButton.set(BUTTONS_XPOSITION + BUTTON_WIDTH,BUTTONS_YPOSITION + (2 * BUTTON_HEIGHT),"kan");
+		kanButton.SetCallback( 'mouseover', function(event){ 
+			tooltip.show( event['action'] );
+			} );
+		kanButton.SetCallback( 'mouseout', function(event){
+			tooltip.hide();
+			} );
+		kanButton.SetCallback("click", function(event){
+			kan();
+		});
+	
+		ronButton = new MahjongButtonSprite();
+		ronButton.set(BUTTONS_XPOSITION + (2 * BUTTON_WIDTH),BUTTONS_YPOSITION,"ron");
+		ronButton.SetCallback( 'mouseover', function(event){ 
+			tooltip.show( event['action'] );
+			} );
+		ronButton.SetCallback( 'mouseout', function(event){
+			tooltip.hide();
+			} );
+		ronButton.SetCallback("click", function(event){
+			//ron();
+		});
 		drawButton.hide();
 		discardButton.hide();
 		endTurnButton.hide();
 		ponButton.hide();
+		chiButton.hide();
+		kanButton.hide();
+		ronButton.hide();
 	}
 	this.actionsDraw = function(){
 		drawButton.show();
@@ -106,6 +146,24 @@ var MahjongGraphicsBoard = function(){
 	}
 	this.actionsDeactivatePon = function(){
 		ponButton.hide();
+	}
+	this.actionsChi = function(){
+		//chiButton.show();
+	}
+	this.actionsDeactivateChi = function(){
+		chiButton.hide();
+	}
+	this.actionsKan = function(){
+		kanButton.show();
+	}
+	this.actionsDeactivateKan = function(){
+		kanButton.hide();
+	}
+	this.actionsRon = function(){
+		ronButton.show();
+	}
+	this.actionsDeactivateRon = function(){
+		ronButton.hide();
 	}
 	// remember, json files
 	this.draw = function( boardstate ){ 

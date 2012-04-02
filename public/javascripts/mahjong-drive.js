@@ -68,6 +68,15 @@ AddGameFunction( "chi", function( origin, eventdata ){
 
 } );
 
+AddGameFunction("commitchi",function( origin,eventdata){
+	var pn = GetPlayerNumber( origin );
+	game.commitChi( pn,eventdata );
+	actions = game.GetPossibleActions(playerNumber);
+	ManageUI(actions);
+	if(pn == playerNumber)
+	{graphics.player.resetChiPick();}
+	$("#display").html( game.tohtml() );
+});
 AddGameFunction( "kan", function( origin, eventdata ){ 
 	var pn = GetPlayerNumber( origin );
 	game.Kan( pn );
@@ -80,7 +89,7 @@ AddGameFunction( "kan", function( origin, eventdata ){
 
 AddGameFunction( "ron", function( origin, eventdata ){ 
 	var pn = GetPlayerNumber( origin );
-	game.Ran( pn );
+	game.Ron( pn );
 	actions = game.GetPossibleActions(playerNumber);
 	ManageUI(actions);
 	alert("GAME IS OVER. Player "+ pn + " has won the game");
@@ -226,7 +235,16 @@ function ManageUI ( actions ){
 		graphics.board.actionsDeactivatePon();
 	}
 	if(actions['chi']){
-		
+		graphics.board.actionsChi();
+	}
+	if(!actions['chi']){
+	 	graphics.board.actionsDeactivateChi();
+	}
+	if(actions['chicall']){
+		graphics.board.actionsCommit();
+	}
+	if(!actions['chicall']){
+		graphics.board.actionsDeactivateCommit();
 	}
 	if(actions['openkan']){
 		graphics.board.actionsKan();
@@ -272,6 +290,9 @@ function pon(){
 function chi(){
 	FireEvent("chi","-");
 }
+function commitChi(){
+	FireEvent("commitchi", graphics.player.returnChiPick());
+}
 function kan(){
 	FireEvent("kan","-");
 }
@@ -281,9 +302,10 @@ function ron(){
 
 //A tile is picked. Set that as a picked tile graphically
 function setPlayerPickTile(handId){
+	
 	if(game.playerChoosingChi())
-	{
-	graphics.set	
+	{	
+	graphics.setChiPick(handId);	
 	}
 	 else{
 	graphics.setPlayerPick(handId);

@@ -96,12 +96,27 @@ var MahjongHand = function(){
 	//A chi was called. Place the chi tile into exposed.
 	//Deciding the best way to find the other sequential tiles is yet to be
 	//implemented.
-	this.chiTile = function(tileToAdd){
-		this.exposed.push( tileToAdd );
-		//Need to somehow decide which tiles to choose for chi
+	this.chiTile = function(tileToAdd,tiles){
+		chiTileFirst = this.hidden[tiles[0]];
+		chiTileSecond = this.hidden[tiles[1]];
+		tempTileArray = [tileToAdd,chiTileFirst,chiTileSecond];
+		tempTileArray.sort(function(a,b){
+			return a.sval() - b.sval();
+		});
+		
+		if( TileFlush(tempTileArray[0], tempTileArray[1], tempTileArray[2] ) ){
+		this.exposed.push( tempTileArray[0] );
+		this.exposed.push(tempTileArray[1]);
+		this.exposed.push(tempTileArray[2]);
+		this.hidden.splice(tiles[0],1);
+		this.hidden.splice(tiles[1], 1);
 		
 		
 		this.sorthand();
+		return true;
+		}
+		return false;
+		
 	}
 	
 	//A kan was called.
@@ -179,8 +194,8 @@ var MahjongHand = function(){
 		var singleCount = 0, doubleCount = 0, tripleCount = 0, quadCount = 0, straightCount = 0;
 		var x = 0, y = 0;
 		while( x < this.hidden.length ){ 
-			$("#clickedtile").append("| "+ x + " ");
-			alert(this.hidden.length);
+			//$("#clickedtile").append("| "+ x + " ");
+			//(this.hidden.length);
 
 			y = 0;
 			singleCount += 1;
@@ -193,17 +208,20 @@ var MahjongHand = function(){
 					doubleCount += -1;
 					tripleCount += 1;
 					y += 1;
+					
 					if( TileEqual(this.hidden[x], this.hidden[x+3] ) ){
 						quadCount += 1;
 					}
 				}
+				x += y;
 				continue;
 			}
 			if( TileFlush(this.hidden[x], this.hidden[x+1], this.hidden[x+2]) ) { 
 				straightCount += 1;
 				singleCount += -1;
 				y += 2;
-				continue
+				x += y;
+				continue;
 			}
 			x += y;
 			if( singleCount - quadCount > 0 )
@@ -212,7 +230,8 @@ var MahjongHand = function(){
 				return false;
 		}
 		if( doubleCount == 1 ){
-			if( tripleCount + straightCount == 4 ){
+			numOfNeededTriples = parseInt((this.hidden.length - 2) / 3);
+			if( tripleCount + straightCount == numOfNeededTriples ){
 				return true;
 			}	
 		}
@@ -220,6 +239,8 @@ var MahjongHand = function(){
 		// TODO: get this function to return the point value of the hand when true
 	}
 	//This check ron is for another player discarding a tile
+	//due to javascript, could condense this with the previous function
+	//to do whe refactoring
 	this.checkRonFromDiscard = function(tile){ 
 		var singleCount = 0, doubleCount = 0, tripleCount = 0, quadCount = 0, straightCount = 0;
 		var x = 0, y = 0;
@@ -242,15 +263,18 @@ var MahjongHand = function(){
 					tripleCount += 1;
 					y += 1;
 					if( TileEqual(this.hidden[x], this.hidden[x+3] ) ){
+						tripleCount += -1;
 						quadCount += 1;
 					}
 				}
+				x += y;
 				continue;
 			}
 			if( TileFlush(this.hidden[x], this.hidden[x+1], this.hidden[x+2]) ) { 
 				straightCount += 1;
 				singleCount += -1;
 				y += 2;
+				x += y;
 				continue
 			}
 			x += y;
@@ -265,14 +289,20 @@ var MahjongHand = function(){
 				return false;
 				}
 		}
-		if( doubleCount == 1 )
-			{
-			if( tripleCount + straightCount == 4 )
-				{this.hidden.splice(tempTileToRemove, 1);
-				return true;}
-			
+		if( doubleCount == 1 ){
+			//alert(quadCount + " " + this.hidden.length);
+	
+			numOfNeededTriples = parseInt((this.hidden.length - ((4 * quadCount) + 2)) / 3);
+			alert(numOfNeededTriples + " " + tripleCount + " " + straightCount);
+			if( tripleCount + straightCount == numOfNeededTriples ){
+				
+				this.hidden.splice(tempTileToRemove, 1);
+				return true;
 			}
+			
+		}
 		this.hidden.splice(tempTileToRemove, 1);
+		
 		return false;
 		// TODO: get this function to return the point value of the hand when true
 	}

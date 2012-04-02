@@ -38,7 +38,7 @@ var MahjongBoard = function(){
 	//A chi was called. Remove a tile from the board
 	//Currently the same as ponTile. May want to refactor out in the future
 	this.chiTile = function(){
-		tile = this.discardTiles.pop();
+		tile = this.discardTiles[this.discardTiles.length - 1];
 		return tile;
 	}
 	//A chi was called. Remove a tile from the board

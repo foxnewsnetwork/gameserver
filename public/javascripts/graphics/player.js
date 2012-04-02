@@ -1,4 +1,5 @@
 
+
 var MahjongGraphicsPlayer = function(){ 
 	this.ptileset;
 	this.exposeTileSet;
@@ -6,7 +7,27 @@ var MahjongGraphicsPlayer = function(){
 	this.exposedTileSpot = 0;
 	this.exposedTileHeight = 0;
 	this.exposedPonChiCounter = 0;
-	 this.setPick = function(num){
+	this.chiPick = [];
+	this.setChiPick = function(num){
+		
+		if(this.chiPick[0] != undefined && this.chiPick[0] != num){
+			if(this.chiPick[1] != undefined){
+				xpos = X_PLAYER + this.chiPick[1]*TILE_WIDTH;
+				ypos = Y_PLAYER;
+				this.ptileset[this.chiPick[1]].SetAt(xpos, ypos);
+			}
+				this.chiPick[1] = this.chiPick[0];
+				xpos = X_PLAYER + this.chiPick[1]*TILE_WIDTH;
+				ypos2 = Y_PLAYER - 20;
+				this.ptileset[this.chiPick[1]].SetAt(xpos, ypos2);
+		}
+		xpos2 = X_PLAYER + num*TILE_WIDTH;
+		ypos2 = Y_PLAYER - 20;
+		this.ptileset[num].SetAt(xpos2, ypos2);
+		this.chiPick[0] = num;
+	
+	}
+	this.setPick = function(num){
 		 if(this.pickedTile != undefined){
 				xpos = X_PLAYER + this.pickedTile*TILE_WIDTH;
 				ypos = Y_PLAYER;
@@ -27,8 +48,20 @@ var MahjongGraphicsPlayer = function(){
 			
 			this.pickedTile = undefined;
 	 }
+	 this.resetChiPick = function(){
+		for(var x = 0; x < 2 ; x++){
+		 xpos = X_PLAYER + this.chiPick[x]*TILE_WIDTH;
+			ypos = Y_PLAYER;
+			this.ptileset[this.chiPick[x]].SetAt(xpos, ypos);	
+			
+			this.chiPick[0] = undefined;
+	 	}
+	 }
 	this.returnTile = function(){
 		return this.pickedTile;
+	}
+	this.returnChiPick = function(){
+		return this.chiPick;
 	}
 	this.initialize = function(element){ 
 		this.ptileset = [];

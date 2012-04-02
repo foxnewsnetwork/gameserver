@@ -111,7 +111,18 @@ var MahjongGraphicsBoard = function(){
 			tooltip.hide();
 			} );
 		ronButton.SetCallback("click", function(event){
-			//ron();
+			ron();
+		});
+		commitButton = new MahjongButtonSprite();
+		commitButton.set(BUTTONS_XPOSITION + (2 * BUTTON_WIDTH),BUTTONS_YPOSITION + BUTTON_HEIGHT,"chi");
+		commitButton.SetCallback( 'mouseover', function(event){ 
+			tooltip.show( event['action'] );
+			} );
+		commitButton.SetCallback( 'mouseout', function(event){
+			tooltip.hide();
+			} );
+		commitButton.SetCallback("click", function(event){
+			commitChi();
 		});
 		drawButton.hide();
 		discardButton.hide();
@@ -120,6 +131,7 @@ var MahjongGraphicsBoard = function(){
 		chiButton.hide();
 		kanButton.hide();
 		ronButton.hide();
+		commitButton.hide();
 	}
 	this.actionsDraw = function(){
 		drawButton.show();
@@ -148,9 +160,10 @@ var MahjongGraphicsBoard = function(){
 		ponButton.hide();
 	}
 	this.actionsChi = function(){
-		//chiButton.show();
+		chiButton.show();
 	}
 	this.actionsDeactivateChi = function(){
+
 		chiButton.hide();
 	}
 	this.actionsKan = function(){
@@ -164,6 +177,12 @@ var MahjongGraphicsBoard = function(){
 	}
 	this.actionsDeactivateRon = function(){
 		ronButton.hide();
+	}
+	this.actionsCommit = function(){
+		commitButton.show();
+	}
+	this.actionsDeactivateCommit = function(){
+		commitButton.hide();
 	}
 	// remember, json files
 	this.draw = function( boardstate ){ 

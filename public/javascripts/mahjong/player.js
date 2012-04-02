@@ -10,7 +10,8 @@ var MahjongPlayer = function(){
 		'closedkan': false,
 		'riichi': false,
 		'ron': false,
-		'endturn': false
+		'endturn': false,
+		'chicall': false
 	};
 	// record what the last thing the player has done
 	this.history;
@@ -25,9 +26,9 @@ var MahjongPlayer = function(){
 		this.actions['draw'] = true;
 		this.actions['discard'] = false;
 		this.actions['endturn'] = false;
-		this.actions['pon'] = false;
-		this.actions['chi'] = false;
-		this.actions['openkan'] = false;
+		//this.actions['pon'] = false;
+		//this.actions['chi'] = false;
+		//this.actions['openkan'] = false;
 	}
 	//It is not the players turn anymore.
 	this.deactivate = function(){ 
@@ -42,6 +43,7 @@ var MahjongPlayer = function(){
 		this.actions['endturn'] = false;
 		this.actions['pon'] = false;
 		this.actions['chi'] = false;
+		this.actions['chicall'] = false;
 		this.actions['openkan'] = false;
 	}
 	//If another player has drawn, you lose certain actions
@@ -49,6 +51,11 @@ var MahjongPlayer = function(){
 		this.actions['pon'] = false;
 		this.actions['chi'] = false;
 		this.actions['openkan'] = false;
+	}
+	//
+	this.chiCall = function(){
+		this.actions['chicall'] = true;
+		
 	}
 	// call this function to query possible actions of the player
 	// calling this function also updates the actions list
@@ -63,7 +70,12 @@ var MahjongPlayer = function(){
 			return this.actions[action];
 		}
 	}
-	
+	//
+	this.playerChoosingChi = function(){
+		if(actions['chicall'])
+		{}
+		return this.actions['chicall'];
+	}
 	// chi is a flush of 3
 	this.checkChi = function( tile ){ 
 		var result = this.hand.checkChi(tile);
@@ -172,12 +184,16 @@ var MahjongPlayer = function(){
 		ponTile = board.ponTile();
 		this.hand.ponTile(ponTile);
 	}
+	
 	//Chi is called
 	//Get the tile from the board
 	//Also yeah put it in our hand
-	this.chiTile = function(board){
+	this.chiTile = function(board,tiles){
 		chiTile = board.chiTile();
-		this.hand.chiTile(chiTile);
+		result = this.hand.chiTile(chiTile,tiles);
+		if(result)
+			board.ponTile();
+		return result;
 	}
 	//Kan is called
 	//Get the kan'd tile fromt he board

@@ -101,7 +101,7 @@ var MahjongGame = function(){
 	}
 	
 	this.playerChoosingChi = function(){
-		
+		return this.players[this.interactivePlayer].playerChoosingChi();
 	}
 	// You must call this function before performing any player actions
 	this.SetInteractivePlayer = function( player ){ 
@@ -127,7 +127,7 @@ var MahjongGame = function(){
 			
 		}
 		// check ron for the player
-		this.players[this.interactivePlayer].checkRon();
+		//this.players[this.interactivePlayer].checkRon();
 		// check closed kan for the player
 	}
 	
@@ -135,22 +135,26 @@ var MahjongGame = function(){
 	//After discarding, other players should check if they can perform
 	//normal mahjong actions
 	this.DiscardTile = function(player,tile){ 
-		this.SetInteractivePlayer(player);
-		var faggot = this.players[this.interactivePlayer];
-		var tossedtile = faggot.discardtile( this.board, tile );
-		// check closed kan and pon for other players
-		var fag;
-		for( var k = 0; k < PLAYER_COUNT; k++){ 
-			if( k == this.interactivePlayer )
-				continue;
-			fag = this.players[k];
-			kanAvailable = fag.checkKan( tossedtile );
-			ponAvailable = fag.checkPon( tossedtile );
-			//fag.checkRonFromDiscard(tossedtile);
+		if(tile != undefined){
+			this.SetInteractivePlayer(player);
+			var faggot = this.players[this.interactivePlayer];
+			var tossedtile = faggot.discardtile( this.board, tile );
+			// check closed kan and pon for other players
+			var fag;
+			for( var k = 0; k < PLAYER_COUNT; k++){ 
+				if( k == this.interactivePlayer )
+					continue;
+				fag = this.players[k];
+				kanAvailable = fag.checkKan( tossedtile );
+				ponAvailable = fag.checkPon( tossedtile );
+			fag.checkRonFromDiscard(tossedtile);
+			}
+			// check chi for the previous player
+		 
+			var previous = this.players[(parseInt(this.interactivePlayer) + 1 ) % PLAYER_COUNT];
+			if(((parseInt(this.interactivePlayer) + 1 ) % PLAYER_COUNT) == 3)
+				previous.checkChi( tossedtile );
 		}
-		// check chi for the previous player
-		var previous = this.players[(this.interactivePlayer + PLAYER_COUNT - 1 ) % PLAYER_COUNT];
-		previous.checkChi( tossedtile );
 	}
 	
 	//A player called a Pon.
@@ -175,14 +179,23 @@ var MahjongGame = function(){
 		this.players[this.activePlayer].deactivate();
 		this.SetInteractivePlayer(player);
 		currentPlayer = this.players[this.interactivePlayer];
-		currentPlayer.chiTile(this.board);
-		
+		//currentPlayer.chiTile(this.board);
+		currentPlayer.chiCall();
 		this.activePlayer = this.interactivePlayer;
 		
-		this.players[this.activePlayer].recentPonOrChi();
 
 	}
-	
+	this.commitChi = function(player,tiles){
+		if(tile != undefined){
+			this.SetInteractivePlayer(player);
+			currentPlayer = this.players[this.interactivePlayer];
+			result = currentPlayer.chiTile(this.board,tiles);
+			
+		if(result)
+		this.players[this.activePlayer].recentPonOrChi();
+
+		}
+	}
 	//A player called Kan
 	//Similar to Pon and Chi.
 	this.Kan = function(player){

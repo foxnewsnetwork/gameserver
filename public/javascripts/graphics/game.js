@@ -22,6 +22,9 @@ var MahjongGraphics = function(){
 		// this.ui.initialize( element );
 		this.board.setupButtons();
 	}
+	this.setChiPick = function(handId){
+		this.player.setChiPick(handId);
+	}
 	this.setPlayerPick = function(handId){
 		this.player.setPick(handId);
 	}

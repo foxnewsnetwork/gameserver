@@ -147,12 +147,11 @@ var EnchantShop = function(){
 	this.show = function(real){
 		// Step 1.5: Loading in real items
 		if( InGidioItems != undefined && real == true ){ 
-			for( var k = 0 ; k < InGidioItems['itemtiles'].length; k++ ){ 
+			for( var k = 0 ; k < InGidioItems.length; k++ ){ 
 				var j = k + 7;
-				var rlitem = InGidioItems['itemtiles'][k];
-				rlitem.css( "left", ((j % 4 ) * 83 + 27) + "px" ) ;
-				rlitem.css( "top", (Math.floor(j / 4 ) * 75 + 170) + "px" ) ;
-				rlitem.show();
+				var rlitem = InGidioItems[k];
+				rlitem.Move( ((j % 4 ) * 83 + 27), (Math.floor(j / 4 ) * 75 + 170) );
+				rlitem.Show();
 			} // end for loop
 		} // end InGidioItems null check 
 		EnchantShopFlag = true;
@@ -163,9 +162,9 @@ var EnchantShop = function(){
 		EnchantShopFlag = false;
 		this.game.rootScene.removeChild( this.stage );
 		if( InGidioItems != undefined ){ 
-			for( var k = 0 ; k < InGidioItems['itemtiles'].length; k++ ){ 
-				var rlitem = InGidioItems['itemtiles'][k];
-				rlitem.hide();
+			for( var k = 0 ; k < InGidioItems.length; k++ ){ 
+				var rlitem = InGidioItems[k];
+				rlitem.Hide();
 			} // end for loop
 		} // end InGidioItems null check 
 	}// this.hide

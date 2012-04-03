@@ -179,9 +179,7 @@ var InGidioShop = function(){
 			generator.initialize(items, cspec);
 			
 			// Step 2: Generating the tiles
-			var lockedtiles = generator.CreateSpareTiles( "locked" );
-			var vacanttiles = generator.CreateSpareTiles( "vacant" );
-			var itemtiles = generator.CreateTiles();
+			var itemtiles = NormalShop.Stock( items );
 			
 			return { 
 				lockedtiles : lockedtiles ,

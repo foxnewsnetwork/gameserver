@@ -6,6 +6,7 @@ window.onload = function() {
     game.fps = 15;
     game.preload(
 		'images/rpg/map1.gif', 
+		'images/rpg/madotsuki.png', 
 		'images/rpg/chara0.gif',
 		'images/rpg/shopbuybutton2.png',
 		'images/rpg/shopbuybutton.png',

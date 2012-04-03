@@ -17,15 +17,9 @@ function RefreshItems(){
 
 AddShopFunction("open shop down", function(items){ 
 	// tooltip.hide();
-	InGidioItems = InGidioShop.CallNormalShop(items, { 
-		tile : { 
-			width : 70 ,
-			height : 70
-		} ,
-	} );
-	for( var k in InGidioItems ){ 
-		for( var j = 0; j < InGidioItems[k].length; j++ ){ 
-			InGidioItems[k][j].hide();
-		}
-	}
+	InGidioItems = NormalShop.Stock(items)
+	for( var k = 0;  k < InGidioItems.length; k++ ){ 
+		InGidioItems[k].Size(70,70);
+		InGidioItems[k].Hide();
+	} // end for
 } );

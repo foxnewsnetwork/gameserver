@@ -27,13 +27,12 @@ $(function(){
 	
 	});
 	$.playground().registerCallback( function(){
-		//$("#testarea").html(count);
 		if(game.begun){
 			graphics.draw(game.tojson());
 
 			}
 			else {
-				//draw a blank table. No idea how thats hooked up now
+				//draw a blank table.
 	
 			}
 		} ,60);

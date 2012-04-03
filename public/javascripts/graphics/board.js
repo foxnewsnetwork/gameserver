@@ -114,7 +114,7 @@ var MahjongGraphicsBoard = function(){
 			ron();
 		});
 		commitButton = new MahjongButtonSprite();
-		commitButton.set(BUTTONS_XPOSITION + (2 * BUTTON_WIDTH),BUTTONS_YPOSITION + BUTTON_HEIGHT,"chi");
+		commitButton.set(BUTTONS_XPOSITION + (2 * BUTTON_WIDTH),BUTTONS_YPOSITION + BUTTON_HEIGHT,"commit");
 		commitButton.SetCallback( 'mouseover', function(event){ 
 			tooltip.show( event['action'] );
 			} );

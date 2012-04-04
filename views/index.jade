@@ -1,33 +1,12 @@
-script(type = 'text/javascript', src="javascripts/jquery/jquery.js" )
-script(type = 'text/javascript', src='socket.io/socket.io.js' )
-script(type = "text/javascript", src="javascripts/client.js" )
-script(type = "text/javascript", src="javascripts/mahjong/board.js" )
-script(type = "text/javascript", src="javascripts/mahjong/constants.js" )
-script(type = "text/javascript", src="javascripts/mahjong/game.js" )
-script(type = "text/javascript", src="javascripts/mahjong/hand.js" )
-script(type = "text/javascript", src="javascripts/mahjong/helpers.js" )
-script(type = "text/javascript", src="javascripts/mahjong/player.js" )
-script(type = "text/javascript", src="javascripts/mahjong/tiles.js" )
-script(type = 'text/javascript', src="javascripts/v3debug.js" )
+script(type="text/javascript", src="javascripts/jquery/jquery.js")
+script(type="text/javascript")
+	$(document).ready( function(){ 
+		$("#rpgframe").mouseover( function(){ 
+			window.frames[0].focus();
+		} );
+	} );
 
-h1= title
-p Welcome to #{title}
-#debug-info
-#channel-stats
-#chat
-	p chat section
-form#chat-message
-	input#message
-	button Chat
-form#channel-join
-	input#channel
-	button Join
-button#mahjong-game Join Game
-button#mahjong-draw Draw Tile
-form#mahjong-discard
-	input#discard-tile
-	button Discard
-button#mahjong-end End Turn
-#room-stats
-#mahjong-display
-
+#rpg-container
+	iframe#rpgframe( src="/rpg", style="float: left; width: 59%; height: 600px; scrolling: no;" )
+#comments-container
+	iframe#commentsframe( src="/comments", style="float: right; width: 39%; height: 600px; scrolling: auto;" )

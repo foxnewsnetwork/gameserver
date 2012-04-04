@@ -8,6 +8,7 @@ window.onload = function() {
 		'images/rpg/map1.gif', 
 		'images/rpg/madotsuki.png', 
 		'images/rpg/chara0.gif',
+		'images/rpg/shopbubble.png',
 		'images/rpg/shopbuybutton2.png',
 		'images/rpg/shopbuybutton.png',
 		'images/rpg/shopcontainer.jpg',
@@ -154,6 +155,20 @@ window.onload = function() {
         ]); // end foregroundMap.loadData
 		
 		/**
+		* UI Section
+		*/
+		var ui = [];
+		ui.push( new Sprite( 40, 27 ) );
+		ui[0].x = 7 * 16 - 20;
+		ui[0].y = 9 * 16 - 95;
+		var uiimages = [];
+		uiimages.push( new Surface( 40, 27 ) );
+		uiimages[0].draw( game.assets['images/rpg/shopbubble.png'], 0 , 0 , 40 , 27 , 0, 0, 40 , 27 ) ;
+		ui[0].image = uiimages[0];
+
+		// End UI Section
+		
+		/**
 		* NPC Section
 		*/
 		var npc = [];
@@ -272,6 +287,29 @@ window.onload = function() {
 					break;
 			}; // end switch
 		}; // end catchKeyDownShop
+		
+		/**
+		* Fixed Events Sections
+		*/
+		var npcUIFlag = [false];
+		player.addEventListener( "enterframe", ( function(p,n,u){ 
+			return function(){ 
+				for( var k = 0; k < n.length; k++){ 
+					if( CheckInteractionRadius(p, n[k]) && npcUIFlag[k] == false ){ 
+						stage.addChild(u[k]);
+						npcUIFlag[k] = true;
+					} // end if
+					 else if( !CheckInteractionRadius(p,n[k] ) && npcUIFlag[k] == true ) { 
+						stage.removeChild( u[k] );
+						npcUIFlag[k] = false;
+					}// end else
+				} // end for
+			}; // end return
+		} )(player, npc, ui ) ); // end player.addEventListener
+		ui[0].addEventListener( "touchstart", function(e){ 
+			shop.hide();
+			shop.show(true);
+		} ); // end addEventListener
     }; // end game.onload
     game.start();
 }; // end window.onload

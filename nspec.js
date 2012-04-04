@@ -99,6 +99,34 @@ TestQ.push( function(){
 	
 	// Step 3: Clean up after the tests
 } );
+
+// Comments tests
+var commentModel = require( "./models/comment.js" );
+var Comment = commentModel.Comment;
+
+TestQ.push( function(){ 
+	// Step 1: initialize the tests
+	var comments = [];
+	for( var k = 0; k < 20; k++){ 
+		comments.push( new Comment({
+			'content' : "some words here: " + k ,
+			'ip': "123.912.112." + k
+		}) ); // end comments.push
+		comments[k].save();
+	} // end for
+	
+	// Step 2: Perform the tests
+	Comment.GetLatest( function( stuff ){ 
+		console.log("JWFOEFIUJOWUEFJ0FJ02GJ03GJ30J30GJ03GJ");
+		console.log(stuff);
+		
+			// Step 3: Clean up after the tests
+		Player.remove( {}, function(){ 
+			console.log( "confirm results above" );
+		} );		 // end remove
+	} ); // end GetLatest
+	
+} ); // end push
 /***********************************
 * Test Run Code                                       *
 ***********************************/

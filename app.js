@@ -19,6 +19,10 @@ var io = require('socket.io').listen(app);
 var playerModel = require( "./models/player.js" );
 var Player = playerModel.Player;
 
+// Models communicate with the db through mongoose
+var commentModel = require( "./models/comment.js" );
+var Comment = commentModel.Comment;
+
 // Password encryption use
 var md5 = require( "MD5" );
 
@@ -76,6 +80,10 @@ app.get('/', function(req, res){
 
 app.get( "/rpg", function(req, res){ 
 	res.render( "rpg.jade", { title : "RPG" } );	
+} );
+
+app.get( "/comments", function(req, res){ 
+	res.render( "comments.jade", {title : "Comments"} );	
 } );
 
 app.get("/odyssey", function(req,res){ 
@@ -486,6 +494,20 @@ io.sockets.on('connection', function(socket){
 		var statData = mychannels.ChannelStats(theChan);
 		socket.broadcast.to( "chan@" + theChan ).emit( "channel stat down", statData );
 		socket.emit( "channel stat down", statData );
+		
+				
+	} );
+	
+	// Logging chat comments
+	socket.on( "log up", function(data){ 
+		// Step 5: Pull out the last 10 messages from storage and display them
+		Comment.GetLatest( function( comments ){ 
+			for( var k = comments.length-1; k >= 0; k--){ 
+				var message = comments[k]['content'];
+				var sId = data['sessionId'], cId = data['channelId'];
+				socket.emit( "chat down", { sessionId : sId, message : message, channelId : cId } );
+			} // end for
+		} ); // end getlatest
 	} );
 	
 	// chat
@@ -494,7 +516,8 @@ io.sockets.on('connection', function(socket){
 		var middle = { 
 			'sessionId': data['sessionId'],
 			'message': data['message'],
-			'channelId': data['channelId']
+			'channelId': data['channelId'],
+			'logFlag' : data['logFlag']
 		};
 		if( data['channelId'] == undefined ){
 			socket.broadcast.emit( "chat down", middle );
@@ -503,7 +526,14 @@ io.sockets.on('connection', function(socket){
 			socket.broadcast.to( "chan@" + data['channelId'] ).emit( "chat down", middle );
 		}
 		socket.emit( "chat down", middle );
-	});
+		if( middle['logFlag'] ){ 
+			var comment = new Comment( { 
+				'content' : middle['message'] ,
+				'ip' : socket.handshake.address['address']
+			} ); // end comment
+			comment.save();
+		} // end if
+	}); // end chat up
 	
 		
 	/****************************
@@ -538,6 +568,8 @@ io.sockets.on('connection', function(socket){
 		var statData = myrooms.RoomStats(theRoom);
 		socket.broadcast.to( "room#" + theRoom ).emit( "room stat down", statData );
 		socket.emit( "room stat down", statData );
+		
+
 	} );
 	
 	// leaving room

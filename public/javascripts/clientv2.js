@@ -149,6 +149,10 @@ function JoinChannel( channel ){
 	});
 }
 
+function RequestLog(){ 
+	socket.emit( "log up", { 'sessionId' : sessionId, 'channelId' : currentChannel } );
+} // end RequestLog
+
 socket.on( "join channel down", function( channeldata ){
 	// TODO: let the player he has not left his previous channel
 	currentChannel = channeldata['channelId'];
@@ -224,11 +228,17 @@ socket.on( "room stat down", function( data ){
 * Chat functions              *
 **********************/
 // if no receiver is specified, the message is delivered to the channel or room the player is in
-function PlayerChat( message ){ 
-	socket.emit( "chat up", { 'sessionId': sessionId, 'message': message, 'channelId': currentChannel } );
+function PlayerChat( message, logFlag ){ 
+	socket.emit( "chat up", { 'sessionId': sessionId, 'message': message, 'channelId': currentChannel, 'logFlag' : logFlag } );
 }
 
-
+/**
+* Event = { 
+	sessionId : Int,
+	message : String ,
+	currentChannel : String
+};
+*/
 
 socket.on( "chat down", function( event ){ 
 	// TODO: Write a function 

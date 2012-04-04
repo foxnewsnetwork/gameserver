@@ -1,0 +1,29 @@
+script(type="text/javascript", src="socket.io/socket.io.js" )
+script(type="text/javascript", src="javascripts/clientv2.js" )
+script(type="text/javascript", src="javascripts/jquery/jquery.js")
+
+script( type="text/javascript" )
+	socket.on( "connection", function(id){ 
+		JoinRoom();
+		RequestLog();
+		$("#feedback-submit").click( function(){ 
+			var message = $("#feedback-comment").val().replace( /(<|>)/, "*" );
+			if( message == "" )
+				return;
+			PlayerChat(message, true);
+			$("#feedback-comment").val("");
+		} );
+	} );
+	AddChatFunction( "chat down", function(event){ 
+		var message = event['message'];
+		$("#feedback-content").prepend( "<p>anonymous: " + message + "</p>" );
+	} );
+#dummy
+#feedback-container
+	#feedback-input
+		ul(style="list-style: none;" )
+			li
+				textarea#feedback-comment( type="text", placeholder="Feedback here..." , rows="5", cols="35") 
+			li
+				button#feedback-submit Comment
+	#feedback-content

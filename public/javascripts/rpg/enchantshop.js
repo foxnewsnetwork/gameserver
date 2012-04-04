@@ -150,7 +150,8 @@ var EnchantShop = function(){
 			for( var k = 0 ; k < InGidioItems.length; k++ ){ 
 				var j = k + 7;
 				var rlitem = InGidioItems[k];
-				rlitem.Move( ((j % 4 ) * 83 + 27), (Math.floor(j / 4 ) * 75 + 170) );
+				rlitem.Size( 60,60 );
+				rlitem.Move( ((j % 4 ) * 82 + 25), (Math.floor(j / 4 ) * 73 + 163) );
 				rlitem.Show();
 			} // end for loop
 		} // end InGidioItems null check 

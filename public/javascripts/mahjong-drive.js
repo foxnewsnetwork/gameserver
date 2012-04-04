@@ -11,7 +11,12 @@ var playerCanDiscard = false;
 /**************************
 * Mahjong Events Down          *
 ***************************/
+//Events in the game, are self explanatory
+//Most actions will find the originator of that action
+//They will perform that action
+//Then everyones available actoins will be updated
 
+/////////////////////
 AddGameFunction( "drawtile", function( origin, eventdata ){ 
 	var pn = GetPlayerNumber( origin );
 	
@@ -29,15 +34,19 @@ AddGameFunction( "discardtile", function( origin, eventdata ){
 	actions = game.GetPossibleActions(playerNumber);
 	ManageUI(actions);
 	if(pn == playerNumber)
-	graphics.player.resetPick();
+	{graphics.player.resetPick();}
+	
+	game.EndTurn( pn );
+	actions = game.GetPossibleActions(playerNumber);
+	ManageUI(actions);
 	$("#display").html( game.tohtml() );
 } );
 
 AddGameFunction( "endturn", function( origin, eventdata ){ 
 	var pn = GetPlayerNumber( origin );
-	game.EndTurn( pn );
-	actions = game.GetPossibleActions(playerNumber);
-	ManageUI(actions);
+	//game.EndTurn( pn );
+	//actions = game.GetPossibleActions(playerNumber);
+	//ManageUI(actions);
 } );
 
 AddGameFunction( "pon", function( origin, eventdata ){ 
@@ -49,7 +58,44 @@ AddGameFunction( "pon", function( origin, eventdata ){
 	$("#display").html( game.tohtml() );
 
 } );
+AddGameFunction( "chi", function( origin, eventdata ){ 
+	var pn = GetPlayerNumber( origin );
+	game.Chi( pn );
+	actions = game.GetPossibleActions(playerNumber);
+	ManageUI(actions);
 
+	$("#display").html( game.tohtml() );
+
+} );
+
+AddGameFunction("commitchi",function( origin,eventdata){
+	var pn = GetPlayerNumber( origin );
+	game.commitChi( pn,eventdata );
+	actions = game.GetPossibleActions(playerNumber);
+	ManageUI(actions);
+	if(pn == playerNumber)
+	{graphics.player.resetChiPick();}
+	$("#display").html( game.tohtml() );
+});
+AddGameFunction( "kan", function( origin, eventdata ){ 
+	var pn = GetPlayerNumber( origin );
+	game.Kan( pn );
+	actions = game.GetPossibleActions(playerNumber);
+	ManageUI(actions);
+
+	$("#display").html( game.tohtml() );
+
+} );
+
+AddGameFunction( "ron", function( origin, eventdata ){ 
+	var pn = GetPlayerNumber( origin );
+	game.Ron( pn );
+	actions = game.GetPossibleActions(playerNumber);
+	ManageUI(actions);
+	alert("GAME IS OVER. Player "+ pn + " has won the game");
+	$("#display").html( game.tohtml() );
+
+} );
 AddGameFunction( "initial sync", function( origin, eventdata ){ 
 	
 	//Everyone syncs. It gets rid of the weird one person off error.
@@ -120,6 +166,9 @@ AddGameFunction( "end game down", function(data){
 /**************************
 * JQuery Game UI                  *
 ***************************/
+//THIS SECTION IS CURRENTLY UNUSED.
+//WAS ORIGINALLY FOR HTML GAME UI
+//NOW HAVE MOVED ON
 $(document).ready( function(){ 
 	ManageUI();
 	$("#joingame").click( function(){ 
@@ -132,33 +181,29 @@ $(document).ready( function(){
 	} );
 	
 	$("#drawtile").click( function(){ 
-		//game.DrawTile( playerNumber );
 		FireEvent("drawtile","-");
 
 	} );
 	
 	$("#discardtile").submit( function(){ 
 		FireEvent("discardtile",$("#tile").val());
-		//game.DiscardTile( playerNumber, $("#tile").val() );
-		//actions = game.GetPossibleActions(playerNumber);
-		//ManageUI(actions);
-		//$("#display").html( game.tohtml() );
+	
 		return false;
 	} );
 	
 	$("#endturn").click( function(){ 
-//		game.EndTurn( playerNumber );
+
 		FireEvent("endturn","-");
 
-		//actions = game.GetPossibleActions(playerNumber);
-		//ManageUI(actions);
-		//$("#display").html( game.tohtml() );
 	} );
 } );
 
 /**************************
 * Helper Functions                   *
 ***************************/
+
+//Everytime an action is called
+//update the available actions and hide buttons.
 function ManageUI ( actions ){ 
 	if( actions == undefined || readyFlag == false){ 
 		$("#drawtile").hide();
@@ -168,8 +213,8 @@ function ManageUI ( actions ){
 		return;
 	}
 	if( actions['draw'] )
-		$("#drawtile").show();
-		graphics.board.actionsDraw();
+		{$("#drawtile").show();
+		graphics.board.actionsDraw();}
 	if( actions['discard'] )
 		{
 			playerCanDiscard = true;
@@ -190,13 +235,28 @@ function ManageUI ( actions ){
 		graphics.board.actionsDeactivatePon();
 	}
 	if(actions['chi']){
-		
+		graphics.board.actionsChi();
 	}
-	if(actions['kan']){
-		
+	if(!actions['chi']){
+	 	graphics.board.actionsDeactivateChi();
+	}
+	if(actions['chicall']){
+		graphics.board.actionsCommit();
+	}
+	if(!actions['chicall']){
+		graphics.board.actionsDeactivateCommit();
+	}
+	if(actions['openkan']){
+		graphics.board.actionsKan();
+	}
+	if(!actions['openkan']){
+		graphics.board.actionsDeactivateKan();
 	}
 	if(actions['ron']){
-		
+		graphics.board.actionsRon();
+	}
+	if(!actions['ron']){
+		graphics.board.actionsDeactivateRon();
 	}
 	if( !(actions['endturn']) && !(actions['discard']) && !(actions['draw']))
 		{
@@ -208,6 +268,10 @@ function ManageUI ( actions ){
 		}
 	
 }
+
+//This section is self explanatory.
+//The action fires a request to perform an action
+////////////////////////////////////////////
 function drawTile(){
 	FireEvent("drawtile","-");
 	
@@ -223,10 +287,31 @@ function endTurn(){
 function pon(){
 	FireEvent("pon","-");
 }
-
-function setPlayerPickTile(handId){
-	graphics.setPlayerPick(handId);
+function chi(){
+	FireEvent("chi","-");
 }
+function commitChi(){
+	FireEvent("commitchi", graphics.player.returnChiPick());
+}
+function kan(){
+	FireEvent("kan","-");
+}
+function ron(){
+	FireEvent("ron","-");
+}
+
+//A tile is picked. Set that as a picked tile graphically
+function setPlayerPickTile(handId){
+	
+	if(game.playerChoosingChi())
+	{	
+	graphics.setChiPick(handId);	
+	}
+	 else{
+	graphics.setPlayerPick(handId);
+	}
+}
+//Get the playerId using serial id
 function GetPlayerNumber( sId ){ 
 	for( var x in playerVec ){ 
 		if( playerVec[x] == sId )

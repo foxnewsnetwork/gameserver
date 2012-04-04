@@ -2,10 +2,12 @@ var MahjongTiles = function(s,v){
 	this.suit = s;
 	this.value = v;
 
+	//Return a comparable value for the tile.
 	this.sval = function(){ 
 		return this.suit * 10 + this.value
 	}
 	
+	//Convert the tile into json
 	this.tojson = function(){ 
 		var data = { 
 			'suit': this.suit,
@@ -14,6 +16,7 @@ var MahjongTiles = function(s,v){
 		return data;
 	}
 	
+	//Json into a tile
 	this.fromjson = function(data){ 
 		this.suit = data['suit'];
 		this.value = data['value'];

@@ -1,6 +1,8 @@
 /************************
 * Assistance functions      *
 **************************/
+//Check to see if the given 3 tiles are all equal.
+//Can also see if only 2 tiles are equal
 function TileEqual( t1, t2, t3){ 
 	if( t2 == undefined )
 		return false;
@@ -9,6 +11,7 @@ function TileEqual( t1, t2, t3){
 	return t1.sval() == t2.sval() && t1.sval() == t3.sval() ;
 }
 
+//Check to see if the tiles follow a sequential order.
 function TileFlush( t1, t2, t3){ 
 	if( t1 == undefined || t1.suit == 3)
 		return false;

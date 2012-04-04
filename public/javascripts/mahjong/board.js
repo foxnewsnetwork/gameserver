@@ -2,6 +2,8 @@ var MahjongBoard = function(){
 	this.discardTiles;
 	this.freshTiles;
 	
+	//Create a new board. Create a complete set of tiles and put them
+	// in the fresh tiles array
 	this.newboard = function(){ 
 		this.freshTiles = [];
 		this.discardTiles = [];
@@ -13,12 +15,14 @@ var MahjongBoard = function(){
 					continue;
 				if( j == 3 && k > 6 )
 					continue;
+				//There are usually 4 of a type. So just push 4 times.
 				this.freshTiles.push( new MahjongTiles(j, k) );
 				this.freshTiles.push( new MahjongTiles(j, k) );
 				this.freshTiles.push( new MahjongTiles(j, k) );
 				this.freshTiles.push( new MahjongTiles(j, k) );
 			}
 			}
+			// Here the tiles are flowers, and there are only 1 of each
 			else
 				for(var k = 0; k< 9;k++){
 					this.freshTiles.push( new MahjongTiles(j, k) );	
@@ -26,11 +30,25 @@ var MahjongBoard = function(){
 		}
 		
 	}
+	//A pon was called. Remove a tile from the board
 	this.ponTile = function(){
 		tile = this.discardTiles.pop();
 		return tile;
 	}
-	// shuffles the frestiles
+	//A chi was called. Remove a tile from the board
+	//Currently the same as ponTile. May want to refactor out in the future
+	this.chiTile = function(){
+		tile = this.discardTiles[this.discardTiles.length - 1];
+		return tile;
+	}
+	//A chi was called. Remove a tile from the board
+	//Currently the same as ponTile. May want to refactor out in the future
+	this.kanTile = function(){
+		tile = this.discardTiles.pop();
+		return tile;
+	}
+	
+	// shuffles the freshtiles
 	this.shuffle = function(){ 
 		var tempTile;
 		var k;
@@ -42,7 +60,7 @@ var MahjongBoard = function(){
 		}
 	
 	}
-
+	//Convert the state of the board into a json
 	this.tojson = function(){ 
 		var data = { 
 			'freshTiles': [],
@@ -56,7 +74,7 @@ var MahjongBoard = function(){
 		} 
 		return data;
 	}	
-	
+	//Read a json and be able to recreate a boards state
 	this.fromjson = function(data){ 
 		this.freshTiles = [];
 		this.discardTiles = [];
@@ -69,7 +87,7 @@ var MahjongBoard = function(){
 			this.discardTiles[x].fromjson( data['discardTiles'] );
 		}
 	}
-	
+	//Convert board state into readable html.
 	this.tohtml = function(){ 
 		var shtml = "<h1>Board</h1><h3>Fresh Tiles: </h3>";
 		for( var x in this.freshTiles ){ 

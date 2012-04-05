@@ -6,7 +6,7 @@ var SplitTest = function(){
 	// Records the user's ip, starts tracking.
 	// returns true if the user is placed in the beta group
 	// false otherwise
-	var AddUser = function(ip){ 
+	this.AddUser = function(ip){ 
 		// TODO: implement the function description
 		// For now, it just returns true 40% of the time
 		var chance = Math.floor(Math.random() * 100);

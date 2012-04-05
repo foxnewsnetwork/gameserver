@@ -1,3 +1,18 @@
+Case-Specific Deployment Instructions
+=
+1. Change app.listen(3000) -> app.listen(80) in app.js
+2. $ ruby squeeze.rb
+3. $ ruby compress.rb
+4. $ mv hypedog.js public/javascripts/ -f
+5. $ mv browser.js public/javascripts/ -f
+6. Change var socket = io.connect( "http://localhost:3000" ) -> var socket = io.connect( "http://crunchymall.com" ) in clientv2.js
+7. Change PATH_NAME = http://localhost:3000 -> PATH_NAME = http://crunchymall.com in public/javascript/shop/conf.js 
+8. $ cp app.js app_production.js -f
+9. $ sudo su
+10. $ kill -9 $( lsof -i :80 -t)
+11. Repeat step 10 until everyone on port 80 is dead
+12. $ node forever_production.js &
+
 Concerns
 =
 1. Get a list of products that people will purchase

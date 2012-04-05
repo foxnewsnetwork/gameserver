@@ -36,6 +36,10 @@ var ejs = require("ejs");
 // File service
 var fs = require("fs");
 
+// Custom A/B Test Manager
+var ABTest = require( "./models/abtest.js" );
+var ABTestManager = ABTest.ABTestManager;
+
 /****************************
 * Useful Constants                     *
 *****************************/
@@ -75,8 +79,17 @@ app.listen(3000);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 
 app.get('/', function(req, res){
-	res.render("index.jade", { title: "stuff", content: "nothing yet" } );
-});
+	var ip = req.connection.remoteAddress;
+	var betaflag = ABTestManager.AddUser(ip);
+	if( betaflag )
+		res.render("index.jade", { title: "stuff", content: "nothing yet" } );
+	else
+		res.render("indexbeta.jade", { title : "stuff", content: "nothing yet" } );
+}); // end app.get
+
+app.get( "/rpgbeta", function(req, res){ 
+	res.render( "rpgbeta.jade", { title : "RPG" } );	
+} );
 
 app.get( "/rpg", function(req, res){ 
 	res.render( "rpg.jade", { title : "RPG" } );	

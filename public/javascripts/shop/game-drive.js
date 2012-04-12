@@ -21,5 +21,16 @@ AddShopFunction("open shop down", function(items){
 	for( var k = 0;  k < InGidioItems.length; k++ ){ 
 		InGidioItems[k].Size(70,70);
 		InGidioItems[k].Hide();
+		InGidioItems[k].Hide((function(item){
+			return function(){ 
+				SendAnalytics(JSON.stringify(item.ClearStats()));
+			}; //end return
+		})(InGidioItems[k])); // end Hide
+		InGidioItems[k].Buy( (function(item){
+			return function(pay){ 
+				var checkout = { payment : pay , item : item};
+				BuyItem(checkout);
+			} // end return
+		})(InGidioItems[k].Item())); //end Buy
 	} // end for
-} );
+} ); // end AddShopFunction

@@ -372,6 +372,7 @@ io.sockets.on('connection', function(socket){
 	/****************************
 	* Player Server Response        *
 	****************************/
+	/*
 	// player login
 	socket.on( "player login up", function(data){ 
 		var user; 
@@ -437,6 +438,16 @@ io.sockets.on('connection', function(socket){
 			}; 
 		} )(data) );
 	} );
+*/
+	/****************************
+	* Analytics Response                 *
+	****************************/
+	socket.on( "analytics up", function(data){
+		var analytics = data; 
+		var ip = socket.handshake.address['address'];
+		analytics['ip'] = ip;
+		ABTestManager.SendAnalytics( analytics );
+	} );
 
 	/****************************
 	* Shop Server Response           *
@@ -465,8 +476,6 @@ io.sockets.on('connection', function(socket){
 	socket.on( "purchase item up", function(data){
 		// Temporary Code until gamertisers can correctly handle it
 		console.log( data );
-		socket.emit( "purchase item down", "Success!" );
-		return;
 		
 		// actual code
 		Shop.BuyItem(data, function(stuff){ 

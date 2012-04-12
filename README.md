@@ -1,3 +1,21 @@
+Namespaces
+=
+1. InGidio.shop : shop features
+  1. InGidio.shop.mode : mode selection from easy -> normal -> hard
+  2. InGidio.shop.tiles : contains the tiles for the items
+  3. InGidio.shop.Refresh() : function to refresh tiles
+2. InGidio.game : game server features
+  1. InGidio.game.JoinGame()
+  2. InGidio.game.JoinChat()
+  3. InGidio.game.Chat()
+  4. InGidio.game.FireEvent()
+3. InGidio.admin
+4. InGidio.cashier (hidden namespace)
+  1. InGidio.cashier.Checkout();
+5. InGidio.form (hidden namespace)
+  1. InGidio.form.build()
+  2. InGidio.form.get()
+
 Case-Specific Deployment Instructions
 =
 1. Change app.listen(3000) -> app.listen(80) in app.js

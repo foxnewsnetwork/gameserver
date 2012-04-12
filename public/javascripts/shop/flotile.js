@@ -1,5 +1,449 @@
 $estr = function() { return js.Boot.__string_rec(this,''); }
+if(typeof main=='undefined') main = {}
+main.Element = function(p) {
+	if( p === $_ ) return;
+	this.hides = [];
+	this.shows = [];
+	this.position = { x : 0, y : 0};
+	this.size = { width : 75, height : 75};
+	var domBody = new js.JQuery("body");
+	domBody.append("<div id='" + main.Element.NAME + "-" + main.Element.ID + "'></div>");
+	this.domContainer = new js.JQuery("#" + main.Element.NAME + "-" + main.Element.ID);
+	main.Element.ID += 1;
+	this.CSS("z-index","967");
+	this.CSS("position","absolute");
+}
+main.Element.__name__ = ["main","Element"];
+main.Element.prototype.domContainer = null;
+main.Element.prototype.position = null;
+main.Element.prototype.size = null;
+main.Element.prototype.hides = null;
+main.Element.prototype.shows = null;
+main.Element.prototype.Position = function(pos) {
+	if(pos == null) return this.position;
+	this.position = pos;
+	this.domContainer.css("left",this.position.x + "px");
+	this.domContainer.css("top",this.position.y + "px");
+	return this.position;
+}
+main.Element.prototype.Size = function(siz) {
+	if(siz == null) return this.size;
+	this.size = siz;
+	this.domContainer.css("width",this.size.width + "px");
+	this.domContainer.css("height",this.size.height + "px");
+	this.domContainer.css("background-size",this.size.width + "px " + this.size.height + "px");
+	return this.size;
+}
+main.Element.prototype.Remove = function() {
+	this.Hide();
+	this.domContainer.remove();
+}
+main.Element.prototype.Hide = function(cb) {
+	if(cb == null) this.domContainer.hide(500,(function(element) {
+		return function() {
+			var _g1 = 0, _g = element.hides.length;
+			while(_g1 < _g) {
+				var k = _g1++;
+				element.hides[k]();
+			}
+		};
+	})(this)); else this.hides.push(cb);
+}
+main.Element.prototype.Show = function(cb) {
+	if(cb == null) this.domContainer.show(250,(function(element) {
+		return function() {
+			var _g1 = 0, _g = element.shows.length;
+			while(_g1 < _g) {
+				var k = _g1++;
+				element.shows[k]();
+			}
+		};
+	})(this)); else this.shows.push(cb);
+}
+main.Element.prototype.CSS = function(prop,value) {
+	this.domContainer.css(prop,value);
+}
+main.Element.prototype.HTML = function(html) {
+	if(html == null) return this.domContainer.html();
+	this.domContainer.append(html);
+	return html;
+}
+main.Element.prototype.__class__ = main.Element;
+main.Form = function(p) {
+	if( p === $_ ) return;
+	main.Element.call(this);
+	this.yes = new main.Tile();
+	this.no = new main.Tile();
+	this.CSS("z-index","969");
+	this.CSS("background-color","rgb(250,245,255)");
+	this.CSS("border-radius","10px");
+	this.CSS("-moz-border-radius","10px");
+	this.CSS("border","2px solid red");
+	this.CSS("padding-left","0.5em");
+	this.yes.CSS("z-index","970");
+	this.no.CSS("z-index","970");
+	this.yes.CSS("border","2px solid black");
+	this.no.CSS("border","2px solid black");
+	this.yes.CSS("border-radius","10px");
+	this.yes.CSS("-moz-border-radius","10px");
+	this.no.CSS("border-radius","10px");
+	this.no.CSS("-moz-border-radius","10px");
+	this.yes.Size({ width : 50, height : 50});
+	this.no.Size({ width : 50, height : 50});
+	this.yes.SetAnimation(main.Form.IMAGES.yes);
+	this.no.SetAnimation(main.Form.IMAGES.no);
+	this.yes.Mouseover(function(e) {
+		main.Tooltip.show("Confirm");
+	});
+	this.yes.Mouseleave(function(e) {
+		main.Tooltip.hide();
+	});
+	this.no.Mouseover(function(e) {
+		main.Tooltip.show("Cancel");
+	});
+	this.no.Mouseleave(function(e) {
+		main.Tooltip.hide();
+	});
+	this.no.Click((function(myform) {
+		return function(e) {
+			myform.Remove();
+		};
+	})(this));
+	main.Form.FORMS.push(this);
+}
+main.Form.__name__ = ["main","Form"];
+main.Form.__super__ = main.Element;
+for(var k in main.Element.prototype ) main.Form.prototype[k] = main.Element.prototype[k];
+main.Form.RemoveAll = function() {
+	var _g1 = 0, _g = main.Form.FORMS.length;
+	while(_g1 < _g) {
+		var k = _g1++;
+		main.Form.FORMS.pop().Remove();
+	}
+}
+main.Form.prototype.form = null;
+main.Form.prototype.yes = null;
+main.Form.prototype.no = null;
+main.Form.prototype.Position = function(pos) {
+	if(pos == null) return main.Element.prototype.Position.call(this);
+	main.Element.prototype.Position.call(this,pos);
+	var size = this.Size();
+	this.yes.Position({ x : this.Position().x + 10, y : pos.y + this.Size().height - this.yes.Size().height - 10});
+	this.no.Position({ x : this.Position().x + this.Size().width - this.no.Size().width, y : pos.y + this.Size().height - this.yes.Size().height - 10});
+	return main.Element.prototype.Position.call(this);
+}
+main.Form.prototype.Confirm = function(cb) {
+	this.yes.Click(cb);
+}
+main.Form.prototype.Cancel = function(cb) {
+	this.no.Click(cb);
+	if(cb == null) this.Remove();
+}
+main.Form.prototype.Remove = function() {
+	this.no.Remove();
+	this.yes.Remove();
+	main.Element.prototype.Remove.call(this);
+}
+main.Form.prototype.__class__ = main.Form;
+main.ItemForm = function(itemtile) {
+	if( itemtile === $_ ) return;
+	main.Form.call(this);
+	this.itemtile = itemtile;
+	this.item = this.itemtile.Item();
+}
+main.ItemForm.__name__ = ["main","ItemForm"];
+main.ItemForm.__super__ = main.Form;
+for(var k in main.Form.prototype ) main.ItemForm.prototype[k] = main.Form.prototype[k];
+main.ItemForm.prototype.itemtile = null;
+main.ItemForm.prototype.item = null;
+main.ItemForm.prototype.__class__ = main.ItemForm;
+main.Shop = function(p) {
+	if( p === $_ ) return;
+	return;
+}
+main.Shop.__name__ = ["main","Shop"];
+main.Shop.main = function() {
+	var FUCKINGNIGGERS = 14;
+}
+main.Shop.prototype.items = null;
+main.Shop.prototype.Stock = function(items) {
+	var tiles = [];
+	this.items = items;
+	var item;
+	var tile;
+	var _g1 = 0, _g = items.length;
+	while(_g1 < _g) {
+		var k = _g1++;
+		item = items[k];
+		tiles.push(new main.ItemTile(item));
+		tile = tiles[k];
+		tile.CSS("border-radius","5px");
+		tile.CSS("-moz-border-radius","5px");
+		tile.CSS("border","1px solid black");
+		tile.Click((function(tile1) {
+			return function(e) {
+				main.Form.RemoveAll();
+				var payment = new main.PaymentForm(tile1);
+				var posx = tile1.Position().x - Math.floor(payment.Size().width / 2);
+				var posy = tile1.Position().y - Math.floor(payment.Size().height / 2);
+				posx = posx > 5?posx:5;
+				posy = posy > 5?posy:5;
+				payment.Position({ x : posx, y : posy});
+			};
+		})(tile));
+		tile.Mouseover((function(item1) {
+			return function(e) {
+				var text = "<p>Title: " + item1.title + "</p><p>Description: " + item1.description + "</p><p>Price: $" + item1.price + "</p>";
+				main.Tooltip.show(text);
+			};
+		})(item));
+		tile.Mouseleave(function(e) {
+			main.Tooltip.hide();
+		});
+	}
+	return tiles;
+}
+main.Shop.prototype.__class__ = main.Shop;
+if(typeof haxe=='undefined') haxe = {}
+haxe.Log = function() { }
+haxe.Log.__name__ = ["haxe","Log"];
+haxe.Log.trace = function(v,infos) {
+	js.Boot.__trace(v,infos);
+}
+haxe.Log.clear = function() {
+	js.Boot.__clear_trace();
+}
+haxe.Log.prototype.__class__ = haxe.Log;
+StringBuf = function(p) {
+	if( p === $_ ) return;
+	this.b = new Array();
+}
+StringBuf.__name__ = ["StringBuf"];
+StringBuf.prototype.add = function(x) {
+	this.b[this.b.length] = x == null?"null":x;
+}
+StringBuf.prototype.addSub = function(s,pos,len) {
+	this.b[this.b.length] = s.substr(pos,len);
+}
+StringBuf.prototype.addChar = function(c) {
+	this.b[this.b.length] = String.fromCharCode(c);
+}
+StringBuf.prototype.toString = function() {
+	return this.b.join("");
+}
+StringBuf.prototype.b = null;
+StringBuf.prototype.__class__ = StringBuf;
+main.Statistics = function() { }
+main.Statistics.__name__ = ["main","Statistics"];
+main.Statistics.prototype.stats = null;
+main.Statistics.prototype.Stats = null;
+main.Statistics.prototype.ClearStats = null;
+main.Statistics.prototype.__class__ = main.Statistics;
+main.Tile = function(p) {
+	if( p === $_ ) return;
+	this.ClearStats();
+	this.clicks = [];
+	this.mouseovers = [];
+	this.mouseleaves = [];
+	main.Element.call(this);
+	this.CSS("z-index","968");
+}
+main.Tile.__name__ = ["main","Tile"];
+main.Tile.__super__ = main.Element;
+for(var k in main.Element.prototype ) main.Tile.prototype[k] = main.Element.prototype[k];
+main.Tile.prototype.image = null;
+main.Tile.prototype.clicks = null;
+main.Tile.prototype.mouseovers = null;
+main.Tile.prototype.mouseleaves = null;
+main.Tile.prototype.stats = null;
+main.Tile.prototype.Stats = function() {
+	return this.stats;
+}
+main.Tile.prototype.ClearStats = function() {
+	var tempstats = this.stats;
+	this.stats = { mouseover : [], duration : [], click : []};
+	return tempstats;
+}
+main.Tile.prototype.SetAnimation = function(image) {
+	if(image == null) return this.image;
+	this.image = image;
+	this.CSS("background-image","url('" + image + "')");
+	return this.image;
+}
+main.Tile.prototype.Click = function(cb) {
+	if(cb == null) {
+		var _g1 = 0, _g = this.clicks.length;
+		while(_g1 < _g) {
+			var k = _g1++;
+			this.clicks[k](null);
+			this.stats.click.push(haxe.Timer.stamp());
+		}
+	} else {
+		this.clicks.push(cb);
+		this.domContainer.click((function(tile) {
+			return function(e) {
+				tile.Click();
+			};
+		})(this));
+	}
+}
+main.Tile.prototype.Mouseover = function(cb) {
+	if(cb == null) {
+		var _g1 = 0, _g = this.mouseovers.length;
+		while(_g1 < _g) {
+			var k = _g1++;
+			this.mouseovers[k](null);
+			this.stats.mouseover.push(tools.Timer.Start());
+		}
+	} else {
+		this.mouseovers.push(cb);
+		this.domContainer.mouseover((function(tile) {
+			return function(e) {
+				tile.Mouseover();
+			};
+		})(this));
+	}
+}
+main.Tile.prototype.Mouseleave = function(cb) {
+	if(cb == null) {
+		var _g1 = 0, _g = this.mouseleaves.length;
+		while(_g1 < _g) {
+			var k = _g1++;
+			this.mouseleaves[k](null);
+			this.stats.duration.push(tools.Timer.Stop());
+		}
+	} else {
+		this.mouseleaves.push(cb);
+		this.domContainer.mouseleave((function(tile) {
+			return function(e) {
+				tile.Mouseleave();
+			};
+		})(this));
+	}
+}
+main.Tile.prototype.__class__ = main.Tile;
+main.Tile.__interfaces__ = [main.Statistics];
+haxe.Timer = function(time_ms) {
+	if( time_ms === $_ ) return;
+	var arr = haxe_timers;
+	this.id = arr.length;
+	arr[this.id] = this;
+	this.timerId = window.setInterval("haxe_timers[" + this.id + "].run();",time_ms);
+}
+haxe.Timer.__name__ = ["haxe","Timer"];
+haxe.Timer.delay = function(f,time_ms) {
+	var t = new haxe.Timer(time_ms);
+	t.run = function() {
+		t.stop();
+		f();
+	};
+	return t;
+}
+haxe.Timer.measure = function(f,pos) {
+	var t0 = haxe.Timer.stamp();
+	var r = f();
+	haxe.Log.trace(haxe.Timer.stamp() - t0 + "s",pos);
+	return r;
+}
+haxe.Timer.stamp = function() {
+	return Date.now().getTime() / 1000;
+}
+haxe.Timer.prototype.id = null;
+haxe.Timer.prototype.timerId = null;
+haxe.Timer.prototype.stop = function() {
+	if(this.id == null) return;
+	window.clearInterval(this.timerId);
+	var arr = haxe_timers;
+	arr[this.id] = null;
+	if(this.id > 100 && this.id == arr.length - 1) {
+		var p = this.id - 1;
+		while(p >= 0 && arr[p] == null) p--;
+		arr = arr.slice(0,p + 1);
+	}
+	this.id = null;
+}
+haxe.Timer.prototype.run = function() {
+}
+haxe.Timer.prototype.__class__ = haxe.Timer;
+if(typeof tools=='undefined') tools = {}
+tools.Timer = function() { }
+tools.Timer.__name__ = ["tools","Timer"];
+tools.Timer.Start = function() {
+	tools.Timer.TIME = haxe.Timer.stamp();
+	return tools.Timer.TIME;
+}
+tools.Timer.Stop = function() {
+	var startTime = tools.Timer.TIME;
+	var difference = tools.Timer.Start() - startTime;
+	return difference;
+}
+tools.Timer.prototype.__class__ = tools.Timer;
+IntIter = function(min,max) {
+	if( min === $_ ) return;
+	this.min = min;
+	this.max = max;
+}
+IntIter.__name__ = ["IntIter"];
+IntIter.prototype.min = null;
+IntIter.prototype.max = null;
+IntIter.prototype.hasNext = function() {
+	return this.min < this.max;
+}
+IntIter.prototype.next = function() {
+	return this.min++;
+}
+IntIter.prototype.__class__ = IntIter;
+Std = function() { }
+Std.__name__ = ["Std"];
+Std["is"] = function(v,t) {
+	return js.Boot.__instanceof(v,t);
+}
+Std.string = function(s) {
+	return js.Boot.__string_rec(s,"");
+}
+Std["int"] = function(x) {
+	if(x < 0) return Math.ceil(x);
+	return Math.floor(x);
+}
+Std.parseInt = function(x) {
+	var v = parseInt(x,10);
+	if(v == 0 && x.charCodeAt(1) == 120) v = parseInt(x);
+	if(isNaN(v)) return null;
+	return v;
+}
+Std.parseFloat = function(x) {
+	return parseFloat(x);
+}
+Std.random = function(x) {
+	return Math.floor(Math.random() * x);
+}
+Std.prototype.__class__ = Std;
+main.Tooltip = function() { }
+main.Tooltip.__name__ = ["main","Tooltip"];
+main.Tooltip.show = function(text) {
+	tooltip.show(text);
+}
+main.Tooltip.hide = function() {
+	tooltip.hide();
+}
+main.Tooltip.prototype.__class__ = main.Tooltip;
 if(typeof js=='undefined') js = {}
+js.Lib = function() { }
+js.Lib.__name__ = ["js","Lib"];
+js.Lib.isIE = null;
+js.Lib.isOpera = null;
+js.Lib.document = null;
+js.Lib.window = null;
+js.Lib.alert = function(v) {
+	alert(js.Boot.__string_rec(v,""));
+}
+js.Lib.eval = function(code) {
+	return eval(code);
+}
+js.Lib.setErrorHandler = function(f) {
+	js.Lib.onerror = f;
+}
+js.Lib.prototype.__class__ = js.Lib;
 js.Boot = function() { }
 js.Boot.__name__ = ["js","Boot"];
 js.Boot.__unhtml = function(s) {
@@ -181,211 +625,248 @@ js.Boot.__init = function() {
 	$closure = js.Boot.__closure;
 }
 js.Boot.prototype.__class__ = js.Boot;
-if(typeof main=='undefined') main = {}
-main.Tooltip = function() { }
-main.Tooltip.__name__ = ["main","Tooltip"];
-main.Tooltip.show = function(text) {
-	tooltip.show(text);
+main.ItemTile = function(item) {
+	if( item === $_ ) return;
+	main.Tile.call(this);
+	this.buys = [];
+	this.item = item;
+	this.SetAnimation(this.item.tileset);
 }
-main.Tooltip.hide = function() {
-	tooltip.hide();
+main.ItemTile.__name__ = ["main","ItemTile"];
+main.ItemTile.__super__ = main.Tile;
+for(var k in main.Tile.prototype ) main.ItemTile.prototype[k] = main.Tile.prototype[k];
+main.ItemTile.prototype.item = null;
+main.ItemTile.prototype.buys = null;
+main.ItemTile.prototype.Item = function() {
+	return this.item;
 }
-main.Tooltip.prototype.__class__ = main.Tooltip;
-js.Lib = function() { }
-js.Lib.__name__ = ["js","Lib"];
-js.Lib.isIE = null;
-js.Lib.isOpera = null;
-js.Lib.document = null;
-js.Lib.window = null;
-js.Lib.alert = function(v) {
-	alert(js.Boot.__string_rec(v,""));
+main.ItemTile.prototype.Stats = function() {
+	var output = { item : this.item, stats : main.Tile.prototype.Stats.call(this)};
+	return output;
 }
-js.Lib.eval = function(code) {
-	return eval(code);
+main.ItemTile.prototype.ClearStats = function() {
+	return { item : this.item, stats : main.Tile.prototype.ClearStats.call(this)};
 }
-js.Lib.setErrorHandler = function(f) {
-	js.Lib.onerror = f;
-}
-js.Lib.prototype.__class__ = js.Lib;
-main.Specs = function(key,value) {
-	if( key === $_ ) return;
-	this.key = key;
-	this.value = value;
-	this.length = key.length;
-	if(this.length != value.length) {
-	}
-}
-main.Specs.__name__ = ["main","Specs"];
-main.Specs.prototype.key = null;
-main.Specs.prototype.value = null;
-main.Specs.prototype.length = null;
-main.Specs.prototype.Length = function() {
-	return this.length;
-}
-main.Specs.prototype.get = function(n) {
-	return { key : this.key[n], value : this.value[n]};
-}
-main.Specs.prototype.__class__ = main.Specs;
-Std = function() { }
-Std.__name__ = ["Std"];
-Std["is"] = function(v,t) {
-	return js.Boot.__instanceof(v,t);
-}
-Std.string = function(s) {
-	return js.Boot.__string_rec(s,"");
-}
-Std["int"] = function(x) {
-	if(x < 0) return Math.ceil(x);
-	return Math.floor(x);
-}
-Std.parseInt = function(x) {
-	var v = parseInt(x,10);
-	if(v == 0 && x.charCodeAt(1) == 120) v = parseInt(x);
-	if(isNaN(v)) return null;
-	return v;
-}
-Std.parseFloat = function(x) {
-	return parseFloat(x);
-}
-Std.random = function(x) {
-	return Math.floor(Math.random() * x);
-}
-Std.prototype.__class__ = Std;
-main.Shop = function(p) {
-	if( p === $_ ) return;
-	return;
-}
-main.Shop.__name__ = ["main","Shop"];
-main.Shop.main = function() {
-	var FUCKINGNIGGERS = 14;
-}
-main.Shop.prototype.items = null;
-main.Shop.prototype.Stock = function(items) {
-	var tiles = new Array();
-	this.items = items;
-	var _g1 = 0, _g = items.length;
-	while(_g1 < _g) {
-		var k = _g1++;
-		tiles.push(new main.Blob());
-		var tile = tiles[k];
-		var item = [items[k]];
-		tile.SetAnimation(item[0].tileset);
-		tile.mouseover((function(item) {
-			return function(e) {
-				var text = "<p>Title: " + item[0].title + "</p><p>Description: " + item[0].description + "</p><p>Price: $" + item[0].price + "</p>";
-				main.Tooltip.show(text);
-			};
-		})(item));
-		tile.mouseleave((function() {
-			return function(e) {
-				main.Tooltip.hide();
-			};
-		})());
-	}
-	return tiles;
-}
-main.Shop.prototype.__class__ = main.Shop;
-main.Blob = function(spec) {
-	if( spec === $_ ) return;
-	var domBody = new js.JQuery("body");
-	domBody.append("<div id='" + main.Blob.tagname + "-container-" + main.Blob.id + "'></div>");
-	this.domContainer = new js.JQuery("#" + main.Blob.tagname + "-container-" + main.Blob.id);
-	this.domContainer.append("<div id='" + main.Blob.tagname + "-group-" + main.Blob.id + "'></div>");
-	this.domGroup = new js.JQuery("#" + main.Blob.tagname + "-group-" + main.Blob.id);
-	this.domGroup.append("<div id='" + main.Blob.tagname + "-sprites-" + main.Blob.id + "'></div>");
-	this.domSprites = new js.JQuery("#" + main.Blob.tagname + "-sprites-" + main.Blob.id);
-	main.Blob.id++;
-	this.domContainer.css("position","absolute");
-	this.domContainer.css("width","75px");
-	this.domContainer.css("height","75px");
-	this.domGroup.css("width","75px");
-	this.domGroup.css("height","75px");
-	this.domSprites.css("background-size","75px 75px");
-	this.domSprites.css("background-repeat","no-repeat");
-	this.domSprites.css("z-index","975");
-	this.domGroup.css("z-index","970");
-	this.domContainer.css("z-index","965");
-	if(spec != null) {
-		var _g1 = 0, _g = spec.Length();
+main.ItemTile.prototype.Buy = function(cb,payment) {
+	if(cb == null && payment != null) {
+		var _g1 = 0, _g = this.buys.length;
 		while(_g1 < _g) {
-			var a = _g1++;
-			var data = spec.get(a);
-			this.domContainer.css(data.key,data.value);
+			var k = _g1++;
+			this.buys[k](payment);
 		}
+	} else if(cb != null) this.buys.push(cb); else return;
+}
+main.ItemTile.prototype.__class__ = main.ItemTile;
+main.PaymentForm = function(itemtile) {
+	if( itemtile === $_ ) return;
+	main.ItemForm.call(this,itemtile);
+	this.id = "InGidio-PaymentForm-" + Math.floor(Math.random() * 50000) + "-";
+	this.ids = [];
+	this.GenerateForm();
+	this.HTML(this.form);
+	this.Size({ width : 200, height : 325});
+	this.Confirm((function(itemtile1,pay) {
+		return function(e) {
+			if(pay.Validate()) {
+				var confirmation = new main.ConfirmationForm(itemtile1);
+				confirmation.Position(pay.Position());
+				confirmation.PaymentInfo(pay.Get());
+				pay.Remove();
+			}
+		};
+	})(this.itemtile,this));
+}
+main.PaymentForm.__name__ = ["main","PaymentForm"];
+main.PaymentForm.__super__ = main.ItemForm;
+for(var k in main.ItemForm.prototype ) main.PaymentForm.prototype[k] = main.ItemForm.prototype[k];
+main.PaymentForm.prototype.ids = null;
+main.PaymentForm.prototype.id = null;
+main.PaymentForm.prototype.Get = function() {
+	var pay = { name : new js.JQuery("#" + this.id + this.ids[0]).val(), creditcard : new js.JQuery("#" + this.id + this.ids[1]).val(), ccv : new js.JQuery("#" + this.id + this.ids[2]).val(), month : new js.JQuery("#" + this.id + this.ids[3]).val(), year : new js.JQuery("#" + this.id + this.ids[4]).val(), email : new js.JQuery("#" + this.id + this.ids[5]).val()};
+	return pay;
+}
+main.PaymentForm.prototype.Validate = function() {
+	var flag = true;
+	var rcc;
+	var res;
+	var jq;
+	rcc = new EReg("\\S+","");
+	jq = new js.JQuery("#" + this.id + this.ids[0]);
+	jq.css("border","none");
+	res = rcc.match(jq.val());
+	if(!res) {
+		jq.css("border","2px solid red");
+		flag = false;
 	}
+	rcc = new EReg("^[0-9]{4}(\\s|-){0,}[0-9]{4}(\\s|-){0,}[0-9]{4}(\\s|-){0,}[0-9]{4}(\\s|-){0,}$","");
+	jq = new js.JQuery("#" + this.id + this.ids[1]);
+	jq.css("border","none");
+	res = rcc.match(jq.val());
+	if(!res) {
+		jq.css("border","2px solid red");
+		flag = false;
+	}
+	rcc = new EReg("^[0-9]{3,4}$","");
+	jq = new js.JQuery("#" + this.id + this.ids[2]);
+	jq.css("border","none");
+	res = rcc.match(jq.val());
+	if(!res) {
+		jq.css("border","2px solid red");
+		flag = false;
+	}
+	rcc = new EReg("^((0?[0-9]{1})|(1[0-2]{1}))$","");
+	jq = new js.JQuery("#" + this.id + this.ids[3]);
+	jq.css("border","none");
+	res = rcc.match(jq.val());
+	if(!res) {
+		jq.css("border","2px solid red");
+		flag = false;
+	}
+	rcc = new EReg("^((1[2-9]{1})|([2-9]\\d))$","");
+	jq = new js.JQuery("#" + this.id + this.ids[4]);
+	jq.css("border","none");
+	res = rcc.match(jq.val());
+	if(!res) {
+		jq.css("border","2px solid red");
+		flag = false;
+	}
+	rcc = new EReg("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$","");
+	jq = new js.JQuery("#" + this.id + this.ids[5]);
+	jq.css("border","none");
+	res = rcc.match(jq.val());
+	if(!res) {
+		jq.css("border","2px solid red");
+		flag = false;
+	}
+	return flag;
 }
-main.Blob.__name__ = ["main","Blob"];
-main.Blob.main = function() {
-	return;
+main.PaymentForm.prototype.GenerateForm = function() {
+	var output = "<ul style='list-style-type: none; display: inline;'><li>";
+	output += "<div id='" + this.id + "title'>Checkout</div>";
+	output += "</li><li>";
+	output += "<div id='" + this.id + "name-label'>Name: </div>";
+	output += "<input type='text' id='" + this.id + "name' placeholder='Adam Smith'/>";
+	output += "</li><li>";
+	this.ids.push("name");
+	output += "<div id='" + this.id + "credit-card-label'>Credit Card Number: </div>";
+	output += "<input type='text' id='" + this.id + "credit-card' placeholder='4231 4585 4874 5150'/>";
+	output += "</li><li>";
+	this.ids.push("credit-card");
+	output += "<div id='" + this.id + "ccv-label'>CCV: </div>";
+	output += "<input type='text' id='" + this.id + "ccv' placeholder='112' style='width: 3em;' size='30'/>";
+	output += "</li><li>";
+	this.ids.push("ccv");
+	output += "<div id='" + this.id + "month-label'>Expiration: </div>";
+	output += "<input type='text' id='" + this.id + "month' placeholder='3' style='width: 2em;' size='30' />";
+	this.ids.push("month");
+	output += "/20";
+	output += "<input type='text' id='" + this.id + "year' placeholder='15' style='width: 2em;' size='30' />";
+	output += "</li><li>";
+	this.ids.push("year");
+	output += "<div id='" + this.id + "email-label'>Email: </div>";
+	output += "<input type='text' id='" + this.id + "email' placeholder='invisible@hand.com'/>";
+	output += "</li></ul>";
+	this.ids.push("email");
+	this.form = output;
+	return output;
 }
-main.Blob.prototype.domContainer = null;
-main.Blob.prototype.domGroup = null;
-main.Blob.prototype.domSprites = null;
-main.Blob.prototype.domSpecs = null;
-main.Blob.prototype.Move = function(x,y) {
-	this.domContainer.css("left",x + "px");
-	this.domContainer.css("top",y + "px");
+main.PaymentForm.prototype.__class__ = main.PaymentForm;
+EReg = function(r,opt) {
+	if( r === $_ ) return;
+	opt = opt.split("u").join("");
+	this.r = new RegExp(r,opt);
 }
-main.Blob.prototype.Size = function(width,height) {
-	var s = width + "px " + height + "px";
-	this.domSprites.css("background-size",s);
-	this.domSprites.css("width",width + "px");
-	this.domSprites.css("height",height + "px");
-	this.domContainer.css("width",width + "px");
-	this.domContainer.css("height",height + "px");
-	this.domGroup.css("width",width + "px");
-	this.domGroup.css("height",height + "px");
+EReg.__name__ = ["EReg"];
+EReg.prototype.r = null;
+EReg.prototype.match = function(s) {
+	this.r.m = this.r.exec(s);
+	this.r.s = s;
+	this.r.l = RegExp.leftContext;
+	this.r.r = RegExp.rightContext;
+	return this.r.m != null;
 }
-main.Blob.prototype.Hide = function() {
-	this.domContainer.hide();
+EReg.prototype.matched = function(n) {
+	return this.r.m != null && n >= 0 && n < this.r.m.length?this.r.m[n]:(function($this) {
+		var $r;
+		throw "EReg::matched";
+		return $r;
+	}(this));
 }
-main.Blob.prototype.Show = function() {
-	this.domContainer.show();
+EReg.prototype.matchedLeft = function() {
+	if(this.r.m == null) throw "No string matched";
+	if(this.r.l == null) return this.r.s.substr(0,this.r.m.index);
+	return this.r.l;
 }
-main.Blob.prototype.Html = function(text) {
-	this.domSprites.append(text);
+EReg.prototype.matchedRight = function() {
+	if(this.r.m == null) throw "No string matched";
+	if(this.r.r == null) {
+		var sz = this.r.m.index + this.r.m[0].length;
+		return this.r.s.substr(sz,this.r.s.length - sz);
+	}
+	return this.r.r;
 }
-main.Blob.prototype.SetAnimation = function(image) {
-	this.domSprites.css("background-image","url('" + image + "')");
+EReg.prototype.matchedPos = function() {
+	if(this.r.m == null) throw "No string matched";
+	return { pos : this.r.m.index, len : this.r.m[0].length};
 }
-main.Blob.prototype.click = function(call) {
-	this.domSprites.click(call);
+EReg.prototype.split = function(s) {
+	var d = "#__delim__#";
+	return s.replace(this.r,d).split(d);
 }
-main.Blob.prototype.mouseover = function(call) {
-	this.domSprites.mouseover(call);
+EReg.prototype.replace = function(s,by) {
+	return s.replace(this.r,by);
 }
-main.Blob.prototype.mouseleave = function(call) {
-	this.domSprites.mouseleave(call);
+EReg.prototype.customReplace = function(s,f) {
+	var buf = new StringBuf();
+	while(true) {
+		if(!this.match(s)) break;
+		buf.add(this.matchedLeft());
+		buf.add(f(this));
+		s = this.matchedRight();
+	}
+	buf.b[buf.b.length] = s == null?"null":s;
+	return buf.b.join("");
 }
-main.Blob.prototype.__class__ = main.Blob;
-IntIter = function(min,max) {
-	if( min === $_ ) return;
-	this.min = min;
-	this.max = max;
+EReg.prototype.__class__ = EReg;
+main.ConfirmationForm = function(itemtile) {
+	if( itemtile === $_ ) return;
+	main.ItemForm.call(this,itemtile);
+	this.HTML("<p>Confirm Purchase</p>");
+	this.Size({ width : 125, height : 125});
+	this.Confirm((function(cof) {
+		return function(e) {
+			cof.itemtile.Buy(null,cof.PaymentInfo());
+			cof.Remove();
+			main.Tooltip.hide();
+		};
+	})(this));
 }
-IntIter.__name__ = ["IntIter"];
-IntIter.prototype.min = null;
-IntIter.prototype.max = null;
-IntIter.prototype.hasNext = function() {
-	return this.min < this.max;
+main.ConfirmationForm.__name__ = ["main","ConfirmationForm"];
+main.ConfirmationForm.__super__ = main.ItemForm;
+for(var k in main.ItemForm.prototype ) main.ConfirmationForm.prototype[k] = main.ItemForm.prototype[k];
+main.ConfirmationForm.prototype.paymentinfo = null;
+main.ConfirmationForm.prototype.PaymentInfo = function(paydata) {
+	if(paydata == null) return this.paymentinfo;
+	this.paymentinfo = paydata;
+	return this.paymentinfo;
 }
-IntIter.prototype.next = function() {
-	return this.min++;
-}
-IntIter.prototype.__class__ = IntIter;
+main.ConfirmationForm.prototype.__class__ = main.ConfirmationForm;
 $_ = {}
 js.Boot.__res = {}
 js.Boot.__init();
 {
-	js.Lib.document = document;
-	js.Lib.window = window;
-	onerror = function(msg,url,line) {
-		var f = js.Lib.onerror;
-		if( f == null )
-			return false;
-		return f(msg,[url+":"+line]);
-	}
+	Math.__name__ = ["Math"];
+	Math.NaN = Number["NaN"];
+	Math.NEGATIVE_INFINITY = Number["NEGATIVE_INFINITY"];
+	Math.POSITIVE_INFINITY = Number["POSITIVE_INFINITY"];
+	Math.isFinite = function(i) {
+		return isFinite(i);
+	};
+	Math.isNaN = function(i) {
+		return isNaN(i);
+	};
 }
+if(typeof(haxe_timers) == "undefined") haxe_timers = [];
 {
 	var d = Date;
 	d.now = function() {
@@ -431,6 +912,30 @@ js.Boot.__init();
 	d.__name__ = ["Date"];
 }
 {
+	String.prototype.__class__ = String;
+	String.__name__ = ["String"];
+	Array.prototype.__class__ = Array;
+	Array.__name__ = ["Array"];
+	Int = { __name__ : ["Int"]};
+	Dynamic = { __name__ : ["Dynamic"]};
+	Float = Number;
+	Float.__name__ = ["Float"];
+	Bool = { __ename__ : ["Bool"]};
+	Class = { __name__ : ["Class"]};
+	Enum = { };
+	Void = { __ename__ : ["Void"]};
+}
+{
+	js.Lib.document = document;
+	js.Lib.window = window;
+	onerror = function(msg,url,line) {
+		var f = js.Lib.onerror;
+		if( f == null )
+			return false;
+		return f(msg,[url+":"+line]);
+	}
+}
+{
 	/*!
  * jQuery JavaScript Library v1.5
  * http://jquery.com/
@@ -462,33 +967,10 @@ js.Boot.__init();
 		}};
 	};
 }
-{
-	String.prototype.__class__ = String;
-	String.__name__ = ["String"];
-	Array.prototype.__class__ = Array;
-	Array.__name__ = ["Array"];
-	Int = { __name__ : ["Int"]};
-	Dynamic = { __name__ : ["Dynamic"]};
-	Float = Number;
-	Float.__name__ = ["Float"];
-	Bool = { __ename__ : ["Bool"]};
-	Class = { __name__ : ["Class"]};
-	Enum = { };
-	Void = { __ename__ : ["Void"]};
-}
-{
-	Math.__name__ = ["Math"];
-	Math.NaN = Number["NaN"];
-	Math.NEGATIVE_INFINITY = Number["NEGATIVE_INFINITY"];
-	Math.POSITIVE_INFINITY = Number["POSITIVE_INFINITY"];
-	Math.isFinite = function(i) {
-		return isFinite(i);
-	};
-	Math.isNaN = function(i) {
-		return isNaN(i);
-	};
-}
+main.Element.ID = 0;
+main.Element.NAME = "InGidio-Tile-Element-" + Math.floor(10000 * Math.random());
+main.Form.IMAGES = { yes : SHOP_IMAGE_APPROVE, no : SHOP_IMAGE_CANCEL};
+main.Form.FORMS = [];
+tools.Timer.TIME = haxe.Timer.stamp();
 js.Lib.onerror = null;
-main.Blob.id = 0;
-main.Blob.tagname = "inGidio-blobform-" + Math.round(Math.random() * 1000);
 main.Shop.main()

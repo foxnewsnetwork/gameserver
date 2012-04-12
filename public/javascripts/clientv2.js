@@ -81,6 +81,7 @@ function AddChatFunction( eventname, func ){
 /**********************
 * User Functions               *
 **********************/
+/*
 // playerinfo is a json 
 function LoginPlayer( playerinfo ){
 	var data = playerinfo;
@@ -102,11 +103,19 @@ socket.on( "player login down", function(data) {
 	}
 	// TODO: write code to handle the case when player tokens are false
 });
-
+*/
 /**********************
 * Shop Functions              *
 **********************/
 // Macro call to summon the shop for the truly lazy
+function SendAnalytics( rawdata ){ 
+	var data = { 
+		'sessionId' : sessionId ,
+		'url' : document.URL,
+		'data' : rawdata
+	};
+	socket.emit( "analytics up", data );
+}
 
 // metadata is not required
 function GetShopItems( reqdata ){ 

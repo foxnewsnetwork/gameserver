@@ -61,62 +61,67 @@ var ServerShop = function(){
 			return function(items){ shop.items = items; };
 		})(this);
 		
-		var request = http.get( options, function(response){ 
-			if( response.statusCode > 400 ){
-				console.log("Status Code: " + response.statusCode);
-				if( callback != undefined ){
-					var failitem = [{ 
-						'description' : "Main shop site failed load",
-						'id' : 12 ,
-						'company_id' : 12 , 
-						'tileset' :  FAIL_PIC_PATH ,
-						'title' :  response.statusCode,
-						'created_at' : Date.now() ,
-						'updated_at': Date.now()
-					}];
-					callback( failitem );
-				} // end callback if
-				return;
-			} // end statusCode if
-			response.setEncoding('utf8');
-			
-			var contentlength = response.headers['content-length'];
-			var currentlength = 0;
-			var fillchunk = "";
-			response.on( "data", function(chunk){ 
-				currentlength += chunk.length;
-				fillchunk += chunk;
-				console.log( "Currently at " + currentlength + " out of " + contentlength );
-				if( currentlength / contentlength > 0.995 ){
-					var rawData = JSON.parse(fillchunk);
-					var rawResult = rawData['results'];
-					console.log(rawResult);
-					var item, items=[];
-					for( var k = 0; k < rawResult.length; k++ ){ 
-						item = rawResult[k];
-						items.push( { 
-							'description': item['description'],
-							'id': item['id'],
-							'company_id': item['company_id'],
-							'tileset': item['picture_path_thumb'],
-							'price': item['cost'],
-							'title': item['title'],
-							'created_at': item['created_at'],
-							'updated_at': item['updated_at']
-						} ); // end push
-					} // end for
-					inceptionDelegate( items );
+		try{ 
+			var request = http.get( options, function(response){ 
+				if( response.statusCode > 400 ){
+					console.log("Status Code: " + response.statusCode);
 					if( callback != undefined ){
-						callback( items );
-					}
-				} // end percentage completion if
-			} ) // end response.on data
-			.on( "error", function(error){ 
-				console.log( error );
-				return;
-			} ); // end response.on error
-		} ); // end http.get
-		request.end();
+						var failitem = [{ 
+							'description' : "Main shop site failed load",
+							'id' : 12 ,
+							'company_id' : 12 , 
+							'tileset' :  FAIL_PIC_PATH ,
+							'title' :  response.statusCode,
+							'created_at' : Date.now() ,
+							'updated_at': Date.now()
+						}];
+						callback( failitem );
+					} // end callback if
+					return;
+				} // end statusCode if
+				response.setEncoding('utf8');
+			
+				var contentlength = response.headers['content-length'];
+				var currentlength = 0;
+				var fillchunk = "";
+				response.on( "data", function(chunk){ 
+					currentlength += chunk.length;
+					fillchunk += chunk;
+					console.log( "Currently at " + currentlength + " out of " + contentlength );
+					if( currentlength / contentlength > 0.995 ){
+						var rawData = JSON.parse(fillchunk);
+						var rawResult = rawData['results'];
+						console.log(rawResult);
+						var item, items=[];
+						for( var k = 0; k < rawResult.length; k++ ){ 
+							item = rawResult[k];
+							items.push( { 
+								'description': item['description'],
+								'id': item['id'],
+								'company_id': item['company_id'],
+								'tileset': item['picture_path_thumb'],
+								'price': item['cost'],
+								'title': item['title'],
+								'created_at': item['created_at'],
+								'updated_at': item['updated_at']
+							} ); // end push
+						} // end for
+						inceptionDelegate( items );
+						if( callback != undefined ){
+							callback( items );
+						}
+					} // end percentage completion if
+				} ) // end response.on data
+				.on( "error", function(error){ 
+					console.log( error );
+					return;
+				} ); // end response.on error
+			} ); // end http.get
+			request.end();
+		} //end try
+		catch(err){ 
+			console.log(err);
+		} // end catch
 	} // end this.RequestItems
 	
 	// Parameter explanations
@@ -151,33 +156,38 @@ var ServerShop = function(){
 			}
 		}; // end options
 		
-		// Step 2: Starting the request
-		var request = http.request( options, function(response){ 
-			// Handle 400 erros
-			if( response.statusCode > 400 ){ 
-				console.log( "We have encountered the error @ status code : " + response.statusCode );
-				return;
-			} // end statusCode if
+		try{
+			// Step 2: Starting the request
+			var request = http.request( options, function(response){ 
+				// Handle 400 erros
+				if( response.statusCode > 400 ){ 
+					console.log( "We have encountered the error @ status code : " + response.statusCode );
+					return;
+				} // end statusCode if
 			
-			// Setup to receive information
-			var fullsize = response.headers['content-length'];
-			var currentsize = 0;
-			var buffer = "";
-			response.on( "data", function(chunk){ 
-				currentsize += chunk.length;
-				buffer += chunk;
-				if( currentsize / fullsize > 0.995 ){ 
-					var data = JSON.parse(buffer);	
-					console.log( "Purchase status: " + buffer );
-					if(callback != undefined)
-						callback(data);
-				} // end size check if
-			} ); // end response.on data
-		} ); // end http.request
+				// Setup to receive information
+				var fullsize = response.headers['content-length'];
+				var currentsize = 0;
+				var buffer = "";
+				response.on( "data", function(chunk){ 
+					currentsize += chunk.length;
+					buffer += chunk;
+					if( currentsize / fullsize > 0.995 ){ 
+						var data = JSON.parse(buffer);	
+						console.log( "Purchase status: " + buffer );
+						if(callback != undefined)
+							callback(data);
+					} // end size check if
+				} ); // end response.on data
+			} ); // end http.request
 		
-		// Step 3: Write the post data and wait for the reply
-		request.write(postdata);
-		request.end();
+			// Step 3: Write the post data and wait for the reply
+			request.write(postdata);
+			request.end();
+		} //end try
+		catch(err){ 
+			console.log(err);
+		} // end catch
 	} // end this.BuyItem
 }
 

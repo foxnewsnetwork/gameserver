@@ -32,7 +32,7 @@ var MahjongGame = function(){
 	//as well as choosing whose turn it is
 	this.newgame = function(){ 
 		this.board.newboard();
-		//this.board.shuffle();
+		this.board.shuffle();
 		this.begun = true;
 		for( var k = 0; k < this.players.length; k++ ){ 
 			this.players[k].drawtiles( this.board, RULES_STARTING_TILE_COUNT );
@@ -127,7 +127,7 @@ var MahjongGame = function(){
 			
 		}
 		// check ron for the player
-		//this.players[this.interactivePlayer].checkRon();
+		this.players[this.interactivePlayer].checkRon();
 		// check closed kan for the player
 	}
 	
@@ -147,7 +147,10 @@ var MahjongGame = function(){
 				fag = this.players[k];
 				kanAvailable = fag.checkKan( tossedtile );
 				ponAvailable = fag.checkPon( tossedtile );
-			fag.checkRonFromDiscard(tossedtile);
+			
+			//Recently checked and I don't think you can ron from any discard.
+			//You have to declare it only if it's a legit draw.
+			//fag.checkRonFromDiscard(tossedtile);
 			}
 			// check chi for the previous player
 		 
@@ -167,7 +170,7 @@ var MahjongGame = function(){
 		currentPlayer.ponTile(this.board);
 		
 		this.activePlayer = this.interactivePlayer;
-		
+		this.players[this.interactivePlayer].checkRon();
 		this.players[this.activePlayer].recentPonOrChi();
 
 	}
@@ -194,6 +197,7 @@ var MahjongGame = function(){
 		if(result)
 		this.players[this.activePlayer].recentPonOrChi();
 
+		this.players[this.interactivePlayer].checkRon();
 		}
 	}
 	//A player called Kan
